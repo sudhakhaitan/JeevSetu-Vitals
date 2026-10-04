@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JeevSetu — General Examination</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f5f7fa;color:#172033}.wrap{max-width:900px;margin:auto;background:#fff;min-height:100vh;padding:18px;box-sizing:border-box}h1{text-align:center;font-size:24px;margin:4px 0 6px}.sub{text-align:center;color:#667085;margin-bottom:18px}.card{border:1px solid #d9dee8;border-radius:10px;padding:15px;margin:12px 0;background:#fff}.card h2{font-size:20px;margin:0 0 12px}.q{padding:12px 0;border-bottom:1px solid #eee}.q:last-child{border-bottom:0}label{display:block;margin:7px 0;font-weight:500}input,select,textarea{box-sizing:border-box;width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:6px;font-size:15px}textarea{min-height:65px}.inline{display:grid;grid-template-columns:1fr 1fr;gap:10px}.yn label{display:inline-block;margin-right:22px;font-weight:400}.yn input{width:auto}.small{font-size:13px;color:#667085}.actions{position:sticky;bottom:0;background:#fff;border-top:1px solid #ddd;padding:12px 0;display:flex;gap:10px;flex-wrap:wrap}button{padding:11px 16px;border:0;border-radius:7px;background:#1d4ed8;color:white;font-size:15px}button.secondary{background:#475467}button.danger{background:#b42318}.finding{border:1px solid #d9dee8;border-radius:8px;padding:10px;margin:8px 0}.note{white-space:pre-wrap;border:1px solid #bbb;padding:14px;background:#fafafa;font-family:Arial;line-height:1.4}.hide{display:none}@media print{body{background:#fff}.wrap{max-width:none;padding:8px}.no-print{display:none!important}.card{border:0;padding:5px;margin:0}.card h2{font-size:15px}.note{border:0;padding:0;font-size:11px}.print-only{display:block!important}}
+.print-only{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>JeevSetu — General Examination</h1>
+<div class="sub">General / Constitutional • General Examination • Lymph Node Examination • Functional Assessment • Digital Body Map</div>
+
+<div class="card no-print">
+<h2>Patient / Examination Details</h2>
+<div class="inline"><label>Patient Name<input id="patientName"></label><label>Patient ID<input id="patientId"></label></div>
+<div class="inline"><label>Age<input id="age" type="number" min="0"></label><label>Sex<select id="sex"><option value="">Select</option><option>Female</option><option>Male</option><option>Other</option></select></label></div>
+<div class="inline"><label>Examination Date<input id="examDate" type="date"></label><label>Clinician<input id="clinician"></label></div>
+</div>
+
+<div class="card">
+<h2>General / Constitutional</h2>
+<div id="constitutional"></div>
+<p class="small">Positive findings can guide the relevant focused system pathway.</p>
+</div>
+
+<div class="card">
+<h2>General Examination</h2>
+<p class="small">For each item choose the clinical status. “Normal” means no abnormality detected; “Abnormal” means an abnormality is present.</p>
+<div id="generalExam"></div>
+<label>Other significant abnormalities<textarea id="otherAbnormal"></textarea></label>
+</div>
+
+<div class="card">
+<h2>Lymph Node Examination</h2>
+<p class="small">Use when clinically indicated or abnormal nodes are suspected.</p>
+<div class="inline"><label>Site<input id="lnSite"></label><label>Side<select id="lnSide"><option>Right</option><option>Left</option><option>Bilateral</option></select></label></div>
+<div class="inline"><label>Number<input id="lnNumber" type="number" min="1"></label><label>Size<input id="lnSize" placeholder="cm"></label></div>
+<div class="inline"><label>Tenderness<select id="lnTender"><option>Non-tender</option><option>Tender</option></select></label><label>Consistency<select id="lnConsistency"><option>Soft</option><option>Firm</option><option>Hard</option><option>Other</option></select></label></div>
+<div class="inline"><label>Mobility<select id="lnMobility"><option>Mobile</option><option>Fixed</option></select></label><label>Matting<select id="lnMatting"><option>No</option><option>Yes</option></select></label></div>
+<label>Overlying skin changes<textarea id="lnSkin"></textarea></label>
+</div>
+
+<div class="card">
+<h2>General Functional Assessment</h2>
+<p class="small">Particularly important for seniors.</p>
+<div id="functional"></div>
+</div>
+
+<div class="card">
+<h2>Digital Body Map</h2>
+<div class="inline"><label>Body region<select id="bodyRegion"><option>Head / neck</option><option>Chest</option><option>Abdomen</option><option>Upper limb</option><option>Lower limb</option><option>Musculoskeletal regions</option><option>Skin</option><option>Breast</option><option>Feet</option><option>Neurological distribution</option></select></label><label>Finding<select id="bodyFinding"><option>Pain</option><option>Tenderness</option><option>Swelling</option><option>Mass</option><option>Skin lesion</option><option>Joint abnormality</option><option>Neurological deficit</option><option>Sensory loss</option><option>Weakness</option><option>Oedema</option><option>Other localized finding</option></select></label></div>
+<div class="inline"><label>Laterality<select id="bodyLaterality"><option>Not applicable</option><option>Right</option><option>Left</option><option>Bilateral</option></select></label><label>Anatomical location<input id="bodyLocation"></label></div>
+<label>Clinical description<textarea id="bodyDescription"></textarea></label>
+<button type="button" class="secondary no-print" onclick="addFinding()">Add finding</button>
+<div id="findingList"></div>
+</div>
+
+<div class="card no-print"><h2>Clinical Note</h2><div id="note" class="note">Complete the examination and select “Generate Clinical Note”.</div></div>
+<div class="actions no-print"><button type="button" onclick="generateNote()">Generate Clinical Note</button><button type="button" onclick="window.print()">Print Clinical Note</button><button type="button" class="secondary" onclick="saveData()">Save in this browser</button><button type="button" class="secondary" onclick="loadData()">Load saved data</button><button type="button" class="danger" onclick="clearData()">Clear</button></div>
+<div id="printNote" class="print-only"></div>
+</div>
+<script>
+const constitutional=[
+['Fever / chills','क्या आपको हाल में बार-बार या बिना किसी स्पष्ट कारण के बुखार या ठंड लगने की शिकायत हुई है?','fever'],
+['Unintentional weight change','क्या हाल के दिनों या महीनों में आपका वजन बिना कोशिश के कम या ज्यादा हुआ है?','weight'],
+['Appetite','आपकी भूख में हाल में कोई बदलाव हुआ है—भूख कम या ज्यादा हुई है?','appetite'],
+['Weakness / fatigue','क्या आपको सामान्य से ज्यादा कमजोरी या थकान महसूस होती है?','fatigue'],
+['Night sweats','क्या रात में आपको इतना पसीना आता है कि कपड़े या बिस्तर बदलने पड़े?','sweats'],
+['Generalised body ache','क्या आपको पूरे शरीर में या कई जगहों पर बिना किसी स्पष्ट कारण के दर्द या बदन दर्द रहता है?','ache'],
+['Functional capacity','क्या पहले की तुलना में आपकी रोज़मर्रा के काम करने की क्षमता कम हुई है?','capacity']];
+const general=['General appearance','Comfortable / uncomfortable','Acutely or chronically ill appearance','Consciousness','Distress','Nutritional status','Hydration','Hygiene','Mobility','Pallor','Jaundice','Cyanosis','Clubbing','Oedema','Lymphadenopathy','Dehydration','Visible thyroid enlargement'];
+const functional=['Standing ability','Gait','Walking speed','Need for support','Chair-to-standing ability','General muscle bulk','Obvious frailty','Functional limitation'];
+const cbox=document.getElementById('constitutional');
+constitutional.forEach(([t,q,k])=>{let d=document.createElement('div');d.className='q';d.innerHTML=`<b>${t}</b><p>${q}</p><div class="yn"><label><input type="radio" name="${k}" value="Yes"> हाँ</label><label><input type="radio" name="${k}" value="No"> नहीं</label></div>${k==='weight'?'<label>यदि हाँ — कितना वजन और कितने समय में?<textarea id="weightDetail"></textarea></label>':''}`;cbox.appendChild(d)});
+function makeSelect(parent,items,prefix){items.forEach((v,i)=>{let l=document.createElement('label');l.innerHTML=`<b>${v}</b><select id="${prefix}${i}"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select>`;parent.appendChild(l)})}
+makeSelect(document.getElementById('generalExam'),general,'ge');makeSelect(document.getElementById('functional'),functional,'fn');
+let findings=[];
+function addFinding(){const f={region:bodyRegion.value,finding:bodyFinding.value,laterality:bodyLaterality.value,location:bodyLocation.value,description:bodyDescription.value};if(!f.location&&!f.description){alert('Please enter anatomical location or clinical description.');return}findings.push(f);renderFindings();bodyLocation.value='';bodyDescription.value=''}
+function renderFindings(){findingList.innerHTML=findings.map((f,i)=>`<div class="finding"><b>${f.finding}</b> — ${f.region}, ${f.laterality}${f.location?' — '+f.location:''}<br>${f.description||''} <button class="secondary no-print" type="button" onclick="findings.splice(${i},1);renderFindings()">Remove</button></div>`).join('')}
+function val(id){return document.getElementById(id).value.trim()}
+function selected(name){const x=document.querySelector(`input[name="${name}"]:checked`);return x?x.value:''}
+function generateNote(){
+let lines=[];let name=val('patientName'),id=val('patientId');lines.push('JeevSetu — General Examination Clinical Note');lines.push('Patient: '+(name||'Not recorded')+(id?' | ID: '+id:''));lines.push('Age/Sex: '+(val('age')||'Not recorded')+' / '+(val('sex')||'Not recorded'));lines.push('Examination date: '+(val('examDate')||'Not recorded')+' | Clinician: '+(val('clinician')||'Not recorded'));lines.push('');
+lines.push('GENERAL / CONSTITUTIONAL');constitutional.forEach(([t,q,k])=>{let v=selected(k);if(v==='Yes'){let extra=k==='weight'&&val('weightDetail')?' — '+val('weightDetail'):'';lines.push('• '+t+': Present'+extra)}else if(v==='No')lines.push('• '+t+': Absent');else lines.push('• '+t+': Not recorded')});
+lines.push('');lines.push('GENERAL EXAMINATION');general.forEach((v,i)=>lines.push('• '+v+': '+val('ge'+i)));if(val('otherAbnormal'))lines.push('• Other significant abnormalities: '+val('otherAbnormal'));
+lines.push('');lines.push('LYMPH NODE EXAMINATION');if(val('lnSite')||val('lnNumber')||val('lnSize')||val('lnSkin')){lines.push('• Site: '+(val('lnSite')||'Not recorded'));lines.push('• Side: '+val('lnSide')+' | Number: '+(val('lnNumber')||'Not recorded')+' | Size: '+(val('lnSize')||'Not recorded'));lines.push('• Tenderness: '+val('lnTender')+' | Consistency: '+val('lnConsistency')+' | Mobility: '+val('lnMobility')+' | Matting: '+val('lnMatting'));if(val('lnSkin'))lines.push('• Overlying skin changes: '+val('lnSkin'))}else lines.push('• No lymph-node findings recorded.');
+lines.push('');lines.push('GENERAL FUNCTIONAL ASSESSMENT');functional.forEach((v,i)=>lines.push('• '+v+': '+val('fn'+i)));
+lines.push('');lines.push('DIGITAL BODY MAP');if(findings.length)findings.forEach(f=>lines.push('• '+f.finding+' — '+f.region+', '+f.laterality+(f.location?' — '+f.location:'')+(f.description?' — '+f.description:'')));else lines.push('• No body-map findings recorded.');
+lines.push('');lines.push('End of General Examination Note.');let n=lines.join('\n');document.getElementById('note').textContent=n;document.getElementById('printNote').textContent=n;return n}
+function saveData(){let data={};document.querySelectorAll('input,select,textarea').forEach(e=>{if(e.type==='radio'){if(e.checked)data[e.name]=e.value}else data[e.id]=e.value});data.findings=findings;localStorage.setItem('jeevsetuGeneralExam',JSON.stringify(data));alert('Saved in this browser.');}
+function loadData(){let d;try{d=JSON.parse(localStorage.getItem('jeevsetuGeneralExam')||'null')}catch(e){}if(!d){alert('No saved data found.');return}document.querySelectorAll('input,select,textarea').forEach(e=>{if(e.type==='radio')e.checked=d[e.name]===e.value;else if(d[e.id]!==undefined)e.value=d[e.id]});findings=d.findings||[];renderFindings();generateNote();alert('Saved data loaded.');}
+function clearData(){if(!confirm('Clear this examination?'))return;document.querySelectorAll('input,textarea').forEach(e=>{if(e.type==='radio')e.checked=false;else e.value=''});document.querySelectorAll('select').forEach(e=>e.selectedIndex=0);findings=[];renderFindings();document.getElementById('note').textContent='Complete the examination and select “Generate Clinical Note”.';document.getElementById('printNote').textContent='';}
+examDate.value=new Date().toISOString().slice(0,10);
+</script>
+</body></html>

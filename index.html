@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JeevSetu – General Examination</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f5f7f8;color:#17202a}
+header{background:#234f52;color:white;padding:18px}
+main{max-width:900px;margin:auto;padding:16px}
+.card{background:white;border-radius:12px;padding:18px;margin:14px 0;box-shadow:0 2px 8px #0001}
+h1,h2{margin-top:0}.question{padding:12px 0;border-bottom:1px solid #ddd}
+label{display:block;margin:7px 0}
+textarea,input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #bbb;border-radius:7px}
+button{padding:11px 16px;border:0;border-radius:8px;background:#234f52;color:white;margin:5px}
+button.secondary{background:#68757a}
+.hidden{display:none}.flag{background:#fff3cd;padding:12px;border-left:5px solid #e0a800;margin-top:12px}
+.badge{display:inline-block;padding:4px 8px;border-radius:12px;background:#e8eeee;margin:3px}
+</style>
+</head>
+<body>
+<header><h1>JeevSetu</h1><div>General Examination Module · Stage A + Stage B</div></header>
+<main>
+<div class="card">
+<h2>Patient / Encounter</h2>
+<label>Patient ID<input id="patientId"></label>
+<label>Clinician<input id="clinician"></label>
+<label>Date<input id="date" type="date"></label>
+</div>
+
+<div class="card">
+<h2>18.1 — General / Constitutional</h2>
+<div id="questions"></div>
+<div id="focusedFlag"></div>
+</div>
+
+<div class="card">
+<h2>19.2 — General Examination</h2>
+<p>Record clinician-observed findings.</p>
+<div id="exam"></div>
+<label>Other significant abnormalities<textarea id="otherAbnormalities"></textarea></label>
+</div>
+
+<div class="card">
+<h2>19.3 — Lymph Node Examination</h2>
+<label>Examination indicated?
+<select id="lymphIndicated"><option>No</option><option>Yes</option></select></label>
+<div id="lymphBox" class="hidden"></div>
+</div>
+
+<div class="card">
+<h2>19.4 — General Functional Assessment</h2>
+<div id="functional"></div>
+</div>
+
+<div class="card">
+<h2>19.5 — Digital Body Map</h2>
+<p><span class="badge">Pain</span><span class="badge">Tenderness</span><span class="badge">Swelling/Mass</span>
+<span class="badge">Skin lesion</span><span class="badge">Joint abnormality</span><span class="badge">Neurological deficit</span>
+<span class="badge">Sensory loss</span><span class="badge">Weakness</span><span class="badge">Oedema</span></p>
+<label>Body region<select id="region">
+<option>Head / Neck</option><option>Chest</option><option>Abdomen</option><option>Upper limb</option>
+<option>Lower limb</option><option>Musculoskeletal</option><option>Skin</option><option>Breast</option>
+<option>Feet</option><option>Neurological distribution</option>
+</select></label>
+<label>Side<select id="side"><option>Not applicable</option><option>Right</option><option>Left</option><option>Bilateral</option></select></label>
+<label>Finding<select id="finding">
+<option>Pain</option><option>Tenderness</option><option>Swelling</option><option>Mass</option>
+<option>Skin lesion</option><option>Joint abnormality</option><option>Neurological deficit</option>
+<option>Sensory loss</option><option>Weakness</option><option>Oedema</option><option>Other</option>
+</select></label>
+<label>Anatomical location<textarea id="location"></textarea></label>
+<button onclick="addMapFinding()">Add finding</button>
+<div id="mapList"></div>
+</div>
+
+<div class="card">
+<button onclick="saveData()">Save JSON</button>
+<button class="secondary" onclick="window.print()">Print</button>
+<button class="secondary" onclick="clearForm()">Clear</button>
+</div>
+</main>
+
+<script>
+const questions=[
+["fever","क्या आपको हाल में बार-बार या बिना किसी स्पष्ट कारण के बुखार या ठंड लगने की शिकायत हुई है?"],
+["weight","क्या हाल के दिनों या महीनों में आपका वजन बिना कोशिश के कम या ज्यादा हुआ है?"],
+["appetite","आपकी भूख में हाल में कोई बदलाव हुआ है—भूख कम या ज्यादा हुई है?"],
+["fatigue","क्या आपको सामान्य से ज्यादा कमजोरी या थकान महसूस होती है?"],
+["nightSweats","क्या रात में आपको इतना पसीना आता है कि कपड़े या बिस्तर बदलने पड़े?"],
+["bodyAche","क्या आपको पूरे शरीर में या कई जगहों पर बिना किसी स्पष्ट कारण के दर्द या बदन दर्द रहता है?"],
+["function","क्या पहले की तुलना में आपकी रोज़मर्रा के काम करने की क्षमता कम हुई है?"]
+];
+const qDiv=document.getElementById("questions");
+questions.forEach(([id,q])=>{
+ qDiv.innerHTML+=`<div class="question"><b>${q}</b>
+ <label><input type="radio" name="${id}" value="Yes"> हाँ</label>
+ <label><input type="radio" name="${id}" value="No"> नहीं</label>
+ ${id==="weight"?'<label>यदि हाँ: कितना वजन बदला और कितने समय में?<textarea id="weightDetails"></textarea></label>':''}
+ </div>`;
+});
+document.getElementById("questions").addEventListener("change",()=>{
+ const yes=questions.map(x=>document.querySelector(`input[name="${x[0]}"]:checked`)?.value==="Yes");
+ const combo=["weight","appetite","fever","nightSweats","fatigue"].every(id=>document.querySelector(`input[name="${id}"]:checked`)?.value==="Yes");
+ document.getElementById("focusedFlag").innerHTML=(yes.some(Boolean)?
+ `<div class="flag"><b>Focused assessment indicated.</b> Positive findings should lead to the relevant system pathway.</div>`:"")+
+ (combo?`<div class="flag"><b>Clinical attention:</b> combination of unexplained weight loss, appetite loss, fever, night sweats and fatigue.</div>`:"");
+});
+
+const examItems=["General appearance","Comfortable / uncomfortable","Acutely / chronically ill appearance","Consciousness","Distress","Nutritional status","Hydration","Hygiene","Mobility","Pallor","Jaundice","Cyanosis","Clubbing","Oedema","Lymphadenopathy","Dehydration","Visible thyroid enlargement"];
+const ex=document.getElementById("exam");
+examItems.forEach((x,i)=>ex.innerHTML+=`<label>${x}<select id="ex${i}"><option>Normal / not present</option><option>Abnormal / present</option><option>Not assessed</option></select></label>`);
+
+const fun=["Standing ability","Gait","Walking speed","Need for support","Chair-to-standing ability","General muscle bulk","Obvious frailty","Functional limitation"];
+const fd=document.getElementById("functional");
+fun.forEach((x,i)=>fd.innerHTML+=`<label>${x}<select id="fn${i}"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select></label>`);
+
+document.getElementById("lymphIndicated").addEventListener("change",e=>{
+ document.getElementById("lymphBox").classList.toggle("hidden",e.target.value!=="Yes");
+});
+document.getElementById("lymphBox").innerHTML=`
+<label>Site<input id="lnSite"></label>
+<label>Side<select id="lnSide"><option>Right</option><option>Left</option><option>Bilateral</option></select></label>
+<label>Number<input id="lnNumber" type="number" min="1"></label>
+<label>Size<input id="lnSize" placeholder="e.g. 1.5 cm"></label>
+<label>Tenderness<select id="lnTender"><option>Non-tender</option><option>Tender</option></select></label>
+<label>Consistency<select id="lnConsistency"><option>Soft</option><option>Firm</option><option>Hard</option><option>Other</option></select></label>
+<label>Mobility<select id="lnMobility"><option>Mobile</option><option>Fixed</option><option>Other</option></select></label>
+<label>Matting<select id="lnMatting"><option>No</option><option>Yes</option></select></label>
+<label>Overlying skin changes<textarea id="lnSkin"></textarea></label>`;
+
+let mapFindings=[];
+function addMapFinding(){
+ mapFindings.push({
+  region:region.value, side:side.value, finding:finding.value,
+  anatomicalLocation:location.value, date:date.value, clinician:clinician.value
+ });
+ renderMap();
+}
+function renderMap(){
+ mapList.innerHTML=mapFindings.map((x,i)=>`<div class="question"><b>${i+1}. ${x.finding}</b> — ${x.region}, ${x.side}${x.anatomicalLocation?`, ${x.anatomicalLocation}`:""} <button onclick="mapFindings.splice(${i},1);renderMap()">Remove</button></div>`).join("");
+}
+function val(id){return document.getElementById(id)?.value||""}
+function selected(name){return document.querySelector(`input[name="${name}"]:checked`)?.value||""}
+function saveData(){
+ const data={
+  module:"JeevSetu General Examination", version:"1.0",
+  patientId:val("patientId"), clinician:val("clinician"), date:val("date"),
+  constitutional:Object.fromEntries(questions.map(x=>[x[0],selected(x[0])])),
+  weightDetails:val("weightDetails"),
+  generalExamination:Object.fromEntries(examItems.map((x,i)=>[x,val("ex"+i)])),
+  otherAbnormalities:val("otherAbnormalities"),
+  lymphNodes:document.getElementById("lymphIndicated").value==="Yes"?{
+   site:val("lnSite"),side:val("lnSide"),number:val("lnNumber"),size:val("lnSize"),
+   tenderness:val("lnTender"),consistency:val("lnConsistency"),mobility:val("lnMobility"),
+   matting:val("lnMatting"),skinChanges:val("lnSkin")
+  }:null,
+  functionalAssessment:Object.fromEntries(fun.map((x,i)=>[x,val("fn"+i)])),
+  digitalBodyMap:mapFindings
+ };
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+ a.download=(data.patientId||"patient")+"_general_examination.json";a.click();
+}
+function clearForm(){if(confirm("Clear this form?")) location.reload();}
+date.value=new Date().toISOString().slice(0,10);
+</script>
+</body>
+</html>

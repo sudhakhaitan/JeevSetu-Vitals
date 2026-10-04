@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JeevSetu Vitals — Stage A</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#222}
+.wrap{max-width:900px;margin:20px auto;padding:16px}
+h1{font-size:24px;margin:0 0 4px}.sub{color:#666;margin-bottom:18px}
+.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 1px 5px #0001}
+h2{font-size:18px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+label{font-size:13px;font-weight:600;display:block}
+input,select{width:100%;padding:10px;border:1px solid #bbb;border-radius:7px;font-size:15px;margin-top:5px}
+button{padding:11px 16px;border:0;border-radius:7px;cursor:pointer;font-size:15px;margin-right:8px}
+.primary{background:#222;color:#fff}.secondary{background:#e8ebee}
+.result{background:#f7f8f9;padding:10px;border-radius:7px;font-weight:700}
+.note{font-size:12px;color:#666}
+.actions{margin:16px 0}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+@media print{
+ body{background:#fff}
+ .wrap{max-width:none;margin:0;padding:0}
+ .input-area{display:none!important}
+ .printable{display:block!important}
+ .no-print{display:none!important}
+}
+.printable{display:none}
+.print-page{font-family:Arial,sans-serif;font-size:10.5pt}
+.print-head{display:flex;justify-content:space-between;border-bottom:2px solid #222;padding-bottom:7px;margin-bottom:8px}
+.print-title{font-size:16pt;font-weight:700}
+.patient-line{margin:5px 0 8px}
+table{width:100%;border-collapse:collapse;margin:6px 0}
+th,td{border:1px solid #777;padding:5px 6px;text-align:left}
+th{font-weight:700;background:#f1f1f1}
+.small{font-size:9pt}
+.alertbox{border:1px solid #777;padding:6px;margin-top:7px}
+.footer{font-size:8.5pt;margin-top:7px;color:#444}
+</style>
+</head>
+<body>
+<div class="wrap input-area">
+<h1>JeevSetu Vitals</h1>
+<div class="sub">Stage A — Nurse / ANM first-visit assessment</div>
+
+<div class="card">
+<h2>1. Patient identification</h2>
+<div class="grid">
+<label>Patient ID *<input id="pid" value=""></label>
+<label>Person performing measurement *<input id="operator"></label>
+</div>
+</div>
+
+<div class="card">
+<h2>2. Blood pressure — both arms</h2>
+<div class="grid">
+<label>Right-arm systolic (mmHg)<input id="rs"></label>
+<label>Right-arm diastolic (mmHg)<input id="rd"></label>
+<label>Left-arm systolic (mmHg)<input id="ls"></label>
+<label>Left-arm diastolic (mmHg)<input id="ld"></label>
+<label>Cuff size
+<select id="cuff"><option>Small adult</option><option selected>Adult</option><option>Large adult</option><option>Other</option></select></label>
+<label>Device
+<select id="device"><option selected>Digital</option><option>Aneroid</option><option>Automated / other</option></select></label>
+<label>Position
+<select id="position"><option selected>Seated</option><option>Supine</option><option>Standing</option></select></label>
+<label>Measurement time<input id="mtime" type="datetime-local"></label>
+</div>
+</div>
+
+<div class="card">
+<h2>3. Orthostatic blood pressure</h2>
+<div class="grid">
+<label>Supine systolic<input id="os"></label>
+<label>Supine diastolic<input id="od"></label>
+<label>Standing — 1 minute systolic<input id="s1s"></label>
+<label>Standing — 1 minute diastolic<input id="s1d"></label>
+<label>Standing — 3 minutes systolic<input id="s3s"></label>
+<label>Standing — 3 minutes diastolic<input id="s3d"></label>
+<label>Pulse — supine<input id="op"></label>
+<label>Pulse — standing 3 minutes<input id="s3p"></label>
+</div>
+<div class="note">The app records orthostatic measurements and calculates changes from supine values.</div>
+</div>
+
+<div class="card">
+<h2>4. Ankle-Brachial Index</h2>
+<div class="grid">
+<label>Right ankle systolic pressure (mmHg)<input id="ra"></label>
+<label>Left ankle systolic pressure (mmHg)<input id="la"></label>
+<label>Highest brachial systolic used (automatic)<div class="result" id="brachial">—</div></label>
+<label>Right ABI (automatic)<div class="result" id="rabi">—</div></label>
+<label>Left ABI (automatic)<div class="result" id="labi">—</div></label>
+</div>
+<div class="note">ABI is calculated separately for each leg using the highest recorded arm systolic pressure.</div>
+</div>
+
+<div class="card">
+<h2>5. Other vital signs</h2>
+<div class="grid">
+<label>Pulse (beats/min)<input id="pulse"></label>
+<label>Respiratory rate (breaths/min)<input id="rr"></label>
+<label>SpO₂ (%)<input id="spo2"></label>
+<label>Temperature<input id="temp"></label>
+<label>Temperature unit<select id="unit"><option selected>°C</option><option>°F</option></select></label>
+<label>Pain score (0–10)<input id="pain" type="number" min="0" max="10"></label>
+</div>
+</div>
+
+<div class="card">
+<h2>6. Anthropometry</h2>
+<div class="grid">
+<label>Height (cm)<input id="height"></label>
+<label>Weight (kg)<input id="weight"></label>
+<label>Waist circumference (cm)<input id="waist"></label>
+<label>Hip circumference (cm)<input id="hip"></label>
+<label>BMI (automatic)<div class="result" id="bmi">—</div></label>
+<label>Hip : Waist ratio (automatic)<div class="result" id="hwr">—</div></label>
+</div>
+</div>
+
+<div class="actions no-print">
+<button class="primary" onclick="reviewPrint()">Review & Print</button>
+<button class="secondary" onclick="saveLocal()">Save locally</button>
+<button class="secondary" onclick="clearForm()">Clear</button>
+</div>
+<div class="note no-print">Clinician printout is designed as a single A4 page.</div>
+</div>
+
+<div class="printable">
+<div class="print-page">
+<div class="print-head">
+<div><div class="print-title">JeevSetu — Vitals & Physical Measurement Summary</div>
+<div class="small">Stage A — Nurse / ANM first-visit assessment</div></div>
+<div class="small">Date/time: <span id="pmtime"></span></div>
+</div>
+<div class="patient-line"><b>Patient ID:</b> <span id="ppid"></span> &nbsp;&nbsp; <b>Measured by:</b> <span id="poperator"></span></div>
+
+<table>
+<tr><th colspan="2">Blood pressure</th><th colspan="2">Orthostatic BP</th></tr>
+<tr><td>Right arm</td><td id="prbp"></td><td>Supine</td><td id="posbp"></td></tr>
+<tr><td>Left arm</td><td id="plbp"></td><td>Standing 1 min</td><td id="ps1bp"></td></tr>
+<tr><td>Cuff / device / position</td><td id="pmeta"></td><td>Standing 3 min</td><td id="ps3bp"></td></tr>
+<tr><td></td><td></td><td>Change from supine</td><td id="pchange"></td></tr>
+</table>
+
+<table>
+<tr><th>ABI</th><th>Value</th><th>Other vital signs</th><th>Value</th></tr>
+<tr><td>Right ABI</td><td id="prabi"></td><td>Pulse</td><td id="ppulse"></td></tr>
+<tr><td>Left ABI</td><td id="plabi"></td><td>Respiratory rate</td><td id="prr"></td></tr>
+<tr><td>Highest brachial systolic</td><td id="pbrachial"></td><td>SpO₂</td><td id="pspo2"></td></tr>
+<tr><td></td><td></td><td>Temperature</td><td id="ptemp"></td></tr>
+<tr><td></td><td></td><td>Pain score</td><td id="ppain"></td></tr>
+</table>
+
+<table>
+<tr><th colspan="2">Anthropometry</th><th colspan="2">Calculated measures</th></tr>
+<tr><td>Height</td><td id="pheight"></td><td>BMI</td><td id="pbmi"></td></tr>
+<tr><td>Weight</td><td id="pweight"></td><td>Hip : Waist ratio</td><td id="phwr"></td></tr>
+<tr><td>Waist circumference</td><td id="pwaist"></td><td></td><td></td></tr>
+<tr><td>Hip circumference</td><td id="phip"></td><td></td><td></td></tr>
+</table>
+
+<div class="alertbox"><b>Clinician review:</b> Objective measurements above. Clinical interpretation/diagnosis is not generated by this Stage A module.</div>
+<div class="footer">JeevSetu Vitals — Stage A | One-page clinician printout</div>
+</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+function n(id){const v=parseFloat($(id).value);return Number.isFinite(v)?v:null}
+function fmt(v,d=1){return v==null?'—':v.toFixed(d)}
+function calc(){
+ const rb=n('rs'), lb=n('ls');
+ const b=(rb!=null&&lb!=null)?Math.max(rb,lb):(rb??lb);
+ $('brachial').textContent=b==null?'—':b;
+ const ra=n('ra'),la=n('la');
+ $('rabi').textContent=(ra!=null&&b)?fmt(ra/b,2):'—';
+ $('labi').textContent=(la!=null&&b)?fmt(la/b,2):'—';
+ const h=n('height'),w=n('weight');
+ $('bmi').textContent=(h&&w)?fmt(w/((h/100)**2),1):'—';
+ const wa=n('waist'),hi=n('hip');
+ $('hwr').textContent=(wa&&hi)?fmt(hi/wa,2):'—';
+}
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',calc));
+function val(id){return $(id).value||'—'}
+function reviewPrint(){
+ calc();
+ $('ppid').textContent=val('pid'); $('poperator').textContent=val('operator'); $('pmtime').textContent=val('mtime');
+ $('prbp').textContent=(val('rs')==='—'?'—':val('rs')+'/'+val('rd')+' mmHg');
+ $('plbp').textContent=(val('ls')==='—'?'—':val('ls')+'/'+val('ld')+' mmHg');
+ $('pmeta').textContent=val('cuff')+' / '+val('device')+' / '+val('position');
+ $('posbp').textContent=(val('os')==='—'?'—':val('os')+'/'+val('od'));
+ $('ps1bp').textContent=(val('s1s')==='—'?'—':val('s1s')+'/'+val('s1d'));
+ $('ps3bp').textContent=(val('s3s')==='—'?'—':val('s3s')+'/'+val('s3d'));
+ const os=n('os'), s3=n('s3s'), od=n('od'), s3d=n('s3d');
+ $('pchange').textContent=(os!=null&&s3!=null)?((s3-os>=0?'+':'')+(s3-os)+' / '+((s3d??0)-(od??0)))+' mmHg':'—';
+ $('prabi').textContent=$('rabi').textContent; $('plabi').textContent=$('labi').textContent; $('pbrachial').textContent=$('brachial').textContent;
+ $('ppulse').textContent=val('pulse'); $('prr').textContent=val('rr'); $('pspo2').textContent=val('spo2'); $('ptemp').textContent=val('temp')+' '+val('unit'); $('ppain').textContent=val('pain');
+ $('pheight').textContent=val('height')+' cm'; $('pweight').textContent=val('weight')+' kg'; $('pwaist').textContent=val('waist')+' cm'; $('phip').textContent=val('hip')+' cm'; $('pbmi').textContent=$('bmi').textContent; $('phwr').textContent=$('hwr').textContent;
+ window.print();
+}
+function saveLocal(){
+ const data={}; document.querySelectorAll('input,select').forEach(e=>data[e.id]=e.value);
+ localStorage.setItem('jeevsetu_vitals_stageA',JSON.stringify(data)); alert('Saved locally on this device.');
+}
+function clearForm(){if(confirm('Clear all entered measurements?')){document.querySelectorAll('input').forEach(e=>e.value='');calc();}}
+(function(){const now=new Date();now.setMinutes(now.getMinutes()-now.getTimezoneOffset());$('mtime').value=now.toISOString().slice(0,16);calc()})();
+</script>
+</body>
+</html>

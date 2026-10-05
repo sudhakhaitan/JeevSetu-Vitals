@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JeevSetu — Musculoskeletal Assessment</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f5f7f8;color:#222}
+header{background:#fff;padding:18px 20px;border-bottom:1px solid #ddd}
+h1{font-size:22px;margin:0 0 4px} h2{font-size:19px;margin-top:26px;border-bottom:2px solid #333;padding-bottom:6px}
+h3{font-size:17px;margin-top:20px}
+main{max-width:900px;margin:auto;background:#fff;padding:20px}
+label{display:block;margin:9px 0 5px;font-weight:600}
+input[type=text],select,textarea{width:100%;box-sizing:border-box;padding:9px;border:1px solid #aaa;border-radius:5px}
+select[multiple]{min-height:170px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{border:1px solid #ccc;border-radius:7px;padding:14px;margin:12px 0;background:#fafafa}
+.checks{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.checks label{font-weight:normal;margin:2px 0}
+button{padding:10px 16px;border:0;border-radius:6px;background:#333;color:white;font-size:15px;margin:7px 5px 7px 0}
+button.secondary{background:#666}
+button.remove{background:#9b2c2c;float:right}
+.note{white-space:normal;line-height:1.45}
+.small{font-size:13px;color:#555}
+@media(max-width:650px){.grid,.checks{grid-template-columns:1fr}}
+@media print{
+ body{background:#fff}
+ header,.form-area,.print-buttons{display:none!important}
+ main{max-width:none;padding:0}
+ #clinicalNote{display:block!important}
+ .note{font-size:12pt}
+}
+#clinicalNote{display:none}
+</style>
+</head>
+<body>
+<header>
+<h1>JeevSetu — Musculoskeletal Assessment</h1>
+<div class="small">Multi-joint and multi-spinal-region assessment</div>
+</header>
+
+<main>
+<div class="form-area">
+<h2>18.7 — Musculoskeletal Symptoms</h2>
+<div class="grid">
+<div>
+<label>Joint symptoms</label>
+<select id="jointSymptoms"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+</div>
+<div>
+<label>Back / neck pain or stiffness</label>
+<select id="backNeck"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+</div>
+<div>
+<label>Functional strength</label>
+<select id="functionalStrength"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+</div>
+<div>
+<label>Mobility</label>
+<select id="mobility"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+</div>
+</div>
+
+<h3>Functional / Senior Pathway</h3>
+<div class="grid">
+<div><label>Need for hand support</label><select id="handSupport"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Difficulty climbing stairs</label><select id="climb"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Difficulty descending stairs</label><select id="descend"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Leg weakness</label><select id="legWeakness"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Reduced walking speed</label><select id="walkingSpeed"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+</div>
+
+<h3>Bone Health — Where Appropriate</h3>
+<div class="grid">
+<div><label>Previous osteoporosis</label><select id="osteoporosis"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Fragility fracture</label><select id="fracture"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Long-term steroid exposure</label><select id="steroids"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+</div>
+
+<h2>19.10 — Musculoskeletal Examination</h2>
+<h3>General</h3>
+<div class="grid">
+<div><label>Posture</label><input id="posture"></div>
+<div><label>Gait</label><input id="gait"></div>
+<div><label>Deformity</label><input id="generalDeformity"></div>
+<div><label>Muscle wasting</label><input id="wasting"></div>
+<div><label>Joint swelling</label><input id="generalSwelling"></div>
+<div><label>Asymmetry</label><input id="asymmetry"></div>
+</div>
+
+<h3>Joints — select all affected joints/regions</h3>
+<label>Multiple selection allowed</label>
+<select id="jointSelect" multiple>
+<option>Right shoulder</option><option>Left shoulder</option>
+<option>Right elbow</option><option>Left elbow</option>
+<option>Right wrist</option><option>Left wrist</option>
+<option>Right hand</option><option>Left hand</option>
+<option>Right hip</option><option>Left hip</option>
+<option>Right knee</option><option>Left knee</option>
+<option>Right ankle</option><option>Left ankle</option>
+<option>Right foot</option><option>Left foot</option>
+<option>Other</option>
+</select>
+<div id="jointCards"></div>
+
+<h3>Spine — select all affected regions</h3>
+<label>Multiple selection allowed</label>
+<select id="spineSelect" multiple>
+<option>Cervical</option><option>Thoracic</option><option>Lumbar</option>
+<option>Lumbosacral</option><option>Other</option>
+</select>
+<div id="spineCards"></div>
+
+<h3>Muscle Strength</h3>
+<div class="grid">
+<div><label>Right</label><input id="strengthRight"></div>
+<div><label>Left</label><input id="strengthLeft"></div>
+</div>
+
+<h3>Senior Functional Assessment</h3>
+<div class="grid">
+<div><label>Sit-to-stand</label><input id="sitStand"></div>
+<div><label>Walking</label><input id="walking"></div>
+<div><label>Walking aid</label><input id="walkingAid"></div>
+<div><label>Stair climbing</label><input id="stairClimbing"></div>
+<div><label>Balance</label><input id="balance"></div>
+<div><label>Assistance required</label><input id="assistance"></div>
+</div>
+
+<h3>Pain Map — multiple sites</h3>
+<div id="painCards"></div>
+<button type="button" class="secondary" onclick="addPain()">+ Add pain site</button>
+
+<div class="print-buttons" style="margin-top:20px">
+<button type="button" onclick="generateNote()">Generate Clinical Note</button>
+</div>
+</div>
+
+<section id="clinicalNote"></section>
+</main>
+
+<script>
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+function val(id){return document.getElementById(id).value.trim()||'Not recorded'}
+function selected(id){return [...document.getElementById(id).selectedOptions].map(o=>o.value)}
+function card(title, fields){
+ const d=document.createElement('div'); d.className='card'; d.dataset.title=title;
+ d.innerHTML='<button type="button" class="remove" onclick="this.parentElement.remove()">Remove</button><h4>'+esc(title)+'</h4>';
+ fields.forEach(([lab,key,type])=>{
+   const id=key+'_'+Math.random().toString(36).slice(2);
+   let el=type==='textarea'?`<textarea id="${id}" rows="2"></textarea>`:`<input id="${id}">`;
+   d.innerHTML+=`<label>${esc(lab)}</label>${el}`;
+   d.lastElementChild.previousElementSibling.dataset.key=key;
+ });
+ return d;
+}
+function getCards(container){
+ return [...document.querySelectorAll('#'+container+' .card')].map(c=>{
+   const obj={title:c.dataset.title};
+   c.querySelectorAll('label').forEach(l=>{
+     const key=l.dataset.key; if(key) obj[key]=c.querySelector('#'+l.nextElementSibling.id).value.trim()||'Not recorded';
+   }); return obj;
+ });
+}
+function sync(container, names, maker){
+ const root=document.getElementById(container);
+ const existing=[...root.children].map(x=>x.dataset.title);
+ names.forEach(n=>{if(!existing.includes(n)) root.appendChild(maker(n))});
+ [...root.children].forEach(c=>{if(!names.includes(c.dataset.title)) c.remove()});
+}
+document.getElementById('jointSelect').addEventListener('change',()=>sync('jointCards',selected('jointSelect'),n=>card(n,[
+ ['Inspection','inspection'],['Swelling','swelling'],['Warmth','warmth'],['Tenderness','tenderness'],
+ ['Deformity','deformity'],['Range of motion','rom'],['Crepitus','crepitus'],['Stability','stability'],
+ ['Other finding','other']
+])));
+document.getElementById('spineSelect').addEventListener('change',()=>sync('spineCards',selected('spineSelect'),n=>card(n,[
+ ['Tenderness','tenderness'],['Range of movement','rom'],['Deformity','deformity'],
+ ['Muscle spasm','spasm'],['Associated neurological findings','neuro'],['Other finding','other']
+])));
+function addPain(){
+ const n=document.querySelectorAll('#painCards .card').length+1;
+ const d=card('Pain site '+n,[['Location','location'],['Laterality','laterality'],['Radiation','radiation'],['Joint / muscle / spine region','region']]);
+ document.getElementById('painCards').appendChild(d);
+}
+addPain();
+
+function row(label,value){return `<div><b>${esc(label)}:</b> ${esc(value)}</div>`}
+function table(title,items){
+ if(!items.length)return '';
+ return `<h3>${esc(title)}</h3>${items.map(x=>'<div>'+row(x.title,x.text||'')+'</div>').join('')}`;
+}
+function generateNote(){
+ const joints=getCards('jointCards'), spines=getCards('spineCards'), pains=getCards('painCards');
+ let h=`<div class="note"><h1>JeevSetu — MUSCULOSKELETAL CLINICAL NOTE</h1>`;
+ h+=`<h2>18.7 — Musculoskeletal Symptoms</h2>`;
+ h+=row('Joint symptoms',val('jointSymptoms'))+row('Back / neck pain or stiffness',val('backNeck'))+row('Functional strength',val('functionalStrength'))+row('Mobility',val('mobility'));
+ h+=`<h3>Functional / Senior Pathway</h3>`+row('Need for hand support',val('handSupport'))+row('Difficulty climbing stairs',val('climb'))+row('Difficulty descending stairs',val('descend'))+row('Leg weakness',val('legWeakness'))+row('Reduced walking speed',val('walkingSpeed'));
+ h+=`<h3>Bone Health — Where Appropriate</h3>`+row('Previous osteoporosis',val('osteoporosis'))+row('Fragility fracture',val('fracture'))+row('Long-term steroid exposure',val('steroids'));
+ h+=`<h2>19.10 — Musculoskeletal Examination</h2><h3>General</h3>`;
+ ['Posture','Gait','Deformity','Muscle wasting','Joint swelling','Asymmetry'].forEach((x,i)=>h+=row(x,val(['posture','gait','generalDeformity','wasting','generalSwelling','asymmetry'][i])));
+ if(joints.length){h+='<h3>Joints</h3>';joints.forEach(j=>{h+=`<div class="card"><h4>${esc(j.title)}</h4>`;[['Inspection','inspection'],['Swelling','swelling'],['Warmth','warmth'],['Tenderness','tenderness'],['Deformity','deformity'],['Range of motion','rom'],['Crepitus','crepitus'],['Stability','stability'],['Other finding','other']].forEach(([a,b])=>h+=row(a,j[b]));h+='</div>'})}
+ if(spines.length){h+='<h3>Spine</h3>';spines.forEach(s=>{h+=`<div class="card"><h4>${esc(s.title)}</h4>`;[['Tenderness','tenderness'],['Range of movement','rom'],['Deformity','deformity'],['Muscle spasm','spasm'],['Associated neurological findings','neuro'],['Other finding','other']].forEach(([a,b])=>h+=row(a,s[b]));h+='</div>'})}
+ h+='<h3>Muscle Strength</h3>'+row('Right',val('strengthRight'))+row('Left',val('strengthLeft'));
+ h+='<h3>Senior Functional Assessment</h3>'+row('Sit-to-stand',val('sitStand'))+row('Walking',val('walking'))+row('Walking aid',val('walkingAid'))+row('Stair climbing',val('stairClimbing'))+row('Balance',val('balance'))+row('Assistance required',val('assistance'));
+ if(pains.length){h+='<h3>Pain Distribution</h3>';pains.forEach(p=>{h+=`<div class="card">${row('Location',p.location)}${row('Laterality',p.laterality)}${row('Radiation',p.radiation)}${row('Joint / muscle / spine region',p.region)}</div>`})}
+ h+=`<p><b>Red flags:</b> None identified.</p><p class="small">Fall information is taken from Section 9; it is not duplicated here.</p></div>`;
+ const n=document.getElementById('clinicalNote');n.innerHTML=h;n.style.display='block';
+ document.querySelector('.form-area').style.display='none';
+ window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

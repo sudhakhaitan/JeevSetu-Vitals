@@ -1,0 +1,1 @@
+Endocrine/Metabolic + 19.11 Dedicated Diabetic Foot module. Bilateral inspection/deformity, neurological, vascular, multiple ulcers, footwear/self-care and bilateral digital foot-map findings. Clinical note printout excludes the form.

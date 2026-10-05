@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JeevSetu — Endocrine / Metabolic</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f5f5f5;color:#222}
+header{background:#fff;padding:16px;border-bottom:1px solid #ccc;position:sticky;top:0;z-index:5}
+h1{font-size:20px;margin:0 0 5px}.sub{font-size:13px;color:#555}
+main{max-width:900px;margin:18px auto;padding:0 12px}
+.card{background:#fff;border:1px solid #ccc;border-radius:8px;padding:16px;margin-bottom:16px}
+h2{font-size:16px;margin:0 0 12px;border-bottom:1px solid #ddd;padding-bottom:7px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:13px;font-weight:bold;display:block}
+select,input{width:100%;box-sizing:border-box;padding:9px;margin-top:5px;border:1px solid #aaa;border-radius:5px;background:#fff}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+button{padding:10px 15px;border:1px solid #555;border-radius:6px;background:#fff;font-weight:bold}
+button.primary{background:#222;color:#fff}
+.note{background:#fff;border:1px solid #aaa;padding:22px;max-width:800px;margin:0 auto}
+.note h2{border:0;text-align:center;font-size:18px}
+.note table{width:100%;border-collapse:collapse;margin:8px 0 16px}
+.note td{border-bottom:1px solid #ddd;padding:6px;font-size:13px;vertical-align:top}
+.note td:first-child{font-weight:bold;width:55%}
+#noteArea{display:none}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+@media print{
+ body{background:#fff}.no-print{display:none!important}
+ #formArea{display:none!important} #noteArea{display:block!important}
+ .note{border:0;padding:0;max-width:none}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>JeevSetu — Endocrine / Metabolic Clinical Module</h1>
+<div class="sub">Endocrine and thyroid assessment only. No diabetic-foot data is included.</div>
+</header>
+
+<main>
+<section id="formArea">
+<div class="card">
+<h2>Universal Screening</h2>
+<div class="grid">
+<label>Excessive thirst<select id="thirst"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Urination<select id="urination"><option value="">Select</option><option>Reuse Section 18.5</option><option>Not available</option></select></label>
+<label>Heat/cold intolerance<select id="heatcold"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Excessive sweating<select id="sweating"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Weight change<select id="weight"><option value="">Select</option><option>Reuse existing information</option><option>Not available</option></select></label>
+<label>Palpitations<select id="palpitations"><option value="">Select</option><option>Reuse cardiovascular information</option><option>Not available</option></select></label>
+<label>Tremor<select id="tremor"><option value="">Select</option><option>Reuse neurological information</option><option>Not available</option></select></label>
+<label>Bowel information<select id="bowel"><option value="">Select</option><option>Reuse existing information</option><option>Not available</option></select></label>
+</div>
+</div>
+
+<div class="card">
+<h2>Thyroid — Hypothyroidism Pattern</h2>
+<div class="grid">
+<label>Pattern<select id="hypo_pattern"><option value="">Select</option><option>Positive</option><option>Negative</option></select></label>
+<label>Duration<input id="hypo_duration" placeholder="Enter duration"></label>
+<label>Weight gain/change<select id="hypo_weight"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Cold intolerance<select id="hypo_cold"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Constipation<select id="hypo_const"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Dry skin<select id="hypo_dry"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Hair loss<select id="hypo_hair"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Facial puffiness<select id="hypo_face"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Voice change<select id="hypo_voice"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Excessive sleepiness<select id="hypo_sleep"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Concentration/memory slowing<select id="hypo_memory"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Muscle aches/weakness<select id="hypo_muscle"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Menstrual changes<select id="hypo_menses"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+</div>
+</div>
+
+<div class="card">
+<h2>Thyroid — Hyperthyroid Pattern</h2>
+<div class="grid">
+<label>Pattern<select id="hyper_pattern"><option value="">Select</option><option>Positive</option><option>Negative</option></select></label>
+<label>Heat intolerance<select id="hyper_heat"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Excessive sweating<select id="hyper_sweat"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+<label>Unintentional weight loss<select id="hyper_weight"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+</div>
+</div>
+
+<div class="card actions">
+<button class="primary" onclick="generate()">Generate Clinical Note</button>
+<button onclick="window.print()">Print Clinical Note</button>
+<button onclick="resetAll()">Clear Form</button>
+</div>
+</section>
+
+<section id="noteArea">
+<div class="note" id="clinicalNote"></div>
+<div class="no-print actions" style="max-width:800px;margin:12px auto">
+<button onclick="window.print()">Print Clinical Note</button>
+<button onclick="document.getElementById('formArea').style.display='block';document.getElementById('noteArea').style.display='none'">Back to Form</button>
+</div>
+</section>
+</main>
+
+<script>
+const ids = [
+"thirst","urination","heatcold","sweating","weight","palpitations","tremor","bowel",
+"hypo_pattern","hypo_duration","hypo_weight","hypo_cold","hypo_const","hypo_dry","hypo_hair",
+"hypo_face","hypo_voice","hypo_sleep","hypo_memory","hypo_muscle","hypo_menses",
+"hyper_pattern","hyper_heat","hyper_sweat","hyper_weight"
+];
+function v(id){let e=document.getElementById(id);return e.value||"—"}
+function row(a,b){return `<tr><td>${a}</td><td>${b}</td></tr>`}
+function generate(){
+let html=`<h2>JEEVSETU — ENDOCRINE / METABOLIC CLINICAL NOTE</h2>`;
+html+=`<h3>UNIVERSAL SCREENING</h3><table>`;
+html+=row("Excessive thirst",v("thirst")); html+=row("Urination",v("urination"));
+html+=row("Heat/cold intolerance",v("heatcold")); html+=row("Excessive sweating",v("sweating"));
+html+=row("Weight change",v("weight")); html+=row("Palpitations",v("palpitations"));
+html+=row("Tremor",v("tremor")); html+=row("Bowel information",v("bowel"))+`</table>`;
+html+=`<h3>THYROID — HYPOTHYROIDISM PATTERN</h3><table>`;
+html+=row("Pattern",v("hypo_pattern")); html+=row("Duration",v("hypo_duration"));
+html+=row("Weight gain/change",v("hypo_weight")); html+=row("Cold intolerance",v("hypo_cold"));
+html+=row("Constipation",v("hypo_const")); html+=row("Dry skin",v("hypo_dry"));
+html+=row("Hair loss",v("hypo_hair")); html+=row("Facial puffiness",v("hypo_face"));
+html+=row("Voice change",v("hypo_voice")); html+=row("Excessive sleepiness",v("hypo_sleep"));
+html+=row("Concentration/memory slowing",v("hypo_memory")); html+=row("Muscle aches/weakness",v("hypo_muscle"));
+html+=row("Menstrual changes",v("hypo_menses"))+`</table>`;
+html+=`<h3>THYROID — HYPERTHYROID PATTERN</h3><table>`;
+html+=row("Pattern",v("hyper_pattern")); html+=row("Heat intolerance",v("hyper_heat"));
+html+=row("Excessive sweating",v("hyper_sweat")); html+=row("Unintentional weight loss",v("hyper_weight"))+`</table>`;
+html+=`<p><b>Clinical interpretation:</b> Symptoms create clinical suspicion and do not by themselves establish a diagnosis.</p>`;
+document.getElementById("clinicalNote").innerHTML=html;
+document.getElementById("formArea").style.display="none";
+document.getElementById("noteArea").style.display="block";
+}
+function resetAll(){ids.forEach(id=>{let e=document.getElementById(id);e.value=""});}
+</script>
+</body>
+</html>

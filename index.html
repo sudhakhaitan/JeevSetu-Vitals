@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JeevSetu Endocrine & Diabetic Foot</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f3f6f8;margin:0;color:#18222b}
+.wrap{max-width:1000px;margin:auto;padding:16px}.card{background:#fff;padding:18px;margin:12px 0;border-radius:12px;box-shadow:0 1px 5px #bbb}
+h1,h2,h3{margin-top:6px}label{display:block;font-weight:600;margin:9px 0 4px}
+input,select{width:100%;box-sizing:border-box;padding:9px;border:1px solid #aaa;border-radius:7px}
+button{padding:11px 16px;border:0;border-radius:8px;margin:6px 4px 6px 0;font-weight:bold}
+.primary{background:#1769aa;color:#fff}.secondary{background:#e7edf2}
+.hidden{display:none}.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.note{background:#fff;padding:24px;border:1px solid #ccc;line-height:1.5;white-space:pre-wrap}
+.output{display:none}
+.foot-drawings{margin-top:10px;page-break-inside:avoid}.draw-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.footbox{border:1px solid #aaa;padding:4px;text-align:center}.footbox svg{width:100%;height:145px}.footmap-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.map-card{border:1px solid #aaa;border-radius:8px;padding:6px;text-align:center;background:#fafafa}.map-card svg{width:100%;height:190px;touch-action:none}.map-card svg.clickable{cursor:crosshair}.map-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.map-tools select{width:auto;min-width:180px}.marker{pointer-events:none}.map-help{font-size:13px;color:#4b5563;margin:4px 0 8px}
+.note.compact{font-size:10.5px;line-height:1.18}
+@media(max-width:700px){.two,.draw-grid{grid-template-columns:1fr}}
+@media print{
+ body{background:#fff}.form-area,.controls,.top{display:none!important}
+ .output{display:block!important}.note{border:0;padding:0}
+ .print-button{display:none!important}.foot-drawings{page-break-before:avoid}.footOut-page{page-break-inside:avoid}@page{size:A4;margin:7mm}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><h1>JeevSetu — Endocrine / Metabolic & Diabetic Foot</h1></div>
+
+<div class="card form-area">
+<h2>Endocrine / Metabolic — Universal Screening</h2>
+<label>Excessive thirst</label><select id="thirst"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Urination</label><select id="urination"><option>Reuse Section 18.5</option><option>Abnormal</option></select>
+<label>Heat/cold intolerance</label><select id="heatcold"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Excessive sweating</label><select id="sweating"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Weight change</label><select id="weight"><option>Reuse existing information</option><option>Abnormal / reported</option></select>
+<label>Palpitations</label><select id="palp"><option>Reuse cardiovascular information</option><option>Present</option><option>Absent</option></select>
+<label>Tremor</label><select id="tremor"><option>Reuse neurological information</option><option>Present</option><option>Absent</option></select>
+<label>Bowel information</label><select id="bowel"><option>Reuse existing information</option><option>Abnormal / reported</option></select>
+
+<h3>Thyroid — Hypothyroidism Pattern</h3>
+<label>Overall pattern</label><select id="hypopattern"><option>Not recorded</option><option>Positive</option><option>Negative</option></select>
+<label>Duration</label><input id="duration">
+<label>Weight gain/change</label><select id="hweight"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Cold intolerance</label><select id="hcold"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Constipation</label><select id="constip"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Dry skin</label><select id="dryskin"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Hair loss</label><select id="hair"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Facial puffiness</label><select id="puffy"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Voice change</label><select id="voice"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Excessive sleepiness</label><select id="sleepy"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Concentration/memory slowing</label><select id="memory"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Muscle aches/weakness</label><select id="muscle"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Menstrual changes</label><select id="menstrual"><option>Not applicable</option><option>Not recorded</option><option>Yes</option><option>No</option></select>
+
+<h3>Thyroid — Hyperthyroid Pattern</h3>
+<label>Overall pattern</label><select id="hyperpattern"><option>Not recorded</option><option>Positive</option><option>Negative</option></select>
+<label>Heat intolerance</label><select id="hhot"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Excessive sweating</label><select id="hsweat"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+<label>Unintentional weight loss</label><select id="hloss"><option>Not recorded</option><option>Yes</option><option>No</option></select>
+
+<button class="primary" onclick="showEndocrine()">Generate Endocrine Clinical Note</button>
+</div>
+
+<div class="card form-area" id="sectionChooser">
+<h3>Next Section</h3>
+<p>Complete the Endocrine / Metabolic and Thyroid assessment first. The Diabetic Foot assessment is a separate section and is opened only when required.</p>
+<button class="primary" type="button" onclick="openFootSection()">Open Diabetic Foot Assessment</button>
+</div>
+
+<div class="card form-area" id="footCard" style="display:none">
+<h2>Diabetic Foot Assessment</h2>
+<label>Is the patient diabetic?</label>
+<select id="diabetes" onchange="toggleFoot()"><option value="No">No</option><option value="Yes">Yes</option></select>
+<div id="footForm" class="hidden">
+<label>High-risk indications</label>
+<select id="risk" multiple size="7">
+<option>Previous diabetic foot ulcer</option><option>Previous amputation</option><option>Known neuropathy</option>
+<option>Known PAD</option><option>Foot ulcer/wound</option><option>Loss of sensation</option><option>Foot deformity</option>
+<option>Abnormal pulses/ABI</option><option>Other high-risk indication</option></select>
+
+<h3>Inspection</h3>
+<div class="two">
+<div><b>Right foot</b><select id="rinsp" multiple size="7">
+<option>Ulcer</option><option>Callus</option><option>Fissure</option><option>Blister</option><option>Skin breakdown</option><option>Infection</option><option>Fungal changes</option><option>Colour change</option><option>Gangrene</option><option>Non-healing wound</option><option>Previous amputation</option></select></div>
+<div><b>Left foot</b><select id="linsp" multiple size="7">
+<option>Ulcer</option><option>Callus</option><option>Fissure</option><option>Blister</option><option>Skin breakdown</option><option>Infection</option><option>Fungal changes</option><option>Colour change</option><option>Gangrene</option><option>Non-healing wound</option><option>Previous amputation</option></select></div>
+</div>
+
+<h3>Deformity</h3>
+<div class="two">
+<div><b>Right foot</b><select id="rdef" multiple size="5"><option>Hammer/claw toes</option><option>Prominent bony areas</option><option>Arch abnormality</option><option>Charcot-type changes</option><option>Other deformity</option></select></div>
+<div><b>Left foot</b><select id="ldef" multiple size="5"><option>Hammer/claw toes</option><option>Prominent bony areas</option><option>Arch abnormality</option><option>Charcot-type changes</option><option>Other deformity</option></select></div>
+</div>
+
+<h3>Neurological assessment</h3>
+<div class="two">
+<div><b>Right</b><label>Protective sensation</label><select id="rsens"><option>Normal</option><option>Reduced</option><option>Absent</option></select><label>Monofilament</label><select id="rmono"><option>Normal</option><option>Abnormal</option></select><label>Vibration</label><select id="rvib"><option>Normal</option><option>Reduced</option><option>Absent</option></select><label>Other</label><input id="rother"></div>
+<div><b>Left</b><label>Protective sensation</label><select id="lsens"><option>Normal</option><option>Reduced</option><option>Absent</option></select><label>Monofilament</label><select id="lmono"><option>Normal</option><option>Abnormal</option></select><label>Vibration</label><select id="lvib"><option>Normal</option><option>Reduced</option><option>Absent</option></select><label>Other</label><input id="lother"></div>
+</div>
+
+<h3>Vascular assessment</h3>
+<div class="two">
+<div><b>Right</b><label>ABI</label><input id="rabi"><label>Dorsalis pedis</label><select id="rdp"><option>Present</option><option>Reduced</option><option>Absent</option></select><label>Posterior tibial</label><select id="rtp"><option>Present</option><option>Reduced</option><option>Absent</option></select><label>Temperature</label><input id="rtemp"><label>Colour</label><input id="rcolour"><label>Other</label><input id="rovas"></div>
+<div><b>Left</b><label>ABI</label><input id="labi"><label>Dorsalis pedis</label><select id="ldp"><option>Present</option><option>Reduced</option><option>Absent</option></select><label>Posterior tibial</label><select id="ltp"><option>Present</option><option>Reduced</option><option>Absent</option></select><label>Temperature</label><input id="ltemp"><label>Colour</label><input id="lcolour"><label>Other</label><input id="lovas"></div>
+</div>
+
+<h3>Ulcer / wound</h3><div id="ulcers"></div><button class="secondary" onclick="addUlcer()">+ Add ulcer / wound</button>
+
+<h3>Footwear / self-care</h3>
+<div class="two">
+<div><label>Appropriate footwear</label><select id="footwear"><option>Not recorded</option><option>Yes</option><option>No</option></select><label>Barefoot walking</label><select id="barefoot"><option>Not recorded</option><option>Yes</option><option>No</option></select><label>Pressure areas</label><select id="pressure"><option>Not recorded</option><option>Present</option><option>Absent</option></select></div>
+<div><label>Foot inspection ability</label><select id="inspectability"><option>Not recorded</option><option>Adequate</option><option>Limited</option><option>Unable</option></select><label>Foot hygiene</label><select id="hygiene"><option>Not recorded</option><option>Adequate</option><option>Inadequate</option></select><label>Assistance required</label><select id="assist"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+</div>
+
+<h3>Foot Examination Map — Examiner Input</h3>
+<div class="map-help">Select a finding, then tap/click the relevant area on any foot drawing. Tap a marked point again to remove it. These markings are saved and reproduced in the diabetic-foot clinical note.</div>
+<div class="map-tools"><label style="margin:0">Finding to mark</label><select id="mapFinding"><option>Ulcer / wound</option><option>Callus</option><option>Fissure</option><option>Blister</option><option>Skin breakdown</option><option>Infection</option><option>Fungal change</option><option>Colour change</option><option>Gangrene</option><option>Deformity</option><option>Pressure area</option><option>Other abnormality</option></select><button type="button" class="secondary" onclick="clearFootMarks()">Clear all marks</button></div>
+<div class="footmap-form">
+<div class="map-card"><b>RIGHT — DORSAL</b><svg class="clickable" data-foot="Right dorsal" viewBox="0 0 180 300"></svg></div>
+<div class="map-card"><b>RIGHT — PLANTAR</b><svg class="clickable" data-foot="Right plantar" viewBox="0 0 180 300"></svg></div>
+<div class="map-card"><b>LEFT — DORSAL</b><svg class="clickable" data-foot="Left dorsal" viewBox="0 0 180 300"></svg></div>
+<div class="map-card"><b>LEFT — PLANTAR</b><svg class="clickable" data-foot="Left plantar" viewBox="0 0 180 300"></svg></div>
+</div>
+<button class="primary" onclick="showFoot()">Generate Diabetic Foot Clinical Note</button>
+</div>
+</div>
+
+<div id="endoOut" class="output">
+<div class="note" id="endoNote"></div>
+<div class="controls"><button class="primary print-button" onclick="printSection('endoOut')">Print Endocrine Clinical Note</button><button class="secondary print-button" onclick="backToForm()">Back to Form</button></div>
+</div>
+
+<div id="footOut" class="output">
+<div class="note compact" id="footNote"></div>
+<div class="foot-drawings">
+<h2 style="font-size:15px;margin:5px 0">FOOT MAP — MARKED FINDINGS</h2>
+<div class="draw-grid" id="footOutputMaps"></div>
+</div></div>
+<div class="controls"><button class="primary print-button" onclick="printSection('footOut')">Print Diabetic Foot Clinical Note</button><button class="secondary print-button" onclick="backToForm()">Back to Form</button></div>
+</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+function val(id){return $(id).value}
+function vals(id){return [...$(id).selectedOptions].map(o=>o.value)}
+function toggleFoot(){$('footForm').classList.toggle('hidden',val('diabetes')!=='Yes')}
+function openFootSection(){ $('sectionChooser').style.display='none'; $('footCard').style.display='block'; window.scrollTo(0,0); }
+function line(a,b){return a+': '+val(b)+'\n'}
+function showEndocrine(){
+ let s='JEEVSETU — ENDOCRINE / METABOLIC CLINICAL NOTE\\n\\n';
+ s+='UNIVERSAL SCREENING\\n'+line('Excessive thirst','thirst')+line('Urination','urination')+line('Heat/cold intolerance','heatcold')+line('Excessive sweating','sweating')+line('Weight change','weight')+line('Palpitations','palp')+line('Tremor','tremor')+line('Bowel information','bowel')+'\\n';
+ s+='THYROID — HYPOTHYROIDISM PATTERN\\n'+line('Pattern','hypopattern')+line('Duration','duration')+line('Weight gain/change','hweight')+line('Cold intolerance','hcold')+line('Constipation','constip')+line('Dry skin','dryskin')+line('Hair loss','hair')+line('Facial puffiness','puffy')+line('Voice change','voice')+line('Excessive sleepiness','sleepy')+line('Concentration/memory slowing','memory')+line('Muscle aches/weakness','muscle')+line('Menstrual changes','menstrual')+'\\n';
+ s+='THYROID — HYPERTHYROID PATTERN\\n'+line('Pattern','hyperpattern')+line('Heat intolerance','hhot')+line('Excessive sweating','hsweat')+line('Unintentional weight loss','hloss')+'\\n';
+ s+='Clinical interpretation: Symptoms create clinical suspicion and do not by themselves establish a diagnosis.';
+ $('endoNote').textContent=s;$('endoOut').style.display='block';document.querySelectorAll('.form-area').forEach(x=>x.style.display='none');window.scrollTo(0,0)
+}
+function addUlcer(){
+ let n=document.querySelectorAll('.ulcer').length+1,d=document.createElement('div');d.className='card ulcer';
+ d.innerHTML='<h4>Ulcer / Wound '+n+'</h4><label>Foot</label><select class="ufoot"><option>Right</option><option>Left</option></select><label>Site</label><input class="usite"><label>Length</label><input class="ulength"><label>Width</label><input class="uwidth"><label>Depth</label><input class="udepth"><label>Wound bed</label><input class="ubed"><label>Edge</label><input class="uedge"><label>Discharge</label><input class="udis"><label>Odour</label><input class="uodour"><label>Surrounding skin</label><input class="uskin"><label>Infection</label><select class="uinf"><option>Not recorded</option><option>Present</option><option>Absent</option></select><label>Exposed structures</label><input class="uexposed">';
+ $('ulcers').appendChild(d)
+}
+const footMarks=[];
+const dorsalPath='M90 20 C65 20 56 45 58 78 C59 105 50 135 45 170 C39 210 43 255 59 278 C69 292 111 292 121 278 C137 255 141 210 135 170 C130 135 121 105 122 78 C124 45 115 20 90 20Z';
+const plantarPath='M90 20 C65 20 52 43 55 78 C58 111 48 140 43 174 C37 215 42 258 59 279 C70 293 110 293 121 279 C138 258 143 215 137 174 C132 140 122 111 125 78 C128 43 115 20 90 20Z';
+function esc(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function baseFootSvg(foot,withMarkers=true){
+ const dorsal=foot.toLowerCase().includes('dorsal'); const path=dorsal?dorsalPath:plantarPath;
+ let extra=dorsal?'': '<ellipse cx="90" cy="95" rx="25" ry="34" fill="none" stroke="#888"/><ellipse cx="90" cy="190" rx="34" ry="55" fill="none" stroke="#888"/>';
+ let html='<path d="'+path+'" fill="none" stroke="#222" stroke-width="3"/>'+extra;
+ if(dorsal) html+='<line x1="90" y1="25" x2="90" y2="280" stroke="#888" stroke-dasharray="4 4"/>';
+ if(withMarkers) footMarks.filter(m=>m.foot===foot).forEach((m,i)=>{const x=m.x*1.8,y=m.y*3;html+='<g class="marker"><circle cx="'+x+'" cy="'+y+'" r="7" fill="#c62828" stroke="#fff" stroke-width="2"/><text x="'+x+'" y="'+(y+3)+'" text-anchor="middle" font-size="8" fill="#fff">'+(i+1)+'</text></g>';});
+ return html;
+}
+function initFootMaps(){document.querySelectorAll('.map-card svg').forEach(svg=>{svg.innerHTML=baseFootSvg(svg.dataset.foot,false);svg.onclick=e=>{const r=svg.getBoundingClientRect(),x=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100)),y=Math.max(0,Math.min(100,(e.clientY-r.top)/r.height*100));const foot=svg.dataset.foot;const finding=val('mapFinding');const near=footMarks.findIndex(m=>m.foot===foot&&Math.hypot(m.x-x,m.y-y)<5);if(near>=0)footMarks.splice(near,1);else footMarks.push({foot,finding,x,y});renderFormMaps();};});renderFormMaps()}
+function renderFormMaps(){document.querySelectorAll('.map-card svg').forEach(svg=>{svg.innerHTML=baseFootSvg(svg.dataset.foot,false)+footMarks.filter(m=>m.foot===svg.dataset.foot).map((m,i)=>{const x=m.x*1.8,y=m.y*3;return '<g class="marker"><circle cx="'+x+'" cy="'+y+'" r="7" fill="#c62828" stroke="#fff" stroke-width="2"/><text x="'+x+'" y="'+(y+3)+'" text-anchor="middle" font-size="8" fill="#fff">'+(i+1)+'</text></g>';}).join('');});}
+function renderOutputMaps(){const c=$('footOutputMaps');c.innerHTML='';['Right dorsal','Right plantar','Left dorsal','Left plantar'].forEach(foot=>{const box=document.createElement('div');box.className='footbox';box.innerHTML='<b>'+foot.toUpperCase()+'</b><svg viewBox="0 0 180 300">'+baseFootSvg(foot,true)+'</svg>';c.appendChild(box);});}
+function clearFootMarks(){footMarks.length=0;renderFormMaps()}
+initFootMaps();
+
+function showFoot(){
+ if(val('diabetes')!=='Yes'){alert('Diabetic Foot Clinical Note is only generated for a diabetic patient.');return}
+ let s='JEEVSETU — DIABETIC FOOT CLINICAL NOTE\\n\\n';
+ s+='Indication: Diabetic patient\\nHigh-risk indications: '+vals('risk').join(', ')+'\\n\\n';
+ s+='INSPECTION\\nRight: '+vals('rinsp').join(', ')+'\\nLeft: '+vals('linsp').join(', ')+'\\n\\n';
+ s+='DEFORMITY\\nRight: '+vals('rdef').join(', ')+'\\nLeft: '+vals('ldef').join(', ')+'\\n\\n';
+ s+='NEUROLOGICAL ASSESSMENT\\nRight: Protective sensation '+val('rsens')+', monofilament '+val('rmono')+', vibration '+val('rvib')+(val('rother')?' ; '+val('rother'):'')+'\\nLeft: Protective sensation '+val('lsens')+', monofilament '+val('lmono')+', vibration '+val('lvib')+(val('lother')?' ; '+val('lother'):'')+'\\n\\n';
+ s+='VASCULAR ASSESSMENT\\nRight: ABI '+val('rabi')+', DP '+val('rdp')+', PT '+val('rtp')+', temperature '+val('rtemp')+', colour '+val('rcolour')+(val('rovas')?' ; '+val('rovas'):'')+'\\nLeft: ABI '+val('labi')+', DP '+val('ldp')+', PT '+val('ltp')+', temperature '+val('ltemp')+', colour '+val('lcolour')+(val('lovas')?' ; '+val('lovas'):'')+'\\n\\n';
+ s+='ULCER / WOUND\\n';document.querySelectorAll('.ulcer').forEach((d,i)=>{let q=c=>d.querySelector(c)?.value||'';s+=(i+1)+'. '+q('.ufoot')+' foot; site '+q('.usite')+'; size '+q('.ulength')+' × '+q('.uwidth')+'; depth '+q('.udepth')+'; wound bed '+q('.ubed')+'; edge '+q('.uedge')+'; discharge '+q('.udis')+'; odour '+q('.uodour')+'; surrounding skin '+q('.uskin')+'; infection '+q('.uinf')+'; exposed structures '+q('.uexposed')+'\\n'});
+ s+='\\nFOOTWEAR / SELF-CARE\\n'+line('Appropriate footwear','footwear')+line('Barefoot walking','barefoot')+line('Pressure areas','pressure')+line('Foot inspection ability','inspectability')+line('Foot hygiene','hygiene')+line('Assistance required','assist')+'\\n';
+ const marks=footMarks.map(m=>m.foot+' — '+m.finding+' at '+Math.round(m.x)+'%, '+Math.round(m.y)+'%').join('\\n'); s+='FOOT MAP — MARKED FINDINGS\\n'+(marks||'No mapped abnormality recorded.'); renderOutputMaps();
+ $('footNote').textContent=s;$('footOut').style.display='block';document.querySelectorAll('.form-area').forEach(x=>x.style.display='none');window.scrollTo(0,0)
+}
+function printSection(id){
+ const old=document.title;document.title=id==='footOut'?'JeevSetu Diabetic Foot Clinical Note':'JeevSetu Endocrine Clinical Note';window.print();document.title=old
+}
+function backToForm(){document.querySelectorAll('.form-area').forEach(x=>x.style.display='block');$('footCard').style.display='none';$('sectionChooser').style.display='block';$('endoOut').style.display='none';$('footOut').style.display='none';window.scrollTo(0,0)}
+</script>
+</body>
+</html>

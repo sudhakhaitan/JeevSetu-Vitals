@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JeevSetu — Neurological Module</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f7fa;margin:0;color:#222}
+.container{max-width:1050px;margin:auto;padding:18px}
+.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px #0001}
+h1,h2,h3{margin-top:0}.subtitle{color:#555}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+label{font-weight:600;display:block;margin-bottom:5px}
+input,select,textarea{width:100%;box-sizing:border-box;padding:9px;border:1px solid #bbb;border-radius:7px}
+textarea{min-height:70px}
+.checkgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
+.check{padding:9px;border:1px solid #ddd;border-radius:7px;background:#fafafa}
+.check input{width:auto;margin-right:7px}
+.hidden{display:none}
+.alert{padding:12px;border-radius:8px;background:#fff0f0;border:1px solid #d33;color:#9b0000;font-weight:700;margin-top:12px}
+button{padding:11px 16px;border:0;border-radius:8px;background:#2457a6;color:white;font-weight:700;margin:5px;cursor:pointer}
+button.secondary{background:#666}
+.note{line-height:1.45}
+.map{position:relative;width:360px;max-width:100%;margin:12px auto;background:#fafafa;border:1px solid #aaa;border-radius:10px;padding:10px;text-align:center}
+.map svg{width:100%;height:auto}
+.map input{width:auto}
+#clinicalNote{display:none}
+@media print{
+  body{background:white}
+  #app{display:none!important}
+  #clinicalNote{display:block!important}
+  #clinicalNote button{display:none!important}
+  .print-note{font-size:11pt}
+  .map{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div id="app" class="container">
+  <div class="card">
+    <h1>JeevSetu — Neurological Module</h1>
+    <div class="subtitle">18.6 Universal Neurological Screen → 19.9 Neurological Examination</div>
+  </div>
+
+  <div class="card">
+    <h2>Patient Details</h2>
+    <div class="grid">
+      <div><label>Patient Name</label><input id="name"></div>
+      <div><label>Patient ID</label><input id="pid"></div>
+      <div><label>Age</label><input id="age" type="number" min="0"></div>
+      <div><label>Sex</label><select id="sex"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>18.6 — Neurological Universal Preventive Screen</h2>
+    <p><b>Seniors — routine screen</b></p>
+    <div class="checkgrid">
+      <label class="check"><input type="checkbox" name="sym" value="Headache">Headache</label>
+      <label class="check"><input type="checkbox" name="sym" value="Dizziness / vertigo">Dizziness / vertigo</label>
+      <label class="check"><input type="checkbox" name="sym" value="Fainting / near-fainting">Fainting / near-fainting</label>
+      <label class="check"><input type="checkbox" name="sym" value="Weakness">Weakness</label>
+      <label class="check"><input type="checkbox" name="sym" value="Numbness / tingling">Numbness / tingling</label>
+      <label class="check"><input type="checkbox" name="sym" value="Speech / language difficulty">Speech / language difficulty</label>
+      <label class="check"><input type="checkbox" name="sym" value="Visual neurological symptoms">Visual neurological symptoms</label>
+      <label class="check"><input type="checkbox" name="sym" value="Balance / walking difficulty">Balance / walking difficulty</label>
+      <label class="check"><input type="checkbox" name="sym" value="Falls">Falls</label>
+      <label class="check"><input type="checkbox" name="sym" value="Memory / cognitive change">Memory / cognitive change</label>
+      <label class="check"><input type="checkbox" name="sym" value="Tremor / abnormal movement">Tremor / abnormal movement</label>
+      <label class="check"><input type="checkbox" name="sym" value="Seizure / loss of consciousness">Seizure / loss of consciousness</label>
+    </div>
+    <p><b>For younger patients:</b> if there is no neurological complaint, relevant neurological history, or neurological red flag, detailed neurological review may be skipped.</p>
+  </div>
+
+  <div class="card">
+    <h2>Neurological Red Flags — All Ages</h2>
+    <div class="checkgrid">
+      <label class="check"><input type="checkbox" name="red" value="Sudden weakness">Sudden weakness</label>
+      <label class="check"><input type="checkbox" name="red" value="Sudden facial asymmetry">Sudden facial asymmetry</label>
+      <label class="check"><input type="checkbox" name="red" value="Sudden speech difficulty">Sudden speech difficulty</label>
+      <label class="check"><input type="checkbox" name="red" value="Sudden vision loss">Sudden vision loss</label>
+      <label class="check"><input type="checkbox" name="red" value="New seizure">New seizure</label>
+      <label class="check"><input type="checkbox" name="red" value="Loss of consciousness">Loss of consciousness</label>
+      <label class="check"><input type="checkbox" name="red" value="Sudden severe headache">Sudden severe headache</label>
+      <label class="check"><input type="checkbox" name="red" value="Acute severe neurological deterioration">Acute severe neurological deterioration</label>
+    </div>
+    <div id="redAlert" class="alert hidden">IMMEDIATE CLINICIAN ALERT — neurological red flag detected.</div>
+  </div>
+
+  <div class="card" id="examCard">
+    <h2>19.9 — Neurological Examination</h2>
+    <p id="examMode"></p>
+
+    <h3>Mental Status</h3>
+    <div class="grid">
+      <div><label>Consciousness</label><select id="conscious"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select></div>
+      <div><label>Orientation</label><select id="orientation"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select></div>
+      <div><label>Attention</label><select id="attention"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select></div>
+      <div><label>Speech</label><select id="speech"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select></div>
+      <div><label>Behaviour</label><select id="behaviour"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select></div>
+      <div><label>Memory</label><select id="memory"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select></div>
+    </div>
+
+    <h3>Cranial Nerves</h3>
+    <select id="cranial"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select>
+    <textarea id="cranialOther" placeholder="Relevant cranial nerve findings / details"></textarea>
+
+    <h3>Motor</h3>
+    <div class="grid">
+      <div><label>Bulk</label><select id="bulk"><option>Normal</option><option>Reduced</option><option>Increased</option><option>Other</option><option>Not assessed</option></select></div>
+      <div><label>Tone</label><select id="tone"><option>Normal</option><option>Reduced</option><option>Increased</option><option>Other</option><option>Not assessed</option></select></div>
+      <div><label>Strength</label><select id="strength"><option>Normal</option><option>Reduced</option><option>Other</option><option>Not assessed</option></select></div>
+    </div>
+    <textarea id="motorOther" placeholder="Strength grading / distribution / other motor findings"></textarea>
+
+    <h3>Reflexes</h3>
+    <div class="grid">
+      <div><label>Upper limbs</label><select id="refUpper"><option>Normal</option><option>Reduced</option><option>Absent</option><option>Brisk</option><option>Other</option><option>Not assessed</option></select></div>
+      <div><label>Lower limbs</label><select id="refLower"><option>Normal</option><option>Reduced</option><option>Absent</option><option>Brisk</option><option>Other</option><option>Not assessed</option></select></div>
+    </div>
+
+    <h3>Sensory</h3>
+    <div class="checkgrid">
+      <label class="check"><input type="checkbox" name="sens" value="Light touch">Light touch</label>
+      <label class="check"><input type="checkbox" name="sens" value="Pinprick">Pinprick</label>
+      <label class="check"><input type="checkbox" name="sens" value="Vibration">Vibration</label>
+      <label class="check"><input type="checkbox" name="sens" value="Proprioception">Proprioception</label>
+      <label class="check"><input type="checkbox" name="sens" value="Other">Other</label>
+    </div>
+    <select id="sensFinding"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select>
+    <textarea id="sensOther" placeholder="Sensory findings / distribution"></textarea>
+
+    <h3>Coordination</h3>
+    <div class="checkgrid">
+      <label class="check"><input type="checkbox" name="coord" value="Finger-nose">Finger-nose</label>
+      <label class="check"><input type="checkbox" name="coord" value="Heel-shin">Heel-shin</label>
+      <label class="check"><input type="checkbox" name="coord" value="Rapid alternating movements">Rapid alternating movements</label>
+      <label class="check"><input type="checkbox" name="coord" value="Other">Other</label>
+    </div>
+    <select id="coordFinding"><option>Normal</option><option>Abnormal</option><option>Not assessed</option></select>
+    <textarea id="coordOther" placeholder="Coordination findings"></textarea>
+
+    <h3>Gait / Balance</h3>
+    <select id="gait"><option>Stable</option><option>Slow</option><option>Unsteady</option><option>Broad-based</option><option>Requires support</option><option>Other</option><option>Not assessed</option></select>
+    <textarea id="gaitOther" placeholder="Gait / balance details"></textarea>
+
+    <h3>Tremor / Movement</h3>
+    <div class="grid">
+      <div><label>Type</label><select id="tremorType"><option>None detected</option><option>Resting</option><option>Postural</option><option>Action</option><option>Other</option><option>Not assessed</option></select></div>
+      <div><label>Symmetry</label><select id="tremorSym"><option>Not applicable</option><option>Symmetrical</option><option>Asymmetrical</option><option>Other</option><option>Not assessed</option></select></div>
+      <div><label>Distribution</label><input id="tremorDist"></div>
+    </div>
+
+    <h3>Digital Neurological Map</h3>
+    <p>Mark relevant focal findings.</p>
+    <div class="checkgrid">
+      <label class="check"><input type="checkbox" name="map" value="Weakness">Weakness</label>
+      <label class="check"><input type="checkbox" name="map" value="Sensory loss">Sensory loss</label>
+      <label class="check"><input type="checkbox" name="map" value="Tremor">Tremor</label>
+      <label class="check"><input type="checkbox" name="map" value="Pain distribution">Pain distribution</label>
+      <label class="check"><input type="checkbox" name="map" value="Other focal finding">Other focal finding</label>
+    </div>
+    <textarea id="mapOther" placeholder="Describe / localize other focal finding"></textarea>
+
+    <div>
+      <button onclick="generateNote()">Generate Clinical Note</button>
+      <button class="secondary" onclick="window.print()">Print / Save PDF</button>
+    </div>
+  </div>
+</div>
+
+<div id="clinicalNote" class="container print-note">
+  <div class="card">
+    <h1>JeevSetu — Neurological Clinical Note</h1>
+    <div id="noteContent" class="note"></div>
+    <div class="map">
+      <b>Digital Neurological Map</b>
+      <svg viewBox="0 0 360 420" aria-label="Neurological body map">
+        <circle cx="180" cy="45" r="30" fill="none" stroke="#333"/>
+        <line x1="180" y1="75" x2="180" y2="245" stroke="#333" stroke-width="3"/>
+        <line x1="180" y1="105" x2="105" y2="190" stroke="#333" stroke-width="3"/>
+        <line x1="180" y1="105" x2="255" y2="190" stroke="#333" stroke-width="3"/>
+        <line x1="180" y1="245" x2="125" y2="385" stroke="#333" stroke-width="3"/>
+        <line x1="180" y1="245" x2="235" y2="385" stroke="#333" stroke-width="3"/>
+        <text x="180" y="410" text-anchor="middle" font-size="14">Anterior body map — mark findings in assessment</text>
+      </svg>
+      <div id="mapSummary"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function vals(name){return [...document.querySelectorAll('input[name="'+name+'"]:checked')].map(x=>x.value)}
+function v(id){return document.getElementById(id).value}
+function updateMode(){
+  const age=Number(v('age'));
+  document.getElementById('examMode').textContent = age>=60
+    ? 'Senior: broader baseline neurological examination activated.'
+    : 'Younger patient: focused neurological examination; expand according to symptoms, history or findings.';
+}
+document.getElementById('age').addEventListener('input',updateMode);
+document.querySelectorAll('input[name="red"]').forEach(x=>x.addEventListener('change',()=>{
+  document.getElementById('redAlert').classList.toggle('hidden', vals('red').length===0);
+}));
+function generateNote(){
+  const symptoms=vals('sym'), red=vals('red'), sens=vals('sens'), coord=vals('coord'), map=vals('map');
+  const sections=[];
+  sections.push('<b>Patient:</b> '+(v('name')||'—')+' &nbsp; <b>ID:</b> '+(v('pid')||'—')+' &nbsp; <b>Age:</b> '+(v('age')||'—')+' &nbsp; <b>Sex:</b> '+(v('sex')||'—'));
+  sections.push('<p><b>18.6 Universal Neurological Screen:</b> '+(symptoms.length?symptoms.join(', '):'No neurological symptom reported')+'.</p>');
+  if(red.length) sections.push('<p><b>RED FLAG — Immediate clinician alert:</b> '+red.join(', ')+'.</p>');
+  sections.push('<p><b>Mental status:</b> Consciousness '+v('conscious')+'; Orientation '+v('orientation')+'; Attention '+v('attention')+'; Speech '+v('speech')+'; Behaviour '+v('behaviour')+'; Memory '+v('memory')+'.</p>');
+  sections.push('<p><b>Cranial nerves:</b> '+v('cranial')+(v('cranialOther')?' — '+v('cranialOther'):'')+'.</p>');
+  sections.push('<p><b>Motor:</b> Bulk '+v('bulk')+'; Tone '+v('tone')+'; Strength '+v('strength')+(v('motorOther')?' — '+v('motorOther'):'')+'.</p>');
+  sections.push('<p><b>Reflexes:</b> Upper limbs '+v('refUpper')+'; Lower limbs '+v('refLower')+'.</p>');
+  sections.push('<p><b>Sensory:</b> Tests: '+(sens.length?sens.join(', '):'Not specified')+'; Finding: '+v('sensFinding')+(v('sensOther')?' — '+v('sensOther'):'')+'.</p>');
+  sections.push('<p><b>Coordination:</b> Tests: '+(coord.length?coord.join(', '):'Not specified')+'; Finding: '+v('coordFinding')+(v('coordOther')?' — '+v('coordOther'):'')+'.</p>');
+  sections.push('<p><b>Gait / balance:</b> '+v('gait')+(v('gaitOther')?' — '+v('gaitOther'):'')+'.</p>');
+  sections.push('<p><b>Tremor / movement:</b> '+v('tremorType')+'; Symmetry: '+v('tremorSym')+(v('tremorDist')?' ; Distribution: '+v('tremorDist'):'')+'.</p>');
+  sections.push('<p><b>Digital neurological map:</b> '+(map.length?map.join(', '):'No focal finding marked')+(v('mapOther')?' — '+v('mapOther'):'')+'.</p>');
+  document.getElementById('noteContent').innerHTML=sections.join('');
+  document.getElementById('mapSummary').textContent=map.length?'Marked: '+map.join(', '):'No focal finding marked';
+  document.getElementById('clinicalNote').style.display='block';
+  window.scrollTo(0,document.body.scrollHeight);
+}
+updateMode();
+</script>
+</body>
+</html>

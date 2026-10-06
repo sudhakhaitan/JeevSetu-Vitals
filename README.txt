@@ -1,1 +1,0 @@
-JeevSetu Eyes & Vision module. Standardized examination fields use dropdowns where appropriate. Refraction is mandatory in every case. Eye-map marks can be removed individually by tapping the red X, or all cleared with Clear all marks.

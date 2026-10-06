@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JeevSetu — Genitourinary / Urinary & Female Preventive Screen</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#17202a}
+.container{max-width:900px;margin:auto;padding:18px}
+.card{background:#fff;border:1px solid #d7dce1;border-radius:10px;padding:16px;margin-bottom:14px}
+h1{font-size:22px;margin:0 0 6px}
+h2{font-size:17px;margin:0 0 10px}
+h3{font-size:15px;margin:16px 0 8px}
+label{display:block;font-weight:600;margin:9px 0 5px}
+input,select,textarea{width:100%;padding:9px;border:1px solid #b9c1c8;border-radius:6px;font-size:14px}
+textarea{min-height:55px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.choice{display:flex;flex-wrap:wrap;gap:8px}
+.choice label{font-weight:400;margin:0}
+.choice button,.btn{border:1px solid #9da7b0;background:#fff;padding:8px 12px;border-radius:6px;cursor:pointer}
+.choice button.active{background:#e4edf5;border-color:#526d83;font-weight:700}
+.note{white-space:pre-wrap;background:#fafafa;border:1px solid #ccd3d9;padding:12px;border-radius:7px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn.primary{background:#1f5f8b;color:white;border-color:#1f5f8b}
+.small{font-size:12px;color:#5f6b73}
+.hidden{display:none}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+@page{size:A4 portrait;margin:10mm}
+@media print{
+ body{background:white;margin:0}
+ .screen-only,#formArea,.actions,.instructions{display:none!important}
+ #clinicalNote{display:block!important;border:0;padding:0;margin:0;font-family:Arial,sans-serif}
+ #clinicalNote{width:100%;max-width:none}
+ #clinicalNote h1{font-size:17pt;margin:0 0 8pt;border-bottom:1px solid #555;padding-bottom:5pt}
+ #clinicalNote h2{font-size:12.5pt;margin:9pt 0 5pt}
+ #clinicalNote h3{font-size:10.5pt;margin:7pt 0 4pt}
+ #clinicalNote p,#clinicalNote div{font-size:9.5pt;line-height:1.25;margin:3pt 0}
+ #clinicalNote .meta{display:grid;grid-template-columns:1fr 1fr;gap:3pt 14pt;border-bottom:1px solid #bbb;padding-bottom:5pt;margin-bottom:5pt}
+ #clinicalNote .findings{display:grid;grid-template-columns:1fr 1fr;gap:3pt 18pt}
+ #clinicalNote .findings div{margin:0}
+ #clinicalNote .section{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card screen-only">
+<h1>JeevSetu — Genitourinary / Urinary & Female Preventive Screen</h1>
+<p class="small">Patient history + indication-based clinician examination. Prostate examination is documented separately in Section 19.19 and is not duplicated here.</p>
+</div>
+
+<div id="formArea">
+<div class="card">
+<h2>1. Basic Urinary Screen — EVERY PATIENT</h2>
+<label>क्या आपको पेशाब करने में कोई परेशानी होती है?</label>
+<div class="choice" id="urinaryProblem">
+<button type="button" onclick="setChoice(this,'urinaryProblem','No')">नहीं</button>
+<button type="button" onclick="setChoice(this,'urinaryProblem','Yes')">हाँ</button>
+</div>
+<div id="urinaryDetails" class="hidden">
+<h3>If yes — clarify</h3>
+<div class="grid" id="urinaryChoices"></div>
+<label>Other urinary information</label><textarea id="urinaryOther"></textarea>
+</div>
+</div>
+
+<div class="card">
+<h2>2. Female Preventive Screen</h2>
+<label>Sex</label>
+<select id="sex" onchange="femaleLogic()"><option value="">Select</option><option>Female</option><option>Male</option></select>
+<div id="femaleScreen" class="hidden">
+<label>क्या आपको योनि से असामान्य सफेद पानी, discharge, खुजली, दुर्गंध या कोई और परेशानी होती है?</label>
+<div class="choice" id="femaleProblem">
+<button type="button" onclick="setChoice(this,'femaleProblem','No')">नहीं</button>
+<button type="button" onclick="setChoice(this,'femaleProblem','Yes')">हाँ</button>
+</div>
+<label>If yes, relevant finding</label><textarea id="femaleOther"></textarea>
+<p class="small">Detailed reproductive history remains in Section 16 and is not repeated here.</p>
+</div>
+</div>
+
+<div class="card">
+<h2>3. Genitourinary / Reproductive Examination</h2>
+<p class="small"><b>Male patients:</b> After selecting Male above, complete the dedicated Male Genitalia Examination below. This is a clinician examination, not a history question.</p>
+<p><b>Clinician-performed, indication-based and privacy-protected.</b></p>
+<div class="grid">
+<div><label>Consent</label><select id="consent"><option>Not recorded</option><option>Consent obtained</option><option>Declined</option></select></div>
+<div><label>Chaperone</label><input id="chaperone" placeholder="Name / Not required"></div>
+<div><label>Examiner</label><input id="examiner"></div>
+<div><label>Date / time</label><input id="datetime" type="datetime-local"></div>
+</div>
+
+<h3>Urinary — where indicated</h3>
+<div class="grid" id="urinaryExam"></div>
+<label>Other urinary findings</label><textarea id="urinaryExamOther"></textarea>
+
+<div id="maleExam">
+<h3>MALE GENITALIA EXAMINATION — WHERE INDICATED</h3>
+<p class="small"><b>Clinician-performed examination:</b> Record each anatomical site separately. Prostate examination is NOT included here; it is documented separately in Section 19.19.</p>
+<div class="grid" id="maleChoices"></div>
+<label>Other male genital findings</label><textarea id="maleOther"></textarea>
+</div>
+
+<div id="femaleExam" class="hidden">
+<h3>Female — where indicated</h3>
+<div class="grid" id="femaleChoices"></div>
+<label>Other female findings</label><textarea id="femaleExamOther"></textarea>
+</div>
+</div>
+
+<div class="card actions">
+<button class="btn primary" onclick="generateNote()">Generate Clinical Note</button>
+<button class="btn" onclick="window.print()">Print / Save PDF</button>
+</div>
+</div>
+
+<div id="clinicalNote" class="card hidden"></div>
+</div>
+
+<script>
+const urinary=['Burning / pain','Frequency','Urgency','Difficulty starting','Poor stream','Incomplete emptying','Blood in urine','Incontinence','Night-time urination','Flank pain','Recurrent urinary infection'];
+const urinaryExam=['Suprapubic tenderness','Bladder distension','CVA tenderness'];
+const male=['Penis / meatus','Scrotum','Right testis','Left testis','Right epididymis','Left epididymis','Swelling','Mass','Tenderness','Lesions','Discharge','Inguinal hernia'];
+const female=['External genital abnormality','Vulval abnormality','Lesion','Discharge','Bleeding','Pelvic tenderness'];
+
+function build(id,arr){
+ const el=document.getElementById(id);
+ el.innerHTML=arr.map((x,i)=>`<div><label>${x}</label><select id="${id}_${i}"><option>Not assessed</option><option>Absent</option><option>Present</option></select></div>`).join('');
+}
+build('urinaryChoices',urinary); build('urinaryExam',urinaryExam); build('maleChoices',male); build('femaleChoices',female);
+
+function setChoice(btn,id,val){
+ document.querySelectorAll('#'+id+' button').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active'); btn.dataset.value=val;
+ if(id==='urinaryProblem') document.getElementById('urinaryDetails').classList.toggle('hidden',val!=='Yes');
+}
+function getChoice(id){let b=document.querySelector('#'+id+' button.active');return b?b.dataset.value:'Not recorded'}
+function femaleLogic(){
+ const s=document.getElementById('sex').value;
+ document.getElementById('femaleScreen').classList.toggle('hidden',s!=='Female');
+ document.getElementById('femaleExam').classList.toggle('hidden',s!=='Female');
+ document.getElementById('maleExam').classList.toggle('hidden',s!=='Male');
+}
+function vals(id,arr){
+ return arr.map((x,i)=>`${x}: ${document.getElementById(id+'_'+i).value}`).join('; ');
+}
+function generateNote(){
+ const sex=document.getElementById('sex').value||'Not recorded';
+ let html=`<h1>JeevSetu — Genitourinary / Urinary & Female Preventive Clinical Note</h1>`;
+ html+=`<div class="section"><h2>Urinary History</h2><p><b>Urinary symptoms:</b> ${getChoice('urinaryProblem')}</p>`;
+ if(getChoice('urinaryProblem')==='Yes'){ html+=`<h3>Reported urinary symptoms</h3><div class="findings">${urinary.map((x,i)=>`<div><b>${x}:</b> ${document.getElementById('urinaryChoices_'+i).value}</div>`).join('')}</div>`; if(document.getElementById('urinaryOther').value) html+=`<p><b>Other urinary information:</b> ${document.getElementById('urinaryOther').value}</p>`; }
+ html+=`</div>`;
+ if(sex==='Female') html+=`<div class="section"><h2>Female Preventive Screen</h2><p><b>Vaginal/vulval symptoms:</b> ${getChoice('femaleProblem')}${document.getElementById('femaleOther').value?' — '+document.getElementById('femaleOther').value:''}</p><p class="small">Detailed reproductive history is documented in Section 16.</p></div>`;
+ html+=`<div class="section exam"><h2>Clinician Examination</h2>
+ <div class="meta"><div><b>Consent:</b> ${document.getElementById('consent').value}</div>
+ <div><b>Chaperone:</b> ${document.getElementById('chaperone').value||'—'}</div>
+ <div><b>Examiner:</b> ${document.getElementById('examiner').value||'—'}</div>
+ <div><b>Date / time:</b> ${document.getElementById('datetime').value||'—'}</div></div>
+ <h3>Urinary Examination</h3><div class="findings">${urinaryExam.map((x,i)=>`<div><b>${x}:</b> ${document.getElementById('urinaryExam_'+i).value}</div>`).join('')}</div>
+ ${document.getElementById('urinaryExamOther').value?`<p><b>Other urinary findings:</b> ${document.getElementById('urinaryExamOther').value}</p>`:''}`;
+
+ if(sex==='Male') html+=`<h3>Male Genitalia Examination — where indicated</h3>
+ <div class="findings">${male.map((x,i)=>`<div><b>${x}:</b> ${document.getElementById('maleChoices_'+i).value}</div>`).join('')}</div>
+ ${document.getElementById('maleOther').value?`<p><b>Other male findings:</b> ${document.getElementById('maleOther').value}</p>`:''}`;
+
+ if(sex==='Female') html+=`<h3>Female Genitourinary Examination</h3>
+ <div class="findings">${female.map((x,i)=>`<div><b>${x}:</b> ${document.getElementById('femaleChoices_'+i).value}</div>`).join('')}</div>
+ ${document.getElementById('femaleExamOther').value?`<p><b>Other female findings:</b> ${document.getElementById('femaleExamOther').value}</p>`:''}`;
+
+ html+=`<p class="small"><b>Prostate examination:</b> Documented only in Section 19.19 — not examined or duplicated in this module.</p></div>`;
+ const n=document.getElementById('clinicalNote'); n.innerHTML=html; n.classList.remove('hidden');
+}
+</script>
+</body>
+</html>

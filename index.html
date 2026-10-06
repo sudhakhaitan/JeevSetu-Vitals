@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JeevSetu — Skin & Dermatological Examination</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f5f5f5;color:#222}
+main{max-width:900px;margin:auto;background:white;padding:18px}
+h1,h2{margin:8px 0}
+.card{border:1px solid #ccc;border-radius:10px;padding:14px;margin:12px 0}
+label{display:block;margin:7px 0;font-weight:600}
+select,input,textarea{width:100%;box-sizing:border-box;padding:9px;margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+button{padding:9px 13px;margin:4px;border:1px solid #888;border-radius:7px;background:#eee}
+.map{position:relative;max-width:500px;margin:auto;border:1px solid #aaa}
+.map img{width:100%;display:block}
+.mark{position:absolute;width:18px;height:18px;border-radius:50%;background:#d00;border:2px solid #fff;transform:translate(-50%,-50%);display:none}
+.small{font-size:13px;color:#555}
+#note{white-space:pre-wrap;background:#fafafa;padding:14px;border:1px solid #bbb}
+@media print{
+ body{background:white} main{max-width:none;padding:8px}
+ .no-print,.card.formcard{display:none!important}
+ #note{border:0;padding:0}
+}
+</style>
+</head>
+<body>
+<main>
+<h1>JeevSetu — 18.10 Skin / 19.15 Skin Examination</h1>
+
+<div class="card formcard">
+<h2>18.10 — SKIN HISTORY</h2>
+<p><b>EVERY PATIENT</b></p>
+<label>New skin change
+<select id="h_new"><option value="">Not recorded</option><option>Yes</option><option>No</option></select></label>
+<label>Mole change
+<select id="h_mole"><option value="">Not recorded</option><option>Yes</option><option>No</option></select></label>
+<label>Non-healing wound
+<select id="h_wound"><option value="">Not recorded</option><option>Yes</option><option>No</option></select></label>
+<label>Itching / rash
+<select id="h_itch"><option value="">Not recorded</option><option>Yes</option><option>No</option></select></label>
+<label>Seniors / diabetes / vascular risk — foot or sole wound, blister, colour change or slow-healing cut
+<select id="h_foot"><option value="">Not recorded</option><option>Yes</option><option>No</option></select></label>
+</div>
+
+<div class="card formcard">
+<h2>19.15 — GENERAL SKIN EXAMINATION</h2>
+<div class="grid">
+<script>
+const fields=[
+["Pallor","pallor"],["Jaundice","jaundice"],["Cyanosis","cyanosis"],
+["Petechiae","petechiae"],["Purpura","purpura"],["Ecchymosis / bruising","bruise"],
+["Rash","rash"],["Pigmentation changes","pigment"],["Ulcers","ulcer"],["Nodules / masses","nodule"]
+];
+document.write(fields.map(x=>`<label>${x[0]}<select id="${x[1]}"><option>Not recorded</option><option>Normal / absent</option><option>Present</option></select></label>`).join(""));
+</script>
+</div>
+<label>Other significant skin lesions
+<textarea id="other"></textarea></label>
+</div>
+
+<div class="card formcard">
+<h2>Petechiae — if present</h2>
+<div class="grid">
+<label>Site / distribution<input id="p_site"></label>
+<label>Localized / generalized<select id="p_dist"><option>Not recorded</option><option>Localized</option><option>Generalized</option></select></label>
+<label>Extent<input id="p_extent"></label>
+<label>Mucosal bleeding<select id="p_muc"><option>Not recorded</option><option>Yes</option><option>No</option></select></label>
+<label>Fever / systemic symptoms<select id="p_fever"><option>Not recorded</option><option>Yes</option><option>No</option></select></label>
+<label>Relevant medications<input id="p_meds"></label>
+<label>Known blood disorders<input id="p_blood"></label>
+</div>
+</div>
+
+<div class="card formcard">
+<h2>Mole / Pigmented Lesion</h2>
+<div class="grid">
+<label>Site<input id="m_site"></label><label>Size<input id="m_size"></label>
+<label>Colour<input id="m_colour"></label><label>Shape<input id="m_shape"></label>
+<label>Border<input id="m_border"></label><label>Symmetry<input id="m_sym"></label>
+<label>Surface<input id="m_surface"></label><label>Bleeding<select id="m_bleed"><option>Not recorded</option><option>Yes</option><option>No</option></select></label>
+<label>Ulceration<select id="m_ulcer"><option>Not recorded</option><option>Yes</option><option>No</option></select></label>
+<label>Reported change<select id="m_change"><option>Not recorded</option><option>Yes</option><option>No</option></select></label>
+</div>
+</div>
+
+<div class="card formcard">
+<h2>Non-healing Wound</h2>
+<div class="grid">
+<label>Site<input id="w_site"></label><label>Size<input id="w_size"></label>
+<label>Depth<input id="w_depth"></label><label>Edge<input id="w_edge"></label>
+<label>Base<input id="w_base"></label><label>Discharge<input id="w_discharge"></label>
+<label>Surrounding inflammation<input id="w_inflam"></label><label>Duration<input id="w_duration"></label>
+</div>
+</div>
+
+<div class="card formcard">
+<h2>Digital Skin Body Map</h2>
+<p class="small">Tap to mark a finding. Tap an existing mark to clear it. Markings are reproduced in the clinical note.</p>
+<div class="map" id="map">
+<svg viewBox="0 0 300 650" width="100%" aria-label="Body map">
+<circle cx="150" cy="55" r="38" fill="none" stroke="#555" stroke-width="2"/>
+<path d="M112 95 L80 145 L95 310 L115 330 L105 470 L120 625 M188 95 L220 145 L205 310 L185 330 L195 470 L180 625 M112 95 L188 95 M95 310 L205 310 M115 330 L185 330" fill="none" stroke="#555" stroke-width="4"/>
+</svg>
+</div>
+</div>
+
+<div class="card formcard no-print">
+<button onclick="generateNote()">Generate Clinical Note</button>
+<button onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<div class="card" id="note">
+<h2>Clinical Note</h2>
+<p>Complete the examination and generate the note.</p>
+</div>
+</main>
+
+<script>
+const marks=[];
+document.getElementById('map').addEventListener('click',function(e){
+ if(e.target.classList.contains('mark')){e.target.remove(); return;}
+ const r=this.getBoundingClientRect();
+ const x=(e.clientX-r.left)/r.width*100, y=(e.clientY-r.top)/r.height*100;
+ const m=document.createElement('span');m.className='mark';m.style.left=x+'%';m.style.top=y+'%';m.style.display='block';
+ m.title='Tap to clear';this.appendChild(m);
+ marks.push({x,y});
+});
+function v(id){return document.getElementById(id).value||'Not recorded'}
+function line(label,id){return label+': '+v(id)}
+function generateNote(){
+ let n='JEEVSETU — SKIN & DERMATOLOGICAL EXAMINATION\\n\\n';
+ n+='18.10 SKIN HISTORY\\n';
+ n+=line('New skin change','h_new')+'\\n'+line('Mole / old lesion change','h_mole')+'\\n'+line('Non-healing wound','h_wound')+'\\n'+line('Itching / rash','h_itch')+'\\n'+line('Foot/sole wound, blister, colour change or slow-healing cut','h_foot')+'\\n\\n';
+ n+='19.15 GENERAL SKIN EXAMINATION\\n';
+ [['Pallor','pallor'],['Jaundice','jaundice'],['Cyanosis','cyanosis'],['Petechiae','petechiae'],['Purpura','purpura'],['Ecchymosis / bruising','bruise'],['Rash','rash'],['Pigmentation changes','pigment'],['Ulcers','ulcer'],['Nodules / masses','nodule']].forEach(a=>n+=line(a[0],a[1])+'\\n');
+ n+='Other significant lesions: '+v('other')+'\\n\\n';
+ n+='PETECHIAE / BLEEDING ASSESSMENT\\n';
+ ['p_site','p_dist','p_extent','p_muc','p_fever','p_meds','p_blood'].forEach((id,i)=>{let labs=['Site / distribution','Localized / generalized','Extent','Mucosal bleeding','Fever / systemic symptoms','Relevant medications','Known blood disorders'];n+=line(labs[i],id)+'\\n'});
+ n+='\\nMOLE / PIGMENTED LESION\\n';
+ ['m_site','m_size','m_colour','m_shape','m_border','m_sym','m_surface','m_bleed','m_ulcer','m_change'].forEach((id,i)=>{let labs=['Site','Size','Colour','Shape','Border','Symmetry','Surface','Bleeding','Ulceration','Reported change'];n+=line(labs[i],id)+'\\n'});
+ n+='\\nNON-HEALING WOUND\\n';
+ ['w_site','w_size','w_depth','w_edge','w_base','w_discharge','w_inflam','w_duration'].forEach((id,i)=>{let labs=['Site','Size','Depth','Edge','Base','Discharge','Surrounding inflammation','Duration'];n+=line(labs[i],id)+'\\n'});
+ n+='\\nDIGITAL SKIN BODY MAP\\nMarked sites: '+marks.length+'\\n';
+ if(marks.length)n+=marks.map((m,i)=>`Mark ${i+1}: x=${m.x.toFixed(1)}%, y=${m.y.toFixed(1)}%`).join('\\n');
+ else n+='No site marked.';
+ document.getElementById('note').innerText=n;
+}
+</script>
+</body>
+</html>

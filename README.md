@@ -1,0 +1,1 @@
+JeevSetu Genitourinary module — Male Genitalia Examination visible revision. Male genital examination is explicitly displayed with separate fields for penis/meatus, scrotum, right/left testis, right/left epididymis, swelling, mass, tenderness, lesions, discharge and inguinal hernia. Prostate examination is excluded and reserved for Section 19.19.

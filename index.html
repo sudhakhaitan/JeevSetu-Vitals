@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JeevSetu — Skin & Dermatological Examination</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f6f8;margin:0;color:#20252b}
+.container{max-width:900px;margin:auto;background:#fff;padding:18px;min-height:100vh}
+h1{font-size:22px;margin:0 0 6px} h2{font-size:18px;margin-top:24px;border-bottom:2px solid #ddd;padding-bottom:6px}
+h3{font-size:15px;margin-top:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+label{font-weight:600;font-size:14px;display:block;margin-bottom:5px}
+select,input,textarea{width:100%;box-sizing:border-box;padding:9px;border:1px solid #bbb;border-radius:6px;background:#fff;font-size:14px}
+textarea{min-height:65px}
+.note{background:#f7f9fb;border-left:4px solid #555;padding:10px;margin:10px 0}
+button{padding:10px 15px;border:0;border-radius:6px;background:#333;color:#fff;margin:5px 5px 5px 0;cursor:pointer}
+button.secondary{background:#777} button.danger{background:#a33}
+#mapWrap{max-width:520px;margin:10px auto;text-align:center}
+svg{width:100%;height:auto;border:1px solid #ccc;border-radius:8px;background:#fff}
+.mark{fill:#d00;stroke:#fff;stroke-width:1.5;cursor:pointer}
+.small{font-size:12px;color:#666}
+#clinicalNote{display:none}
+.printOnly{display:none}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{border:1px solid #ccc;padding:6px;text-align:left;vertical-align:top}
+th{background:#f0f2f4}
+@media print{
+ @page{size:A4 portrait;margin:7mm}
+ html,body{width:210mm;height:297mm;margin:0!important;padding:0!important;background:#fff!important;overflow:hidden!important}
+ body{font-family:Arial,sans-serif;color:#000;font-size:7.5pt;line-height:1.12}
+ .container{display:block!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important;min-height:0!important;background:#fff!important}
+ #form{display:block!important;margin:0!important;padding:0!important}
+ #form>h1,#form>h2,#form>h3,#form>.note,#form>.grid,#form>#mapWrap,#form>button,#form>label,#form>input,#form>select,#form>textarea{display:none!important}
+ #clinicalNote{display:block!important;width:100%!important;margin:0!important;padding:0!important}
+ .clinical-page{display:block!important;width:100%!important;margin:0!important;padding:0!important;page-break-after:avoid!important;break-after:avoid-page!important;page-break-inside:avoid!important;break-inside:avoid-page!important}
+ .clinical-page h1{font-size:13pt!important;text-align:center;margin:0 0 2mm!important;padding:0!important;line-height:1.1!important}
+ .clinical-page h2{font-size:8.5pt!important;margin:1.5mm 0 .8mm!important;padding:0 0 .5mm!important;border-bottom:1px solid #777!important;line-height:1.05!important;page-break-after:avoid!important;break-after:avoid!important}
+ .clinical-page table{width:100%!important;border-collapse:collapse!important;font-size:6.7pt!important;line-height:1.05!important;margin:0!important;page-break-inside:avoid!important;break-inside:avoid-page!important}
+ .clinical-page td,.clinical-page th{border:.35pt solid #777!important;padding:.7mm 1mm!important;vertical-align:top!important}
+ .clinical-page th{font-weight:700!important;background:#eee!important}
+ .clinical-page .small{font-size:6pt!important;line-height:1!important}
+ .clinical-page>div{text-align:center}
+ .clinical-page svg{width:46mm!important;height:auto!important;max-width:46mm!important;border:0!important;display:block!important;margin:0 auto!important}
+ .clinical-page h2:last-of-type{margin-top:1mm!important}
+ .clinical-page br{line-height:.8!important}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div id="form">
+<h1>JEEVSETU — SKIN & DERMATOLOGICAL EXAMINATION</h1>
+<div class="note">Select the finding actually observed. <b>Do not leave a field on an automatic normal/absent value.</b> “Not assessed / not recorded” remains available.</div>
+
+<h2>18.10 SKIN HISTORY</h2>
+<div class="grid">
+<div><label>New skin change</label><select id="newChange"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Mole / old lesion change</label><select id="moleChange"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Non-healing wound</label><select id="woundHist"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Itching / rash</label><select id="itch"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Foot/sole wound, blister, colour change or slow-healing cut</label><select id="footHist"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+</div>
+
+<h2>19.15 GENERAL SKIN EXAMINATION</h2>
+<div class="grid" id="generalGrid"></div>
+
+<h3>PETECHIAE / BLEEDING ASSESSMENT</h3>
+<div class="grid">
+<div><label>Site / distribution</label><input id="pSite" placeholder="e.g. lower limbs"></div>
+<div><label>Localized / generalized</label><select id="pDist"><option>Not recorded</option><option>Localized</option><option>Generalized</option></select></div>
+<div><label>Extent</label><input id="pExtent"></div>
+<div><label>Mucosal bleeding</label><select id="pMuc"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Fever / systemic symptoms</label><select id="pFever"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+<div><label>Relevant medications</label><input id="pMeds"></div>
+<div><label>Known blood disorders</label><input id="pBlood"></div>
+</div>
+
+<h3>MOLE / PIGMENTED LESION</h3>
+<div class="grid" id="moleGrid"></div>
+
+<h3>NON-HEALING WOUND</h3>
+<div class="grid">
+<div><label>Site</label><input id="wSite"></div><div><label>Size</label><input id="wSize"></div>
+<div><label>Depth</label><input id="wDepth"></div><div><label>Edge</label><input id="wEdge"></div>
+<div><label>Base</label><input id="wBase"></div><div><label>Discharge</label><input id="wDischarge"></div>
+<div><label>Surrounding inflammation</label><input id="wInflam"></div><div><label>Duration</label><input id="wDuration"></div>
+</div>
+
+<h2>DIGITAL SKIN BODY MAP</h2>
+<div class="note">Tap the body map to mark a skin lesion. Tap an existing red mark to remove it. Use “Clear all marks” to reset.</div>
+<div id="mapWrap">
+<svg id="bodyMap" viewBox="0 0 300 620" aria-label="Digital skin body map">
+<circle cx="150" cy="55" r="34" fill="#f5d6c6" stroke="#555"/>
+<path d="M118 94 Q150 82 182 94 L205 235 L177 245 L168 150 L132 150 L123 245 L95 235 Z" fill="#f5d6c6" stroke="#555"/>
+<path d="M95 105 L55 215 L75 222 L122 145" fill="#f5d6c6" stroke="#555"/>
+<path d="M205 105 L245 215 L225 222 L178 145" fill="#f5d6c6" stroke="#555"/>
+<path d="M123 240 L177 240 L181 395 L158 395 L150 300 L142 395 L119 395 Z" fill="#f5d6c6" stroke="#555"/>
+<path d="M119 395 L142 395 L136 555 L112 555 Z" fill="#f5d6c6" stroke="#555"/>
+<path d="M158 395 L181 395 L188 555 L164 555 Z" fill="#f5d6c6" stroke="#555"/>
+</svg>
+<div id="markCount" class="small">Marked sites: 0</div>
+<button type="button" class="danger" onclick="clearMarks()">Clear all marks</button>
+</div>
+
+<h2>CLINICAL NOTE</h2>
+<button onclick="generateNote()">Generate Clinical Note</button>
+<button onclick="window.print()" class="secondary">Print / Save PDF</button>
+<div id="clinicalNote"></div>
+</div>
+</div>
+
+<script>
+const generalFields=[
+["pallor","Pallor"],["jaundice","Jaundice"],["cyanosis","Cyanosis"],
+["petechiae","Petechiae"],["purpura","Purpura"],["ecchymosis","Ecchymosis / bruising"],
+["rash","Rash"],["pigmentation","Pigmentation changes"],["ulcers","Ulcers"],
+["nodules","Nodules / masses"],["other","Other significant lesions"]
+];
+const moleFields=[
+["mSite","Site"],["mSize","Size"],["mColour","Colour"],["mShape","Shape"],
+["mBorder","Border"],["mSymmetry","Symmetry"],["mSurface","Surface"]
+];
+function addGeneral(){
+ const g=document.getElementById("generalGrid");
+ g.innerHTML=generalFields.map(([id,label])=>`
+ <div><label>${label}</label><select id="${id}">
+ <option>Not assessed / not recorded</option><option>Absent</option><option>Present</option>
+ </select></div>`).join("");
+}
+function addMole(){
+ const g=document.getElementById("moleGrid");
+ g.innerHTML=moleFields.map(([id,label])=>`<div><label>${label}</label><input id="${id}"></div>`).join("")+
+ `<div><label>Bleeding</label><select id="mBleed"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+ <div><label>Ulceration</label><select id="mUlcer"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>
+ <div><label>Reported change</label><select id="mChange"><option>Not recorded</option><option>Yes</option><option>No</option></select></div>`;
+}
+addGeneral(); addMole();
+
+let marks=[];
+const svg=document.getElementById("bodyMap");
+svg.addEventListener("click",e=>{
+ if(e.target.classList.contains("mark")){ e.target.remove(); marks=marks.filter(m=>m.el!==e.target); updateCount(); return; }
+ const pt=svg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+ const sp=pt.matrixTransform(svg.getScreenCTM().inverse());
+ const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
+ c.setAttribute("cx",sp.x);c.setAttribute("cy",sp.y);c.setAttribute("r",7);c.classList.add("mark");
+ svg.appendChild(c); marks.push({x:(sp.x/300*100),y:(sp.y/620*100),el:c}); updateCount();
+});
+function updateCount(){document.getElementById("markCount").textContent="Marked sites: "+marks.length;}
+function clearMarks(){marks.forEach(m=>m.el.remove());marks=[];updateCount();}
+function val(id){return document.getElementById(id)?.value||"Not recorded";}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function generalRows(){
+ return generalFields.map(([id,label])=>`<tr><td>${label}</td><td>${esc(val(id))}</td></tr>`).join("");
+}
+function moleRows(){return moleFields.map(([id,label])=>`<tr><td>${label}</td><td>${esc(val(id))}</td></tr>`).join("")+
+ [["mBleed","Bleeding"],["mUlcer","Ulceration"],["mChange","Reported change"]].map(([id,l])=>`<tr><td>${l}</td><td>${esc(val(id))}</td></tr>`).join("");}
+function mapSvgForNote(){
+ const clone=svg.cloneNode(true); clone.removeAttribute("id"); clone.style.border="0"; clone.style.maxWidth="420px";
+ return clone.outerHTML;
+}
+function generateNote(){
+ const marksText=marks.length?marks.map((m,i)=>`Mark ${i+1}: x=${m.x.toFixed(1)}%, y=${m.y.toFixed(1)}%`).join("<br>"):"No marked sites";
+ document.getElementById("clinicalNote").innerHTML=`
+ <div class="clinical-page">
+ <h1>JEEVSETU — SKIN & DERMATOLOGICAL CLINICAL NOTE</h1>
+ <h2>18.10 Skin History</h2>
+ <table><tr><th>Finding</th><th>Result</th></tr>
+ <tr><td>New skin change</td><td>${esc(val("newChange"))}</td></tr>
+ <tr><td>Mole / old lesion change</td><td>${esc(val("moleChange"))}</td></tr>
+ <tr><td>Non-healing wound</td><td>${esc(val("woundHist"))}</td></tr>
+ <tr><td>Itching / rash</td><td>${esc(val("itch"))}</td></tr>
+ <tr><td>Foot/sole wound, blister, colour change or slow-healing cut</td><td>${esc(val("footHist"))}</td></tr></table>
+ <h2>19.15 General Skin Examination</h2>
+ <table><tr><th>Finding</th><th>Observed</th></tr>${generalRows()}</table>
+ <h2>Petechiae / Bleeding Assessment</h2>
+ <table>
+ <tr><td>Site / distribution</td><td>${esc(val("pSite"))}</td></tr>
+ <tr><td>Localized / generalized</td><td>${esc(val("pDist"))}</td></tr>
+ <tr><td>Extent</td><td>${esc(val("pExtent"))}</td></tr>
+ <tr><td>Mucosal bleeding</td><td>${esc(val("pMuc"))}</td></tr>
+ <tr><td>Fever / systemic symptoms</td><td>${esc(val("pFever"))}</td></tr>
+ <tr><td>Relevant medications</td><td>${esc(val("pMeds"))}</td></tr>
+ <tr><td>Known blood disorders</td><td>${esc(val("pBlood"))}</td></tr></table>
+ <h2>Mole / Pigmented Lesion</h2>
+ <table><tr><th>Parameter</th><th>Finding</th></tr>${moleRows()}</table>
+ <h2>Non-healing Wound</h2>
+ <table>
+ <tr><td>Site</td><td>${esc(val("wSite"))}</td></tr><tr><td>Size</td><td>${esc(val("wSize"))}</td></tr>
+ <tr><td>Depth</td><td>${esc(val("wDepth"))}</td></tr><tr><td>Edge</td><td>${esc(val("wEdge"))}</td></tr>
+ <tr><td>Base</td><td>${esc(val("wBase"))}</td></tr><tr><td>Discharge</td><td>${esc(val("wDischarge"))}</td></tr>
+ <tr><td>Surrounding inflammation</td><td>${esc(val("wInflam"))}</td></tr><tr><td>Duration</td><td>${esc(val("wDuration"))}</td></tr>
+ </table>
+ <h2>Digital Skin Body Map</h2>
+ <div style="text-align:center">${mapSvgForNote()}<div class="small">${marksText}</div></div>
+ </div>`;
+ document.getElementById("clinicalNote").style.display="block";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>JeevSetu — Mental / Behavioural Examination</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f7fa;color:#222;margin:0;padding:20px}
+.container{max-width:800px;margin:auto}
+.card{background:#fff;padding:22px;margin-bottom:18px;border-radius:12px;border:1px solid #ddd}
+h1,h2{text-align:center} h3{margin-top:24px}
+label{display:block;font-weight:bold;margin-top:16px}
+p{line-height:1.5}
+select,input,textarea{width:100%;box-sizing:border-box;padding:10px;margin-top:6px;border:1px solid #bbb;border-radius:7px;font-size:16px}
+button{padding:12px 18px;margin-top:18px;border:0;border-radius:7px;font-size:16px;cursor:pointer}
+.alert{border:2px solid #9b0000;padding:12px;margin-top:12px}
+.summary{background:#f7f7f7;padding:15px;margin-top:18px}
+@media print{button{display:none}.no-print{display:none}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>JeevSetu</h1>
+<div class="card">
+<h2>19.19 — MENTAL / BEHAVIOURAL EXAMINATION</h2>
+<p><b>Seniors — ROUTINE SCREEN</b></p>
+<p>Section 15 psychological history is reused; do not repeat the full psychological history.</p>
+
+<h3>Senior Routine Screen</h3>
+
+<label>Mood</label>
+<p>“पिछले कुछ समय से आपके मन या mood में कोई बदलाव महसूस हुआ है?”</p>
+<select id="mood"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+
+<label>Interest</label>
+<p>“क्या पहले जिन चीजों में आपको खुशी या रुचि मिलती थी, उनमें अब रुचि कम हुई है?”</p>
+<select id="interest"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+
+<label>Anxiety</label>
+<p>“क्या आपको बार-बार ऐसी चिंता या घबराहट होती है जिसे संभालना मुश्किल लगता है?”</p>
+<select id="anxiety"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+
+<label>Cognitive screen — seniors</label>
+<p>“क्या आपको हाल में चीजें याद रखने, सही शब्द याद करने या रोज़ की सामान्य बातें याद रखने में पहले की तुलना में परेशानी होती है?”</p>
+<select id="cognitive" onchange="cognitiveDetails()"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+
+<div id="cogDetails" style="display:none">
+<label>Onset / शुरुआत</label><input id="onset">
+<label>Progression / बढ़ना</label>
+<select id="progression"><option value="">Select</option><option>Stable</option><option>Gradual worsening</option><option>Rapid worsening</option><option>Fluctuating</option><option>Unknown</option></select>
+<label>Effect on daily functioning</label>
+<select id="daily"><option value="">Select</option><option>No significant effect</option><option>Mild effect</option><option>Significant effect</option><option>Unable to assess</option></select>
+<label>Medication management</label>
+<select id="medication"><option value="">Select</option><option>Independent</option><option>Needs help</option><option>Unable to manage</option><option>Not applicable</option></select>
+<label>Financial / household tasks</label>
+<select id="finance"><option value="">Select</option><option>Independent</option><option>Needs help</option><option>Unable to manage</option><option>Not applicable</option></select>
+<label>Getting lost</label>
+<select id="lost"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+<label>Caregiver observations, where appropriate</label>
+<textarea id="caregiver" rows="3"></textarea>
+</div>
+
+<label>Behaviour</label>
+<p>“क्या आपके व्यवहार, स्वभाव या रोज़मर्रा की आदतों में ऐसा बदलाव आया है जिसे परिवार के लोगों ने भी महसूस किया हो?”</p>
+<select id="behaviour" onchange="behaviourDetails()"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+<div id="behaviourBox" style="display:none">
+<label>Describe behaviour change</label><textarea id="behaviourText" rows="3"></textarea>
+</div>
+
+<label>Social withdrawal</label>
+<p>“क्या आपने हाल में लोगों से मिलना-जुलना या पहले की सामान्य गतिविधियां कम कर दी हैं?”</p>
+<select id="withdrawal"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+
+<h3>Younger Patients</h3>
+<p>If no psychological complaint, relevant history or clinical indication is present, detailed mental/cognitive review may be skipped.</p>
+<select id="younger"><option value="">Select</option><option>Not indicated — detailed review skipped</option><option>Indicated — assessed</option><option>Unable to assess</option></select>
+
+<h3>Acute Confusion / Sudden Behavioural Change</h3>
+<label>Any acute confusion or sudden behavioural change?</label>
+<select id="acute" onchange="acuteAlert()"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+<div id="alert" class="alert" style="display:none"><b>CLINICIAN ATTENTION:</b> Acute confusion or sudden behavioural change requires immediate clinician assessment.</div>
+
+<h3>Additional Mental / Behavioural Findings</h3>
+<textarea id="additional" rows="5" placeholder="Enter any additional findings"></textarea>
+
+<button onclick="makeSummary()">Generate Clinical Summary</button>
+<div id="summary" class="summary" style="display:none"></div>
+</div>
+</div>
+
+<script>
+function cognitiveDetails(){document.getElementById('cogDetails').style.display=document.getElementById('cognitive').value==='Yes'?'block':'none'}
+function behaviourDetails(){document.getElementById('behaviourBox').style.display=document.getElementById('behaviour').value==='Yes'?'block':'none'}
+function acuteAlert(){document.getElementById('alert').style.display=document.getElementById('acute').value==='Yes'?'block':'none'}
+function v(id){return document.getElementById(id).value||'Not recorded'}
+function makeSummary(){
+ let s='<h3>Mental / Behavioural Examination Summary</h3><ul>';
+ s+='<li>Mood: '+v('mood')+'</li><li>Interest: '+v('interest')+'</li><li>Anxiety: '+v('anxiety')+'</li>';
+ s+='<li>Cognitive screen: '+v('cognitive')+'</li>';
+ if(v('cognitive')==='Yes'){
+  s+='<li>Onset: '+v('onset')+'</li><li>Progression: '+v('progression')+'</li><li>Daily functioning: '+v('daily')+'</li>';
+  s+='<li>Medication management: '+v('medication')+'</li><li>Financial/household tasks: '+v('finance')+'</li><li>Getting lost: '+v('lost')+'</li>';
+ }
+ s+='<li>Behavioural change: '+v('behaviour')+'</li><li>Social withdrawal: '+v('withdrawal')+'</li>';
+ s+='<li>Younger-patient review: '+v('younger')+'</li><li>Acute confusion/sudden behavioural change: '+v('acute')+'</li></ul>';
+ if(document.getElementById('additional').value) s+='<p><b>Additional findings:</b> '+document.getElementById('additional').value.replace(/</g,'&lt;')+'</p>';
+ document.getElementById('summary').innerHTML=s; document.getElementById('summary').style.display='block';
+}
+</script>
+</body>
+</html>

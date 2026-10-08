@@ -1,0 +1,179 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JeevSetu — Vitals + General Examination</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#172033}.wrap{max-width:900px;margin:20px auto;padding:16px}.card{background:#fff;border:1px solid #d9dee8;border-radius:10px;padding:18px;margin-bottom:14px;box-shadow:0 1px 5px #0001}h1{font-size:24px;margin:0 0 4px;text-align:center}.sub{text-align:center;color:#667085;margin-bottom:18px}h2{font-size:19px;margin:0 0 14px}.grid,.inline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{font-size:14px;font-weight:600;display:block;margin:7px 0}input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:7px;font-size:15px;margin-top:5px}textarea{min-height:65px}.q{padding:12px 0;border-bottom:1px solid #eee}.yn label{display:inline-block;margin-right:22px;font-weight:400}.yn input{width:auto}.small,.note{font-size:12px;color:#667085}.result{background:#f7f8f9;padding:10px;border-radius:7px;font-weight:700}.finding{border:1px solid #d9dee8;border-radius:8px;padding:10px;margin:8px 0}button{padding:11px 16px;border:0;border-radius:7px;cursor:pointer;font-size:15px;margin-right:8px}.primary{background:#222;color:#fff}.secondary{background:#e8ebee;color:#172033}.danger{background:#b42318;color:#fff}.section-title{margin-top:28px;padding-top:12px;border-top:2px solid #ddd}@media(max-width:650px){.grid,.inline{grid-template-columns:1fr}}</style></head><body><div class="wrap"><h1>JeevSetu — Vitals + General Examination</h1><div class="sub">Integrated examination entry • Patient details entered once • No clinical note generated</div><div class="card" id="patientDetails"><h2>Patient Details — Enter Once</h2><div class="grid"><label>Patient Name<input id="patientName"></label><label>Patient ID<input id="patientId"></label><label>Age<input id="age" type="number" min="0"></label><label>Sex<select id="sex"><option value="">Select</option><option>Female</option><option>Male</option><option>Other</option></select></label><label>Examination Date<input id="examDate" type="date"></label><label>Examiner / Nurse / ANM<input id="examiner"></label></div><p class="small">These details are shared by both Vitals and General Examination. They are not repeated in either module.</p></div><div id="vitalsSection"><div class="card"><h2>Vitals — Stage A</h2>
+<h1>JeevSetu Vitals</h1>
+<div class="sub">Stage A — Nurse / ANM first-visit assessment</div>
+
+<div class="card">
+<h2>1. Blood pressure — both arms</h2>
+<div class="grid">
+<label>Right-arm systolic (mmHg)<input id="rs"></label>
+<label>Right-arm diastolic (mmHg)<input id="rd"></label>
+<label>Left-arm systolic (mmHg)<input id="ls"></label>
+<label>Left-arm diastolic (mmHg)<input id="ld"></label>
+<label>Cuff size
+<select id="cuff"><option>Small adult</option><option selected>Adult</option><option>Large adult</option><option>Other</option></select></label>
+<label>Device
+<select id="device"><option selected>Digital</option><option>Aneroid</option><option>Automated / other</option></select></label>
+<label>Position
+<select id="position"><option selected>Seated</option><option>Supine</option><option>Standing</option></select></label>
+<label>Measurement time<input id="mtime" type="datetime-local"></label>
+</div>
+</div>
+
+<div class="card">
+<h2>2. Orthostatic blood pressure</h2>
+<div class="grid">
+<label>Supine systolic<input id="os"></label>
+<label>Supine diastolic<input id="od"></label>
+<label>Standing — 1 minute systolic<input id="s1s"></label>
+<label>Standing — 1 minute diastolic<input id="s1d"></label>
+<label>Standing — 3 minutes systolic<input id="s3s"></label>
+<label>Standing — 3 minutes diastolic<input id="s3d"></label>
+<label>Pulse — supine<input id="op"></label>
+<label>Pulse — standing 3 minutes<input id="s3p"></label>
+</div>
+<div class="note">The app records orthostatic measurements and calculates changes from supine values.</div>
+</div>
+
+<div class="card">
+<h2>3. Ankle-Brachial Index</h2>
+<div class="grid">
+<label>Right ankle systolic pressure (mmHg)<input id="ra"></label>
+<label>Left ankle systolic pressure (mmHg)<input id="la"></label>
+<label>Highest brachial systolic used (automatic)<div class="result" id="brachial">—</div></label>
+<label>Right ABI (automatic)<div class="result" id="rabi">—</div></label>
+<label>Left ABI (automatic)<div class="result" id="labi">—</div></label>
+</div>
+<div class="note">ABI is calculated separately for each leg using the highest recorded arm systolic pressure.</div>
+</div>
+
+<div class="card">
+<h2>4. Other vital signs</h2>
+<div class="grid">
+<label>Pulse (beats/min)<input id="pulse"></label>
+<label>Respiratory rate (breaths/min)<input id="rr"></label>
+<label>SpO₂ (%)<input id="spo2"></label>
+<label>Temperature<input id="temp"></label>
+<label>Temperature unit<select id="unit"><option selected>°C</option><option>°F</option></select></label>
+<label>Pain score (0–10)<input id="pain" type="number" min="0" max="10"></label>
+</div>
+</div>
+
+<div class="card">
+<h2>5. Anthropometry</h2>
+<div class="grid">
+<label>Height (cm)<input id="height"></label>
+<label>Weight (kg)<input id="weight"></label>
+<label>Waist circumference (cm)<input id="waist"></label>
+<label>Hip circumference (cm)<input id="hip"></label>
+<label>BMI (automatic)<div class="result" id="bmi">—</div></label>
+<label>Hip : Waist ratio (automatic)<div class="result" id="hwr">—</div></label>
+</div>
+</div>
+
+
+</div><div class="card"><button class="primary" type="button" onclick="saveAll()">Save Examination</button><button class="secondary" type="button" onclick="loadAll()">Load Saved Examination</button><button class="danger" type="button" onclick="clearAll()">Clear All</button></div></div><div id="generalSection"><div class="card section-title"><h2>General Examination</h2></div>
+
+
+<div class="inline"><label>Age<input id="age" type="number" min="0"></label><label>Sex<select id="sex"><option value="">Select</option><option>Female</option><option>Male</option><option>Other</option></select></label></div>
+<div class="inline"><label>Examination Date<input id="examDate" type="date"></label><label>Clinician<input id="clinician"></label></div>
+</div>
+
+<div class="card">
+<h2>General Examination</h2>
+<div id="constitutional"></div>
+<p class="small">Positive findings can guide the relevant focused system pathway.</p>
+</div>
+
+<div class="card">
+<p class="small">For each finding, select <b>No abnormality detected</b>, <b>Abnormality detected</b>, or <b>Not assessed</b>.</p>
+<div id="generalExam"></div>
+<label>Other significant abnormalities<textarea id="otherAbnormal"></textarea></label>
+</div>
+
+<div class="card">
+<h2>Lymph Nodes</h2>
+<p class="small">Record only when clinically indicated or when lymph nodes are palpable/suspected.</p>
+<div class="inline"><label>Site<input id="lnSite"></label><label>Side<select id="lnSide"><option>Right</option><option>Left</option><option>Bilateral</option></select></label></div>
+<div class="inline"><label>Number<input id="lnNumber" type="number" min="1"></label><label>Size<input id="lnSize" placeholder="cm"></label></div>
+<div class="inline"><label>Tenderness<select id="lnTender"><option>Non-tender</option><option>Tender</option></select></label><label>Consistency<select id="lnConsistency"><option>Soft</option><option>Firm</option><option>Hard</option><option>Other</option></select></label></div>
+<div class="inline"><label>Mobility<select id="lnMobility"><option>Mobile</option><option>Fixed</option></select></label><label>Matting<select id="lnMatting"><option>No</option><option>Yes</option></select></label></div>
+<label>Overlying skin changes<textarea id="lnSkin"></textarea></label>
+</div>
+
+<div class="card">
+<h2>Functional Assessment</h2>
+<p class="small">Particularly important for older adults. Select the clinically appropriate status for each item.</p>
+<div id="functional"></div>
+</div>
+
+<div class="card">
+<h2>Body Map — Localised Findings</h2>
+<div class="inline"><label>Body region<select id="bodyRegion"><option>Head / neck</option><option>Chest</option><option>Abdomen</option><option>Upper limb</option><option>Lower limb</option><option>Musculoskeletal regions</option><option>Skin</option><option>Breast</option><option>Feet</option><option>Neurological distribution</option></select></label><label>Finding<select id="bodyFinding"><option>Pain</option><option>Tenderness</option><option>Swelling</option><option>Mass</option><option>Skin lesion</option><option>Joint abnormality</option><option>Neurological deficit</option><option>Sensory loss</option><option>Weakness</option><option>Oedema</option><option>Other localized finding</option></select></label></div>
+<div class="inline"><label>Laterality<select id="bodyLaterality"><option>Not applicable</option><option>Right</option><option>Left</option><option>Bilateral</option></select></label><label>Anatomical location<input id="bodyLocation"></label></div>
+<label>Clinical description<textarea id="bodyDescription"></textarea></label>
+<button type="button" class="secondary no-print" onclick="addFinding()">Add finding</button>
+<div id="findingList"></div>
+</div>
+
+</div>
+
+</div></div><script>
+const $=id=>document.getElementById(id);
+function n(id){const v=parseFloat($(id).value);return Number.isFinite(v)?v:null}
+function fmt(v,d=1){return v==null?'—':v.toFixed(d)}
+function calc(){
+ const rb=n('rs'), lb=n('ls');
+ const b=(rb!=null&&lb!=null)?Math.max(rb,lb):(rb??lb);
+ $('brachial').textContent=b==null?'—':b;
+ const ra=n('ra'),la=n('la');
+ $('rabi').textContent=(ra!=null&&b)?fmt(ra/b,2):'—';
+ $('labi').textContent=(la!=null&&b)?fmt(la/b,2):'—';
+ const h=n('height'),w=n('weight');
+ $('bmi').textContent=(h&&w)?fmt(w/((h/100)**2),1):'—';
+ const wa=n('waist'),hi=n('hip');
+ $('hwr').textContent=(wa&&hi)?fmt(hi/wa,2):'—';
+}
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',calc));
+function val(id){return $(id).value||'—'}
+function saveVitalsLocal(){const data={};document.querySelectorAll('#vitalsSection input,#vitalsSection select').forEach(e=>data[e.id]=e.value);localStorage.setItem('jeevsetu_vitals_stageA',JSON.stringify(data));}
+
+
+const constitutional=[
+['Fever / chills','क्या आपको हाल में बार-बार या बिना किसी स्पष्ट कारण के बुखार या ठंड लगने की शिकायत हुई है?','fever'],
+['Unintentional weight change','क्या हाल के दिनों या महीनों में आपका वजन बिना कोशिश के कम या ज्यादा हुआ है?','weight'],
+['Appetite','आपकी भूख में हाल में कोई बदलाव हुआ है—भूख कम या ज्यादा हुई है?','appetite'],
+['Weakness / fatigue','क्या आपको सामान्य से ज्यादा कमजोरी या थकान महसूस होती है?','fatigue'],
+['Night sweats','क्या रात में आपको इतना पसीना आता है कि कपड़े या बिस्तर बदलने पड़े?','sweats'],
+['Generalised body ache','क्या आपको पूरे शरीर में या कई जगहों पर बिना किसी स्पष्ट कारण के दर्द या बदन दर्द रहता है?','ache'],
+['Functional capacity','क्या पहले की तुलना में आपकी रोज़मर्रा के काम करने की क्षमता कम हुई है?','capacity']];
+const general=['General appearance','Comfortable / uncomfortable','Acutely or chronically ill appearance','Consciousness','Distress','Nutritional status','Hydration','Hygiene','Mobility','Pallor','Jaundice','Cyanosis','Clubbing','Oedema','Lymphadenopathy','Dehydration','Visible thyroid enlargement'];
+const functional=['Standing ability','Gait','Walking speed','Need for support','Chair-to-standing ability','General muscle bulk','Obvious frailty','Functional limitation'];
+const cbox=document.getElementById('constitutional');
+constitutional.forEach(([t,q,k])=>{let d=document.createElement('div');d.className='q';d.innerHTML=`<b>${t}</b><p>${q}</p><div class="yn"><label><input type="radio" name="${k}" value="Yes"> हाँ</label><label><input type="radio" name="${k}" value="No"> नहीं</label></div>${k==='weight'?'<label>यदि हाँ — कितना वजन और कितने समय में?<textarea id="weightDetail"></textarea></label>':''}`;cbox.appendChild(d)});
+function makeSelect(parent,items,prefix){items.forEach((v,i)=>{let l=document.createElement('label');l.innerHTML=`<b>${v}</b><select id="${prefix}${i}"><option>No abnormality detected</option><option>Abnormality detected</option><option>Not assessed</option></select>`;parent.appendChild(l)})}
+makeSelect(document.getElementById('generalExam'),general,'ge');makeSelect(document.getElementById('functional'),functional,'fn');
+let findings=[];
+function addFinding(){const f={region:bodyRegion.value,finding:bodyFinding.value,laterality:bodyLaterality.value,location:bodyLocation.value,description:bodyDescription.value};if(!f.location&&!f.description){alert('Please enter anatomical location or clinical description.');return}findings.push(f);renderFindings();bodyLocation.value='';bodyDescription.value=''}
+function renderFindings(){findingList.innerHTML=findings.map((f,i)=>`<div class="finding"><b>${f.finding}</b> — ${f.region}, ${f.laterality}${f.location?' — '+f.location:''}<br>${f.description||''} <button class="secondary no-print" type="button" onclick="findings.splice(${i},1);renderFindings()">Remove</button></div>`).join('')}
+function gval(id){return document.getElementById(id).value.trim()}
+function selected(name){const x=document.querySelector(`input[name="${name}"]:checked`);return x?x.value:''}
+function saveGeneral(){
+ const data={}; document.querySelectorAll('#generalSection input,#generalSection select,#generalSection textarea').forEach(e=>{if(e.type==='radio'){if(e.checked)data[e.name]=e.value}else data[e.id]=e.value}); data.findings=findings; localStorage.setItem('jeevsetu_general_exam',JSON.stringify(data)); alert('General Examination saved on this device.');
+}
+function loadGeneral(){let d;try{d=JSON.parse(localStorage.getItem('jeevsetu_general_exam')||'null')}catch(e){} if(!d){alert('No saved General Examination found.');return} document.querySelectorAll('#generalSection input,#generalSection select,#generalSection textarea').forEach(e=>{if(e.type==='radio')e.checked=d[e.name]===e.value;else if(d[e.id]!==undefined)e.value=d[e.id]});findings=d.findings||[];renderFindings();alert('Saved General Examination loaded.');}
+function clearGeneral(){if(!confirm('Clear the General Examination?'))return;document.querySelectorAll('#generalSection input,#generalSection textarea').forEach(e=>{if(e.type==='radio')e.checked=false;else e.value=''});document.querySelectorAll('#generalSection select').forEach(e=>e.selectedIndex=0);findings=[];renderFindings();}
+
+
+
+function saveAll(){
+ const patient={};document.querySelectorAll('#patientDetails input,#patientDetails select').forEach(e=>patient[e.id]=e.value);
+ saveVitalsLocal(); saveGeneral(); localStorage.setItem('jeevsetu_patient_details',JSON.stringify(patient)); alert('Vitals + General Examination + Patient Details saved on this device.');
+}
+function loadAll(){
+ let p=null;try{p=JSON.parse(localStorage.getItem('jeevsetu_patient_details')||'null')}catch(e){} if(p)document.querySelectorAll('#patientDetails input,#patientDetails select').forEach(e=>{if(p[e.id]!==undefined)e.value=p[e.id]});
+ let v=null;try{v=JSON.parse(localStorage.getItem('jeevsetu_vitals_stageA')||'null')}catch(e){} if(v)document.querySelectorAll('#vitalsSection input,#vitalsSection select').forEach(e=>{if(v[e.id]!==undefined)e.value=v[e.id]});
+ loadGeneral(); calc(); alert('Saved examination loaded.');
+}
+function clearAll(){if(!confirm('Clear all patient details, vitals and general examination data?'))return;document.querySelectorAll('#patientDetails input,#patientDetails select,#vitalsSection input,#generalSection input,#generalSection textarea').forEach(e=>{if(e.type==='radio')e.checked=false;else e.value=''});document.querySelectorAll('#vitalsSection select,#generalSection select,#patientDetails select').forEach(e=>e.selectedIndex=0);findings=[];renderFindings();calc();}
+(function(){const now=new Date();now.setMinutes(now.getMinutes()-now.getTimezoneOffset());const d=document.getElementById('examDate');if(d)d.value=now.toISOString().slice(0,10);const mt=document.getElementById('mtime');if(mt)mt.value=now.toISOString().slice(0,16);calc();})();
+</script></body></html>

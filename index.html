@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JeevSetu — Endocrine / Metabolic Examination</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:900px;margin:auto;padding:18px;line-height:1.45;color:#222}
+h1,h2{margin-bottom:8px}.section{border:1px solid #ccc;border-radius:10px;padding:15px;margin:15px 0}
+label{display:block;font-weight:600;margin:10px 0 5px}
+select,textarea,input{width:100%;box-sizing:border-box;padding:9px;border:1px solid #aaa;border-radius:6px}
+textarea{min-height:80px}
+button{padding:10px 16px;margin:8px 6px 8px 0;border:0;border-radius:6px;cursor:pointer}
+.primary{background:#333;color:white}.secondary{background:#ddd}
+.follow{display:none;margin-top:10px;padding:10px;background:#f7f7f7;border-radius:8px}
+.summary{display:none;border:2px solid #333;padding:18px;margin-top:20px}
+.alert{display:none;padding:12px;border:2px solid #a00;background:#fff0f0;color:#700;font-weight:bold}
+.small{font-size:.9em;color:#555}
+@media print{
+  body{max-width:none;padding:0}
+  .entry,.buttons,.no-print{display:none!important}
+  .summary{display:block!important;border:0;padding:0}
+  h1{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="entry">
+<h1>JeevSetu — Endocrine / Metabolic Examination</h1>
+<p><b>19.20 — ENDOCRINE / METABOLIC</b></p>
+<p class="small">Universal screening. Existing information from other sections should be reused rather than repeated. Symptoms indicate clinical suspicion and do not by themselves establish a diagnosis.</p>
+
+<div class="section">
+<h2>A. Universal Screening</h2>
+<label>Excessive thirst — “क्या आपको सामान्य से बहुत ज्यादा प्यास लगती है?”</label>
+<select id="thirst"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+
+<label>Urination</label>
+<select id="urination"><option value="">Reuse Section 18.5 — Urinary</option><option>Refer to Section 18.5</option><option>Not available</option></select>
+
+<label>Heat / cold intolerance — “क्या आपको दूसरों की तुलना में बहुत ज्यादा गर्मी या बहुत ज्यादा ठंड लगती है?”</label>
+<select id="heatcold"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+
+<label>Excessive sweating — “क्या आपको बिना गर्मी या मेहनत के सामान्य से ज्यादा पसीना आता है?”</label>
+<select id="sweat"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+
+<p class="small">Weight change, palpitations, tremor and bowel information: <b>reuse existing sections; do not repeat.</b></p>
+</div>
+
+<div class="section">
+<h2>B. 19.20.1 — THYROID: HYPOTHYROIDISM SCREEN</h2>
+<label>“क्या आपको इनमें से कोई परेशानी रहती है—बहुत ज्यादा थकान या सुस्ती, सामान्य से ज्यादा ठंड लगना, वजन बढ़ना, कब्ज, त्वचा का सूखना, बाल झड़ना, आवाज में भारीपन या चेहरे/आंखों के आसपास सूजन?”</label>
+<select id="hypo" onchange="toggle('hypoFollow',this.value==='Yes')"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+<div id="hypoFollow" class="follow">
+<label>Duration</label><input id="hypoDuration">
+<label>Weight change</label><select id="hypoWeight"><option value="">Select</option><option>Weight gain</option><option>No significant change</option><option>Weight loss</option><option>Not assessed</option></select>
+<label>Cold intolerance</label><select id="hypoCold"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Constipation</label><select id="hypoConst"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Dry skin</label><select id="hypoSkin"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Hair loss</label><select id="hypoHair"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Facial puffiness</label><select id="hypoFace"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Voice change</label><select id="hypoVoice"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Excessive sleepiness</label><select id="hypoSleep"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Concentration / memory slowing</label><select id="hypoMemory"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Muscle aches / weakness</label><select id="hypoMuscle"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Menstrual changes (if applicable)</label><select id="hypoMenses"><option value="">Select</option><option>No</option><option>Yes</option><option>Not applicable</option><option>Not assessed</option></select>
+</div>
+</div>
+
+<div class="section">
+<h2>C. 19.20.2 — THYROID: HYPERTHYROID PATTERN</h2>
+<label>“क्या आपको सामान्य से ज्यादा गर्मी लगती है, बहुत पसीना आता है, वजन बिना कोशिश के कम हो रहा है, हाथ कांपते हैं या दिल तेज धड़कता है?”</label>
+<select id="hyper"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+<p class="small">Reuse existing cardiovascular, neurological, weight-change and bowel information.</p>
+</div>
+
+<div class="section">
+<h2>D. 19.20.3 — CUSHING SYNDROME: TARGETED SCREEN</h2>
+<label>“क्या हाल के समय में आपका वजन खासकर पेट और चेहरे के आसपास बढ़ा है, जबकि हाथ-पैर अपेक्षाकृत पतले लगते हैं?”</label>
+<select id="cushing" onchange="toggle('cushingFollow',this.value==='Yes')"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+<div id="cushingFollow" class="follow">
+<label>Easy bruising</label><select id="cBruise"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Wide/reddish-purple stretch marks, especially abdomen/thighs</label><select id="cStriae"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Muscle weakness, especially rising from chair/climbing stairs</label><select id="cWeak"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>New or difficult-to-control high blood pressure</label><select id="cBP"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>New diabetes / high blood sugar</label><select id="cDM"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Facial rounding / unusual fullness</label><select id="cFace"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Increased facial/body hair (if applicable)</label><select id="cHair"><option value="">Select</option><option>No</option><option>Yes</option><option>Not applicable</option><option>Not assessed</option></select>
+<label>Menstrual changes (if applicable)</label><select id="cMenses"><option value="">Select</option><option>No</option><option>Yes</option><option>Not applicable</option><option>Not assessed</option></select>
+</div>
+</div>
+
+<div class="section">
+<h2>E. 19.20.4 — ACROMEGALY: TARGETED SCREEN</h2>
+<label>“क्या आपने या आपके परिवार ने महसूस किया है कि आपके हाथ-पैर, जूते/चप्पल या अंगूठियां पहले की तुलना में बड़े हो गए हैं?”</label>
+<select id="acromegaly" onchange="toggle('acroFollow',this.value==='Yes')"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+<div id="acroFollow" class="follow">
+<label>Change in shoe / ring size</label><select id="aSize"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Coarsening of facial features</label><select id="aFace"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Jaw enlargement</label><select id="aJaw"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Increased sweating</label><select id="aSweat"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Headache</label><select id="aHead"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Snoring / sleep-related breathing problems</label><select id="aSleep"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Joint pain</label><select id="aJoint"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Voice becoming deeper</label><select id="aVoice"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+</div>
+</div>
+
+<div class="section">
+<h2>F. 19.20.5 — ADRENAL / OTHER ENDOCRINE CLUES</h2>
+<label>“क्या आपकी त्वचा, खासकर हथेलियों की रेखाओं, मुंह के अंदर या शरीर के अन्य हिस्सों में पहले की तुलना में ज्यादा काली हुई है?”</label>
+<select id="pigment" onchange="toggle('pigFollow',this.value==='Yes')"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+<div id="pigFollow" class="follow">
+<label>Duration</label><input id="pigDuration">
+<label>Associated unusual weakness</label><select id="pigWeak"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Dizziness / postural symptoms</label><select id="pigDizzy"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Unintentional weight loss</label><select id="pigWeight"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+<label>Gastrointestinal symptoms</label><select id="pigGI"><option value="">Select</option><option>No</option><option>Yes</option><option>Not assessed</option></select>
+</div>
+<label>Recurrent episodes of sweating, tremor, palpitations, sudden weakness or dizziness</label>
+<select id="episodes"><option value="">Select</option><option>No</option><option>Yes</option><option>Unable to assess</option></select>
+<p class="small">Existing cardiovascular and neurological findings should be reused rather than repeated.</p>
+</div>
+
+<div class="section">
+<h2>G. Additional Endocrine / Metabolic Findings</h2>
+<textarea id="additional" placeholder="Enter any additional findings..."></textarea>
+</div>
+
+<div class="buttons">
+<button class="primary" onclick="generateSummary()">Generate Clinical Summary</button>
+<button class="secondary" onclick="printSummary()">Print / Save PDF</button>
+</div>
+</div>
+
+<div id="summary" class="summary"></div>
+
+<script>
+function v(id){let e=document.getElementById(id);return e?e.value:''}
+function toggle(id,show){document.getElementById(id).style.display=show?'block':'none'}
+function row(label,id){let x=v(id);return x?`<p><b>${label}:</b> ${x}</p>`:''}
+function generateSummary(){
+ let s=`<h1>JeevSetu — Endocrine / Metabolic Clinical Summary</h1>
+ <h2>19.20 — ENDOCRINE / METABOLIC</h2>
+ ${row('Excessive thirst','thirst')}
+ <p><b>Urination:</b> Reuse Section 18.5 — Urinary; not repeated here.</p>
+ ${row('Heat / cold intolerance','heatcold')}
+ ${row('Excessive sweating','sweat')}
+ <hr><h3>Hypothyroidism screen</h3>${row('Screen','hypo')}`;
+ if(v('hypo')==='Yes'){
+   ['Duration','Weight change','Cold intolerance','Constipation','Dry skin','Hair loss','Facial puffiness','Voice change','Excessive sleepiness','Concentration/memory slowing','Muscle aches/weakness','Menstrual changes (if applicable)']
+   .forEach((x,i)=>s+=row(x,['hypoDuration','hypoWeight','hypoCold','hypoConst','hypoSkin','hypoHair','hypoFace','hypoVoice','hypoSleep','hypoMemory','hypoMuscle','hypoMenses'][i]));
+ }
+ s+=`<h3>Hyperthyroid pattern</h3>${row('Screen','hyper')}
+ <p><b>Existing information:</b> Weight change, palpitations, tremor, bowel and relevant cardiovascular/neurological findings should be correlated from their respective sections.</p>
+ <h3>Cushing syndrome — targeted screen</h3>${row('Screen','cushing')}`;
+ if(v('cushing')==='Yes'){
+ ['Easy bruising','Wide/reddish-purple stretch marks','Muscle weakness','Difficult-to-control high BP','New diabetes/high blood sugar','Facial rounding/fullness','Increased facial/body hair','Menstrual changes']
+ .forEach((x,i)=>s+=row(x,['cBruise','cStriae','cWeak','cBP','cDM','cFace','cHair','cMenses'][i]));
+ }
+ s+=`<h3>Acromegaly — targeted screen</h3>${row('Screen','acromegaly')}`;
+ if(v('acromegaly')==='Yes'){
+ ['Change in shoe/ring size','Coarsening facial features','Jaw enlargement','Increased sweating','Headache','Snoring/sleep-related breathing problems','Joint pain','Deeper voice']
+ .forEach((x,i)=>s+=row(x,['aSize','aFace','aJaw','aSweat','aHead','aSleep','aJoint','aVoice'][i]));
+ }
+ s+=`<h3>Adrenal / other endocrine clues</h3>${row('Skin pigmentation change','pigment')}`;
+ if(v('pigment')==='Yes') ['Duration','Associated weakness','Dizziness/postural symptoms','Unintentional weight loss','GI symptoms'].forEach((x,i)=>s+=row(x,['pigDuration','pigWeak','pigDizzy','pigWeight','pigGI'][i]));
+ s+=row('Recurrent episodes','episodes');
+ s+=`<h3>Additional findings</h3><p>${(v('additional')||'None recorded.').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</p>
+ <hr><p><b>Clinical interpretation:</b> Symptoms do not equal diagnosis. Findings are for clinical suspicion and should be correlated with examination and, where appropriate, investigation.</p>`;
+ document.getElementById('summary').innerHTML=s;
+ document.getElementById('summary').style.display='block';
+}
+function printSummary(){generateSummary();setTimeout(()=>window.print(),150)}
+</script>
+</body>
+</html>

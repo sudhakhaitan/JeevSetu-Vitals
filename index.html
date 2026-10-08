@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JeevSetu — 19.17 Vascular / Peripheral Circulation</title>
+<style>
+:root{--b:#123b5d;--g:#2f7d5a;--l:#eef6f1;--bd:#cbd8d2;--tx:#233238}
+*{box-sizing:border-box} body{font-family:Arial,sans-serif;margin:0;background:#f5f7f6;color:var(--tx)}
+header{background:var(--b);color:white;padding:16px 20px} h1{font-size:21px;margin:0 0 5px} h2{font-size:18px;color:var(--b);margin:0 0 12px}
+.container{max-width:1050px;margin:18px auto;padding:0 14px}.card{background:white;border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+label{font-weight:600;font-size:14px;display:block;margin-bottom:4px}
+select,input,textarea{width:100%;padding:9px;border:1px solid #b9c7c1;border-radius:6px;background:white;font-size:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pulse{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:7px;align-items:end;margin:7px 0}
+.small{font-size:12px;color:#607078}.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button{border:0;border-radius:7px;padding:10px 15px;background:var(--g);color:white;font-weight:700;cursor:pointer}
+button.secondary{background:#607d8b}.note{white-space:pre-wrap;line-height:1.45;background:#fbfcfc;border-left:4px solid var(--g);padding:14px}
+.alert{background:#fff6df;border:1px solid #e4c87a;padding:10px;border-radius:7px;margin-top:10px}
+.limbChecks{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin:10px 0 14px}
+.limbChecks label{border:1px solid #cbd8d2;border-radius:7px;padding:10px;background:#f8fbfa;cursor:pointer}
+.limbChecks input{width:auto;margin-right:7px}
+@media(max-width:650px){.row{grid-template-columns:1fr}.pulse{grid-template-columns:1fr}}
+@media print{
+ body{background:white}.no-print, header .small, button{display:none!important}
+ .card{border:0;padding:0;margin:0 0 10px}.container{max-width:none;margin:0;padding:0}
+ #formArea{display:none!important} #clinicalNoteCard{display:block!important}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>JeevSetu — 19.17 Vascular / Peripheral Circulation Examination</h1>
+<div class="small" style="color:#d9e7ef">Peripheral circulation + ABI integration + arterial/venous findings + bleeding history</div>
+</header>
+
+<div class="container">
+<div id="formArea">
+<div class="card">
+<h2>Patient / Encounter</h2>
+<div class="grid">
+<div><label>Patient name</label><input id="patientName" placeholder="Optional"></div>
+<div><label>Patient ID</label><input id="patientId" placeholder="e.g. JS-MP-BAR-000001"></div>
+<div><div><label>Age / Sex</label><input id="ageSex" placeholder="e.g. 68 / Male"></div></div>
+<div><label>Examiner</label><input id="examiner"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>A. Peripheral pulses — bilateral</h2>
+<div class="small">Use Normal / Reduced / Absent. Do not use Present/Absent.</div>
+<div id="pulses"></div>
+</div>
+
+<div class="card">
+<h2>B. Limb inspection + venous disease — limb-specific</h2>
+<div class="small"><b>First identify all affected limbs.</b> You may select more than one. After selection, a separate examination block will appear for <b>each limb</b>. Findings entered for one limb will NOT be applied to another limb.</div>
+<div class="limbChecks" id="affectedLimbs">
+<label><input type="checkbox" name="affectedLimb" value="None"> None</label>
+<label><input type="checkbox" name="affectedLimb" value="Right upper limb"> Right upper limb</label>
+<label><input type="checkbox" name="affectedLimb" value="Left upper limb"> Left upper limb</label>
+<label><input type="checkbox" name="affectedLimb" value="Right lower limb"> Right lower limb</label>
+<label><input type="checkbox" name="affectedLimb" value="Left lower limb"> Left lower limb</label>
+</div>
+<div id="limbExaminations"></div>
+</div>
+
+<div class="card">
+<h2>D. Vascular symptoms / relevant history</h2>
+<div class="grid">
+<div><label>Intermittent claudication</label><select id="claudication"><option>No</option><option>Yes</option></select></div>
+<div><label>Rest pain</label><select id="restPain"><option>No</option><option>Yes</option></select></div>
+<div><label>Coldness of limb</label><select id="coldLimb"><option>No</option><option>Yes</option></select></div>
+<div><label>Non-healing wound</label><select id="nonHealing"><option>No</option><option>Yes</option></select></div>
+<div><label>Previous vascular intervention</label><select id="vascularIntervention"><option>No</option><option>Yes</option></select></div>
+<div><label>Previous DVT</label><select id="dvt"><option>No</option><option>Yes</option></select></div>
+</div>
+</div>
+
+<div class="card">
+<h2>E. Bleeding history</h2>
+<div class="grid">
+<div><label>Bleeding tendency / prolonged bleeding</label><select id="bleeding"><option>No</option><option>Yes</option></select></div>
+<div><label>If Yes — type</label><select id="bleedingType">
+<option>Not applicable</option><option>Gum bleeding</option><option>Nose bleeding</option>
+<option>Excessive bleeding after injury/procedure</option><option>Prolonged bleeding</option><option>Other</option>
+</select></div>
+</div>
+</div>
+
+<div class="card">
+<h2>F. ABI + bilateral BP — integrated vascular review</h2>
+<div class="small">Values can be entered here for standalone testing. In the integrated JeevSetu build these fields should be populated from the existing Vitals/ABI record.</div>
+<div class="row">
+<div><label>Right arm BP (mmHg)</label><input id="rbp" placeholder="e.g. 132/78"></div>
+<div><label>Left arm BP (mmHg)</label><input id="lbp" placeholder="e.g. 128/76"></div>
+<div><label>Right ABI</label><input id="rabi" type="number" step="0.01" min="0" max="3" placeholder="e.g. 0.92"></div>
+<div><label>Left ABI</label><input id="labi" type="number" step="0.01" min="0" max="3" placeholder="e.g. 0.88"></div>
+</div>
+<div id="abiInterpretation" class="alert" style="display:none"></div>
+</div>
+
+<div class="card no-print">
+<div class="btns">
+<button onclick="generateNote()">Generate Clinical Note</button>
+<button class="secondary" onclick="window.print()">Print / Save PDF</button>
+<button class="secondary" onclick="clearAll()">Clear</button>
+</div>
+</div>
+</div>
+
+<div class="card" id="clinicalNoteCard">
+<h2>Clinician Note — 19.17 Vascular / Peripheral Circulation</h2>
+<div id="clinicalNote" class="note">Complete the examination and select “Generate Clinical Note”.</div>
+</div>
+</div>
+
+<script>
+const pulseNames=["Brachial","Radial","Femoral","Popliteal","Posterior tibial","Dorsalis pedis"];
+const sides=["Right","Left"];
+const p=document.getElementById("pulses");
+pulseNames.forEach(n=>{
+  const row=document.createElement("div"); row.className="pulse";
+  row.innerHTML=`<div><label>${n}</label></div>`+
+    sides.map(s=>`<div><label>${s}</label><select id="${s.toLowerCase()}_${n.replaceAll(" ","_")}"><option>Normal</option><option>Reduced</option><option>Absent</option></select></div>`).join("");
+  p.appendChild(row);
+});
+const limbFields = [
+  ["Colour","colour",["Normal","Pallor","Cyanosis","Dependent rubor"]],
+  ["Skin changes","skinChanges",["None","Present"]],
+  ["Hair loss","hairLoss",["No","Yes"]],
+  ["Ulceration","ulceration",["No","Yes"]],
+  ["Gangrene","gangrene",["No","Yes"]],
+  ["Temperature difference","tempDiff",["No","Yes"]],
+  ["Swelling","swelling",["No","Yes"]],
+  ["Varicose veins","varicose",["Absent","Present"]],
+  ["Pigmentation","pigmentation",["Absent","Present"]],
+  ["Venous eczema","venousEczema",["Absent","Present"]],
+  ["Chronic venous changes","chronicVenous",["Absent","Present"]],
+  ["Venous ulcer","venousUlcer",["Absent","Present"]]
+];
+const limbKey = name => name.toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");
+function selectedLimbs(){
+ return [...document.querySelectorAll('input[name="affectedLimb"]:checked')].map(e=>e.value).filter(x=>x!=="None");
+}
+function limbFieldId(limb,field){ return "limb_"+limbKey(limb)+"_"+field; }
+function buildLimbExaminations(){
+ const wrap=document.getElementById("limbExaminations");
+ const selected=selectedLimbs();
+ wrap.innerHTML="";
+ if(!selected.length){
+   wrap.innerHTML='<div class="small" style="margin-top:12px">Select one or more limbs above to record limb-specific findings.</div>';
+   return;
+ }
+ selected.forEach(limb=>{
+   const key=limbKey(limb);
+   const card=document.createElement("div"); card.className="limbExam"; card.dataset.limb=limb;
+   let html=`<h3>${limb}</h3><div class="small">All findings below apply ONLY to ${limb}.</div><div class="grid">`;
+   limbFields.forEach(([label,field,opts])=>{
+     html+=`<div><label>${label}</label><select id="${limbFieldId(limb,field)}">${opts.map(o=>`<option>${o}</option>`).join("")}</select></div>`;
+   });
+   html+=`</div>
+   <div id="${key}_ulcerDetails" class="alert limbExtra" style="display:none"><div class="grid">
+   <div><label>Exact ulcer site — ${limb}</label><input id="${limbFieldId(limb,"ulcerSite")}" placeholder="e.g. medial ankle / great toe"></div>
+   <div><label>Ulcer size / appearance — ${limb}</label><input id="${limbFieldId(limb,"ulcerAppearance")}" placeholder="e.g. 1 cm, clean base"></div>
+   </div></div>
+   <div id="${key}_varicoseDetails" class="alert limbExtra" style="display:none">
+   <label>Exact site of varicose veins — ${limb}</label><input id="${limbFieldId(limb,"varicoseSite")}" placeholder="e.g. medial thigh / calf / below knee">
+   </div>`;
+   card.innerHTML=html; wrap.appendChild(card);
+   card.querySelector(`#${limbFieldId(limb,"ulceration")}`).addEventListener("change",e=>{
+     document.getElementById(key+"_ulcerDetails").style.display=e.target.value==="Yes"?"block":"none";
+   });
+   card.querySelector(`#${limbFieldId(limb,"varicose")}`).addEventListener("change",e=>{
+     document.getElementById(key+"_varicoseDetails").style.display=e.target.value==="Present"?"block":"none";
+   });
+ });
+}
+document.querySelectorAll('input[name="affectedLimb"]').forEach(cb=>cb.addEventListener("change",()=>{
+ const all=[...document.querySelectorAll('input[name="affectedLimb"]')];
+ const none=all.find(x=>x.value==="None"); const others=all.filter(x=>x.value!=="None");
+ if(cb.value==="None"&&cb.checked) others.forEach(x=>x.checked=false);
+ if(cb.value!=="None"&&cb.checked) none.checked=false;
+ buildLimbExaminations();
+}));
+["rabi","labi"].forEach(id=>document.getElementById(id).addEventListener("input",updateABI));
+function updateABI(){
+ const r=parseFloat(document.getElementById("rabi").value), l=parseFloat(document.getElementById("labi").value);
+ let out=[];
+ if(!isNaN(r)) out.push("Right ABI: "+r+" — "+abiClass(r));
+ if(!isNaN(l)) out.push("Left ABI: "+l+" — "+abiClass(l));
+ const box=document.getElementById("abiInterpretation");
+ box.style.display=out.length?"block":"none"; box.textContent=out.join(" | ");
+}
+function abiClass(x){
+ if(x<0.40)return"Severely abnormal";
+ if(x<0.70)return"Moderately abnormal";
+ if(x<0.90)return"Abnormal / suggestive of PAD";
+ if(x<=1.40)return"Within generally normal range";
+ return"Non-compressible / requires clinical correlation";
+}
+function v(id){return document.getElementById(id).value}
+function pulseText(){
+ return pulseNames.map(n=>{
+   const key=n.replaceAll(" ","_");
+   return `${n}: Right ${v("right_"+key)}; Left ${v("left_"+key)}.`;
+ }).join("\n");
+}
+function yesNo(label,id){return `${label}: ${v(id)}.`}
+function limbFindings(limb){
+ const key=limbKey(limb), g=f=>v(limbFieldId(limb,f));
+ const abnormal=[];
+ if(g("colour")!=="Normal") abnormal.push(`Colour: ${g("colour")}`);
+ [["skinChanges","Skin changes","None"],["hairLoss","Hair loss","No"],["ulceration","Ulceration","No"],["gangrene","Gangrene","No"],["tempDiff","Temperature difference","No"],["swelling","Swelling","No"],["pigmentation","Pigmentation","Absent"],["venousEczema","Venous eczema","Absent"],["chronicVenous","Chronic venous changes","Absent"],["venousUlcer","Venous ulcer","Absent"]].forEach(([id,label,normal])=>{if(g(id)!==normal) abnormal.push(`${label}: ${g(id)}`);});
+ if(g("ulceration")==="Yes") abnormal.push(`Ulcer — exact site: ${g("ulcerSite")||"not recorded"}; size/appearance: ${g("ulcerAppearance")||"not recorded"}`);
+ if(g("varicose")==="Present") abnormal.push(`Varicose veins — exact site: ${g("varicoseSite")||"not recorded"}`);
+ return {text:`${limb}\n  Colour: ${g("colour")}; Skin changes: ${g("skinChanges")}; Hair loss: ${g("hairLoss")}; Ulceration: ${g("ulceration")}; Gangrene: ${g("gangrene")}; Temperature difference: ${g("tempDiff")}; Swelling: ${g("swelling")}; Varicose veins: ${g("varicose")}\n  Pigmentation: ${g("pigmentation")}; Venous eczema: ${g("venousEczema")}; Chronic venous changes: ${g("chronicVenous")}; Venous ulcer: ${g("venousUlcer")}${g("ulceration")==="Yes"?`\n  Ulcer site: ${g("ulcerSite")||"not recorded"}; Size/appearance: ${g("ulcerAppearance")||"not recorded"}`:""}${g("varicose")==="Present"?`\n  Varicose-vein site: ${g("varicoseSite")||"not recorded"}`:""}`,abnormal};
+}
+function generateNote(){
+ let abnormal=[];
+ pulseNames.forEach(n=>{const key=n.replaceAll(" ","_"); if(v("right_"+key)!=="Normal"||v("left_"+key)!=="Normal") abnormal.push(`${n} — Right ${v("right_"+key)}, Left ${v("left_"+key)}`);});
+ const affected=selectedLimbs();
+ const limbNotes=affected.length?affected.map(l=>{const f=limbFindings(l); abnormal.push(...f.abnormal.map(x=>`${l} — ${x}`)); return f.text;}).join("\n\n"):"No affected limb selected.";
+ ["claudication","restPain","coldLimb","nonHealing","vascularIntervention","dvt"].forEach(id=>{if(v(id)==="Yes") abnormal.push(document.querySelector("#"+id).previousElementSibling.textContent+": Yes");});
+ if(v("bleeding")==="Yes") abnormal.push("Bleeding history: Yes — "+v("bleedingType"));
+ const rabi=v("rabi"), labi=v("labi");
+ let note=`19.17 — VASCULAR / PERIPHERAL CIRCULATION EXAMINATION\n\nPatient: ${v("patientName")||"—"}   ID: ${v("patientId")||"—"}   Age/Sex: ${v("ageSex")||"—"}\nExaminer: ${v("examiner")||"—"}\n\nPERIPHERAL PULSES\n${pulseText()}\n\nLIMB INSPECTION + VENOUS DISEASE — INDIVIDUAL LIMB FINDINGS\n${limbNotes}\n\nVASCULAR SYMPTOMS / RELEVANT HISTORY\nIntermittent claudication: ${v("claudication")}; Rest pain: ${v("restPain")}; Coldness of limb: ${v("coldLimb")}; Non-healing wound: ${v("nonHealing")}; Previous vascular intervention: ${v("vascularIntervention")}; Previous DVT: ${v("dvt")}\n\nBLEEDING HISTORY\n${v("bleeding")==="Yes"?"Bleeding tendency/prolonged bleeding: Yes — "+v("bleedingType"):"No bleeding tendency/prolonged bleeding reported."}\n\nINTEGRATED ABI / BP\nRight arm BP: ${v("rbp")||"—"}; Left arm BP: ${v("lbp")||"—"}\nRight ABI: ${rabi||"—"}${rabi?` (${abiClass(parseFloat(rabi))})`:""}; Left ABI: ${labi||"—"}${labi?` (${abiClass(parseFloat(labi))})`:""}\n\nCLINICAL SUMMARY\n${abnormal.length?"Abnormal / noteworthy findings: "+abnormal.join("; ")+".":"No abnormal vascular findings recorded on this examination."}`;
+ document.getElementById("clinicalNote").textContent=note;
+ localStorage.setItem("jeevsetu_vascular_19_17",JSON.stringify(collect()));
+}
+function collect(){
+ const o={};
+ document.querySelectorAll("input,select,textarea").forEach(e=>{
+   if(e.name==="affectedLimb") return;
+   if(e.id) o[e.id]=e.value;
+ });
+ o.affectedLimbs=[...document.querySelectorAll('input[name="affectedLimb"]:checked')].map(e=>e.value);
+ return o;
+}
+function clearAll(){
+ if(!confirm("Clear all vascular examination entries?"))return;
+ document.querySelectorAll("input,textarea").forEach(e=>{e.value=""; if(e.type==="checkbox")e.checked=false});
+ document.querySelectorAll("select").forEach(e=>e.selectedIndex=0);
+ document.getElementById("clinicalNote").textContent="Complete the examination and select “Generate Clinical Note”.";
+ document.getElementById("abiInterpretation").style.display="none";
+}
+window.addEventListener("load",()=>{
+ const s=localStorage.getItem("jeevsetu_vascular_19_17");
+ if(!s)return; try{
+   const o=JSON.parse(s);
+   Object.keys(o).forEach(k=>{
+     if(k==="affectedLimbs") return;
+     const e=document.getElementById(k); if(e)e.value=o[k];
+   });
+   if(Array.isArray(o.affectedLimbs)){
+     document.querySelectorAll('input[name="affectedLimb"]').forEach(e=>e.checked=o.affectedLimbs.includes(e.value));
+     buildLimbExaminations();
+     Object.keys(o).forEach(k=>{ if(k.startsWith("limb_")){ const e=document.getElementById(k); if(e)e.value=o[k]; }});
+     selectedLimbs().forEach(l=>{
+       const key=limbKey(l);
+       const u=document.getElementById(limbFieldId(l,"ulceration"));
+       const vv=document.getElementById(limbFieldId(l,"varicose"));
+       if(u) document.getElementById(key+"_ulcerDetails").style.display=u.value==="Yes"?"block":"none";
+       if(vv) document.getElementById(key+"_varicoseDetails").style.display=vv.value==="Present"?"block":"none";
+     });
+   }
+ }catch(e){}
+ updateABI();
+});
+</script>
+</body>
+</html>

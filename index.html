@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JeevSetu AI — Neurological Examination</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#17212b;background:#f3f6f8}
+body{margin:0;padding:16px;line-height:1.45}
+.wrap{max-width:980px;margin:auto}
+header,.card{background:#fff;border:1px solid #d7e0e7;border-radius:12px;padding:16px;margin:0 0 14px}
+header h1{font-size:1.35rem;margin:0 0 6px;color:#174a67}
+h2{font-size:1.1rem;margin:0 0 12px;color:#174a67}
+h3{font-size:1rem;margin:14px 0 8px}
+.note{background:#fff7df;border-left:4px solid #d89b00;padding:10px 12px;border-radius:5px}
+.alert{background:#fff0ef;border:1px solid #d43b32;border-left:5px solid #c92e26;padding:12px;border-radius:7px;margin:12px 0}
+.good{background:#eaf8ee;border-left:4px solid #28864a;padding:10px;border-radius:5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+label{display:block;font-weight:600;margin:0 0 5px}
+.field{margin-bottom:12px}
+select,input[type=text],input[type=number],textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid #b9c7d1;border-radius:7px;background:#fff;font:inherit}
+textarea{min-height:74px;resize:vertical}
+small,.muted{color:#566575;font-weight:400}
+fieldset{border:1px solid #d7e0e7;border-radius:8px;margin:10px 0;padding:12px}
+legend{font-weight:700;padding:0 5px}
+button{border:0;border-radius:8px;padding:11px 15px;font:inherit;font-weight:700;cursor:pointer;margin:4px 5px 4px 0}
+.primary{background:#176b87;color:#fff}.secondary{background:#e7eef2;color:#173647}.danger{background:#b52d27;color:#fff}
+.hidden{display:none!important}
+.status{font-weight:700;margin-top:8px}
+#clinicalNote{white-space:pre-wrap;background:#fff;border:1px solid #b9c7d1;border-radius:8px;padding:14px;min-height:120px}
+footer{color:#5c6873;font-size:.85rem;padding:8px}
+@media print{
+ body{background:#fff;padding:0;font-size:10.5pt}.wrap{max-width:none}
+ header,.form-screen,.no-print,footer{display:none!important}
+ #noteSection{display:block!important;border:0;padding:0;margin:0}
+ #clinicalNote{border:0;padding:0;white-space:pre-wrap}
+ #noteSection h2{display:block}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <h1>JeevSetu AI — Neurological Examination</h1>
+ <div>Dedicated examination module for trained nurse / ANM / clinician</div>
+ <p class="muted">Standalone field-trial build • No cranial nerve examination • No anatomical drawing • This form supports examination and documentation; it does not diagnose.</p>
+</header>
+
+<div class="card form-screen">
+ <h2>1. Immediate Neurological Warning Screen</h2>
+ <div class="note">Ask about sudden symptoms and observe the patient before routine examination. If a warning sign is present, do not delay urgent care to complete this form.</div>
+ <div class="grid">
+  <div class="field"><label for="redFace">New facial droop / face suddenly uneven?</label><select id="redFace" class="redflag"><option value="">Select</option><option value="No">No</option><option value="Yes">Yes</option><option value="Unknown">Unable to assess / unknown</option></select></div>
+  <div class="field"><label for="redWeak">Sudden new weakness or numbness, especially one-sided?</label><select id="redWeak" class="redflag"><option value="">Select</option><option value="No">No</option><option value="Yes">Yes</option><option value="Unknown">Unable to assess / unknown</option></select></div>
+  <div class="field"><label for="redSpeech">Sudden speech difficulty or difficulty understanding?</label><select id="redSpeech" class="redflag"><option value="">Select</option><option value="No">No</option><option value="Yes">Yes</option><option value="Unknown">Unable to assess / unknown</option></select></div>
+  <div class="field"><label for="redConscious">New reduced consciousness, seizure, or severe new confusion?</label><select id="redConscious" class="redflag"><option value="">Select</option><option value="No">No</option><option value="Yes">Yes</option><option value="Unknown">Unable to assess / unknown</option></select></div>
+  <div class="field"><label for="redHeadache">Sudden severe headache or sudden loss of balance / vision?</label><select id="redHeadache" class="redflag"><option value="">Select</option><option value="No">No</option><option value="Yes">Yes</option><option value="Unknown">Unable to assess / unknown</option></select></div>
+  <div class="field"><label for="onset">If any warning sign: onset / last known well</label><input id="onset" type="text" placeholder="Time/date, or unknown"></div>
+ </div>
+ <div id="redAlert" class="alert hidden" role="alert"><strong>URGENT WARNING:</strong> One or more warning signs are marked “Yes”. Activate the local emergency/referral pathway immediately. Do not continue routine examination before urgent clinical assessment. This form is not a stroke diagnostic tool.</div>
+ <div id="unknownAlert" class="note hidden">One or more warning-screen answers are unknown/unassessed. Clarify promptly. If an acute neurological event is suspected, seek urgent clinical assessment.</div>
+</div>
+
+<div class="card form-screen" id="symptomScreen">
+ <h2>2. Neurological Symptoms — Routine Screen</h2>
+ <p class="muted">Ask each question and record the patient's report. If a symptom is present, clarify onset, duration, progression and associated features in the relevant history field below. This screen does not make a diagnosis.</p>
+ <div class="grid" id="symptomFields"></div>
+ <div class="field"><label for="symptomDetails">Details of symptoms present (onset, duration, progression, side and associated features)</label><textarea id="symptomDetails" data-label="Neurological symptom details" placeholder="Record details of any symptom marked Present; include sudden onset or worsening"></textarea></div>
+</div>
+
+<div class="card form-screen" id="examForm">
+ <h2>3. Examination Findings</h2>
+ <p class="muted">For each item choose “Normal” only when the test was actually performed and no abnormality was found. Use “Not examined” when it was not performed or could not be assessed. Compare both sides where relevant.</p>
+
+ <fieldset>
+  <legend>A. General mental status (not a formal cognitive diagnosis)</legend>
+  <div class="grid">
+   <div class="field"><label for="alertness">Alertness</label><select id="alertness" data-label="Alertness"><option value="">Select</option><option>Alert</option><option>Drowsy</option><option>Responds only to voice / touch</option><option>Unresponsive</option><option>Not examined</option></select></div>
+   <div class="field"><label for="orientation">Orientation (person/place/time as appropriate)</label><select id="orientation" data-label="Orientation"><option value="">Select</option><option>Oriented</option><option>Some disorientation</option><option>Marked disorientation</option><option>Not assessed</option></select></div>
+   <div class="field"><label for="speech">Speech during conversation</label><select id="speech" data-label="Speech"><option value="">Select</option><option>Clear / appropriate</option><option>Slurred</option><option>Difficulty finding / producing words</option><option>Unable to assess</option></select></div>
+  </div>
+ </fieldset>
+
+ <fieldset>
+  <legend>B. Motor system — observe and compare sides</legend>
+  <div class="grid">
+   <div class="field"><label for="faceSym">Facial symmetry at rest / smile (observation only)</label><select id="faceSym" data-label="Facial symmetry"><option value="">Select</option><option>Symmetrical</option><option>Asymmetry observed</option><option>Not assessed</option></select></div>
+   <div class="field"><label for="armPower">Arm power (right vs left; if trained)</label><select id="armPower" data-label="Arm power"><option value="">Select</option><option>Equal / no obvious weakness</option><option>Right weaker</option><option>Left weaker</option><option>Both arms weak</option><option>Not tested</option></select></div>
+   <div class="field"><label for="legPower">Leg power (right vs left; if trained)</label><select id="legPower" data-label="Leg power"><option value="">Select</option><option>Equal / no obvious weakness</option><option>Right weaker</option><option>Left weaker</option><option>Both legs weak</option><option>Not tested</option></select></div>
+   <div class="field"><label for="tone">Muscle tone (only if trained)</label><select id="tone" data-label="Muscle tone"><option value="">Select</option><option>No obvious abnormality</option><option>Increased / stiff</option><option>Reduced / floppy</option><option>Asymmetric</option><option>Not examined</option></select></div>
+   <div class="field"><label for="wasting">Visible muscle wasting / asymmetry</label><select id="wasting" data-label="Muscle wasting / asymmetry"><option value="">Select</option><option>Not observed</option><option>Observed — right</option><option>Observed — left</option><option>Observed — both / widespread</option><option>Not assessed</option></select></div>
+  </div>
+ </fieldset>
+
+ <fieldset>
+  <legend>C. Detailed sensory examination (trained examiner)</legend>
+  <p class="muted">Explain each test first, demonstrate with the patient's eyes open, then test with eyes closed where appropriate. Compare corresponding sites on both sides in a consistent sequence. Record the actual distribution; do not mark normal if not tested.</p>
+  <h3>Patient-reported sensory symptoms</h3>
+  <div class="grid">
+   <div class="field"><label for="numbness">Numbness / tingling / burning pain</label><select id="numbness" data-label="Numbness / tingling / burning"><option value="">Select</option><option>No</option><option>Yes — right side / limb</option><option>Yes — left side / limb</option><option>Yes — both sides / multiple areas</option><option>Unable to report</option></select></div>
+   <div class="field"><label for="sensoryLocation">Location and pattern</label><select id="sensoryLocation" data-label="Sensory symptom pattern"><option value="">Select</option><option>Single nerve territory</option><option>Dermatomal / radicular pattern</option><option>Stocking pattern (feet/legs)</option><option>Glove-and-stocking pattern</option><option>One side of body</option><option>Patchy / multiple areas</option><option>Other / not clear</option><option>No symptoms reported</option></select></div>
+   <div class="field"><label for="sensoryDetails">Exact area, onset and progression</label><textarea id="sensoryDetails" placeholder="Side, body part, when it began, progression, triggers"></textarea></div>
+  </div>
+  <h3>Primary sensory modalities</h3>
+  <div class="grid">
+   <div class="field"><label for="lightTouch">Light touch — compare right and left</label><select id="lightTouch" data-label="Light touch"><option value="">Select</option><option>Intact and symmetrical</option><option>Reduced — right</option><option>Reduced — left</option><option>Reduced — both sides</option><option>Patchy / inconsistent</option><option>Not tested / unable to assess</option></select></div>
+   <div class="field"><label for="pinprick">Pinprick / sharp–dull (safe, appropriate tool)</label><select id="pinprick" data-label="Pinprick / sharp-dull"><option value="">Select</option><option>Intact and symmetrical</option><option>Reduced — right</option><option>Reduced — left</option><option>Reduced — both sides</option><option>Patchy / inconsistent</option><option>Not tested / unable to assess</option></select></div>
+   <div class="field"><label for="temperature">Temperature (when clinically indicated)</label><select id="temperature" data-label="Temperature sensation"><option value="">Select</option><option>Intact and symmetrical</option><option>Reduced — right</option><option>Reduced — left</option><option>Reduced — both sides</option><option>Patchy / inconsistent</option><option>Not tested / not indicated</option></select></div>
+   <div class="field"><label for="vibration">Vibration sense (128-Hz tuning fork, if available)</label><select id="vibration" data-label="Vibration sense"><option value="">Select</option><option>Intact and symmetrical</option><option>Reduced — right</option><option>Reduced — left</option><option>Reduced — both sides</option><option>Absent at tested site(s)</option><option>Not tested / equipment unavailable</option></select></div>
+   <div class="field"><label for="proprioception">Joint position sense (great toe/finger, if indicated)</label><select id="proprioception" data-label="Joint position sense"><option value="">Select</option><option>Intact and symmetrical</option><option>Impaired — right</option><option>Impaired — left</option><option>Impaired — both sides</option><option>Inconsistent</option><option>Not tested / not indicated</option></select></div>
+   <div class="field"><label for="corticalSensory">Cortical sensory tests (only if indicated and primary sensation intact)</label><select id="corticalSensory" data-label="Cortical sensory tests"><option value="">Select</option><option>Recognises tested object / tracing appropriately</option><option>Abnormal stereognosis / graphesthesia suspected</option><option>Extinction / sensory inattention suspected</option><option>Not tested / not indicated</option></select></div>
+  </div>
+  <h3>Distribution and sensory level</h3>
+  <div class="grid">
+   <div class="field"><label for="sensoryUpperRight">Upper limb — right</label><select id="sensoryUpperRight" data-label="Sensory findings upper limb right"><option value="">Select</option><option>Normal at tested sites</option><option>Reduced / abnormal</option><option>Not tested</option></select></div>
+   <div class="field"><label for="sensoryUpperLeft">Upper limb — left</label><select id="sensoryUpperLeft" data-label="Sensory findings upper limb left"><option value="">Select</option><option>Normal at tested sites</option><option>Reduced / abnormal</option><option>Not tested</option></select></div>
+   <div class="field"><label for="sensoryLowerRight">Lower limb — right</label><select id="sensoryLowerRight" data-label="Sensory findings lower limb right"><option value="">Select</option><option>Normal at tested sites</option><option>Reduced / abnormal</option><option>Not tested</option></select></div>
+   <div class="field"><label for="sensoryLowerLeft">Lower limb — left</label><select id="sensoryLowerLeft" data-label="Sensory findings lower limb left"><option value="">Select</option><option>Normal at tested sites</option><option>Reduced / abnormal</option><option>Not tested</option></select></div>
+   <div class="field"><label for="sensoryLevel">Sensory level / dermatomal or nerve distribution</label><input id="sensoryLevel" type="text" placeholder="Specify level, nerve territory or landmarks"></div>
+   <div class="field"><label for="sensoryMapNotes">Detailed sensory findings / test sites</label><textarea id="sensoryMapNotes" placeholder="Document exact sites tested and the pattern of abnormality"></textarea></div>
+  </div>
+ </fieldset>
+
+ <fieldset>
+  <legend>D. Detailed reflex examination (trained examiner)</legend>
+  <p class="muted">Grade deep tendon reflexes consistently: 0 absent, 1+ reduced, 2+ expected/average, 3+ brisk, 4+ very brisk / clonus. Interpret in context and compare sides. “Not tested” is not normal.</p>
+  <h3>Deep tendon reflexes — record each side</h3>
+  <div class="grid">
+   <div class="field"><label for="bicepsR">Biceps — right (C5–C6)</label><select id="bicepsR" data-label="Biceps reflex right"><option value="">Select</option><option>0 — absent</option><option>1+ — reduced</option><option>2+ — expected</option><option>3+ — brisk</option><option>4+ — very brisk / clonus</option><option>Not tested</option></select></div>
+   <div class="field"><label for="bicepsL">Biceps — left (C5–C6)</label><select id="bicepsL" data-label="Biceps reflex left"><option value="">Select</option><option>0 — absent</option><option>1+ — reduced</option><option>2+ — expected</option><option>3+ — brisk</option><option>4+ — very brisk / clonus</option><option>Not tested</option></select></div>
+   <div class="field"><label for="brachioradialisR">Brachioradialis — right (C5–C6)</label><select id="brachioradialisR" data-label="Brachioradialis reflex right"><option value="">Select</option><option>0 — absent</option><option>1+ — reduced</option><option>2+ — expected</option><option>3+ — brisk</option><option>4+ — very brisk / clonus</option><option>Not tested</option></select></div>
+   <div class="field"><label for="brachioradialisL">Brachioradialis — left (C5–C6)</label><select id="brachioradialisL" data-label="Brachioradialis reflex left"><option value="">Select</option><option>0 — absent</option><option>1+ — reduced</option><option>2+ — expected</option><option>3+ — brisk</option><option>4+ — very brisk / clonus</option><option>Not tested</option></select></div>
+   <div class="field"><label for="tricepsR">Triceps — right (C7–C8)</label><select id="tricepsR" data-label="Triceps reflex right"><option value="">Select</option><option>0 — absent</option><option>1+ — reduced</option><option>2+ — expected</option><option>3+ — brisk</option><option>4+ — very brisk / clonus</option><option>Not tested</option></select></div>
+   <div class="field"><label for="tricepsL">Triceps — left (C7–C8)</label><select id="tricepsL" data-label="Triceps reflex left"><option value="">Select</option><option>0 — absent</option><option>1+ — reduced</option><option>2+ — expected</option><option>3+ — brisk</option><option>4+ — very brisk / clonus</option><option>Not tested</option></select></div>
+   <div class="field"><label for="patellarR">Patellar / knee — right (L3–L4)</label><select id="patellarR" data-label="Patellar reflex right"><option value="">Select</option><option>0 — absent</option><option>1+ — reduced</option><option>2+ — expected</option><option>3+ — brisk</option><option>4+ — very brisk / clonus</option><option>Not tested</option></select></div>
+   <div class="field"><label for="patellarL">Patellar / knee — left (L3–L4)</label><select id="patellarL" data-label="Patellar reflex left"><option value="">Select</option><option>0 — absent</option><option>1+ — reduced</option><option>2+ — expected</option><option>3+ — brisk</option><option>4+ — very brisk / clonus</option><option>Not tested</option></select></div>
+   <div class="field"><label for="achillesR">Achilles / ankle — right (S1–S2)</label><select id="achillesR" data-label="Achilles reflex right"><option value="">Select</option><option>0 — absent</option><option>1+ — reduced</option><option>2+ — expected</option><option>3+ — brisk</option><option>4+ — very brisk / clonus</option><option>Not tested</option></select></div>
+   <div class="field"><label for="achillesL">Achilles / ankle — left (S1–S2)</label><select id="achillesL" data-label="Achilles reflex left"><option value="">Select</option><option>0 — absent</option><option>1+ — reduced</option><option>2+ — expected</option><option>3+ — brisk</option><option>4+ — very brisk / clonus</option><option>Not tested</option></select></div>
+  </div>
+  <h3>Pathological reflexes / clonus</h3>
+  <div class="grid">
+   <div class="field"><label for="plantarR">Plantar response — right</label><select id="plantarR" data-label="Plantar response right"><option value="">Select</option><option>Flexor</option><option>Extensor response</option><option>Equivocal / indeterminate</option><option>Not tested</option></select></div>
+   <div class="field"><label for="plantarL">Plantar response — left</label><select id="plantarL" data-label="Plantar response left"><option value="">Select</option><option>Flexor</option><option>Extensor response</option><option>Equivocal / indeterminate</option><option>Not tested</option></select></div>
+   <div class="field"><label for="ankleClonusR">Ankle clonus — right</label><select id="ankleClonusR" data-label="Ankle clonus right"><option value="">Select</option><option>Absent</option><option>Present — beats / sustained to be described</option><option>Not tested</option></select></div>
+   <div class="field"><label for="ankleClonusL">Ankle clonus — left</label><select id="ankleClonusL" data-label="Ankle clonus left"><option value="">Select</option><option>Absent</option><option>Present — beats / sustained to be described</option><option>Not tested</option></select></div>
+   <div class="field"><label for="reflexNotes">Reflex summary / asymmetry / reinforcement / limitations</label><textarea id="reflexNotes" placeholder="Describe asymmetry, reinforcement used, clonus beats, pain or limitations"></textarea></div>
+  </div>
+  <p class="muted">Perform only tests within training, authorisation and local protocol. Unexpected extensor plantar response, marked asymmetry, new weakness or clonus needs clinician assessment; interpret findings with the complete examination.</p>
+ </fieldset>
+
+ <fieldset>
+  <legend>E. Coordination, gait and balance</legend>
+  <div class="grid">
+   <div class="field"><label for="coordination">Coordination (if safe and trained)</label><select id="coordination" data-label="Coordination"><option value="">Select</option><option>No obvious difficulty</option><option>Difficulty / inaccurate movement</option><option>Tremor affects task</option><option>Not tested</option></select></div>
+   <div class="field"><label for="gait">Usual walking / gait</label><select id="gait" data-label="Gait"><option value="">Select</option><option>Walks steadily without aid</option><option>Unsteady</option><option>Needs walking aid / human support</option><option>Unable to walk</option><option>Not assessed</option></select></div>
+   <div class="field"><label for="balance">Standing balance (only if safe)</label><select id="balance" data-label="Standing balance"><option value="">Select</option><option>Steady</option><option>Unsteady</option><option>Unable to stand safely</option><option>Not tested</option></select></div>
+   <div class="field"><label for="falls">Falls in the last 12 months</label><select id="falls" data-label="Falls in last 12 months"><option value="">Select</option><option>No</option><option>Yes — once</option><option>Yes — more than once</option><option>Unknown</option></select></div>
+  </div>
+  <div class="note">Do not ask an unsteady or frail patient to walk or stand without appropriate support. Do not perform balance challenges that may cause a fall.</div>
+ </fieldset>
+
+ <fieldset>
+  <legend>F. Tremor / abnormal movements</legend>
+  <div class="grid">
+   <div class="field"><label for="tremor">Tremor observed?</label><select id="tremor" data-label="Tremor"><option value="">Select</option><option>Not observed</option><option>Observed at rest</option><option>Observed during movement / posture</option><option>Not assessed</option></select></div>
+   <div class="field"><label for="rigidity">Rigidity / slowness of movement observed?</label><select id="rigidity" data-label="Rigidity / slowness"><option value="">Select</option><option>Not observed</option><option>Observed</option><option>Not assessed</option></select></div>
+   <div class="field"><label for="movementOther">Other involuntary movements</label><input id="movementOther" type="text" placeholder="None, or describe"></div>
+  </div>
+ </fieldset>
+
+ <fieldset>
+  <legend>G. Relevant history and examiner comments</legend>
+  <div class="field"><label for="neuroHistory">Neurological symptoms / duration / progression</label><textarea id="neuroHistory" placeholder="e.g., gradual foot numbness for 6 months; side and onset"></textarea></div>
+  <div class="field"><label for="function">Effect on daily activities</label><textarea id="function" placeholder="Walking, dressing, feeding, writing, work, etc."></textarea></div>
+  <div class="field"><label for="comments">Additional findings / limitations of examination</label><textarea id="comments" placeholder="Include what could not be assessed and why"></textarea></div>
+  <div class="field"><label for="action">Action taken / referral advice</label><select id="action"><option value="">Select</option><option>Routine documentation only — clinician review as indicated</option><option>Prompt clinician review advised</option><option>Urgent referral / emergency pathway activated</option><option>Unable to decide — clinician review required</option></select></div>
+ </fieldset>
+ <button type="button" class="primary" onclick="generateNote()">Generate Neurological Clinical Note</button>
+ <button type="button" class="secondary" onclick="saveDraft()">Save on this device</button>
+ <button type="button" class="secondary" onclick="loadDraft()">Load saved examination</button>
+ <button type="button" class="secondary" onclick="resetExam()">Clear examination fields</button>
+ <div id="formStatus" class="status" aria-live="polite"></div>
+</div>
+
+<div class="card hidden" id="noteSection">
+ <h2>Neurological Examination — Clinician Note</h2>
+ <div id="clinicalNote"></div>
+ <div class="no-print">
+  <button type="button" class="primary" onclick="window.print()">Print / Save PDF</button>
+  <button type="button" class="secondary" onclick="copyNote()">Copy note</button>
+  <button type="button" class="secondary" onclick="backToForm()">Back to examination</button>
+ </div>
+</div>
+<footer>Field-trial prototype. Findings must be interpreted by a qualified clinician in the full clinical context. A normal screen does not exclude neurological disease. Suspected stroke, seizure, altered consciousness or rapidly progressive weakness requires urgent assessment.</footer>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const fieldIds = ['symptomDetails','symptom0','symptom1','symptom2','symptom3','symptom4','symptom5','symptom6','symptom7','symptom8','symptom9','symptom10','symptom11','redFace','redWeak','redSpeech','redConscious','redHeadache','onset','alertness','orientation','speech','faceSym','armPower','legPower','tone','wasting','numbness','sensoryLocation','sensoryDetails','lightTouch','pinprick','temperature','vibration','proprioception','corticalSensory','sensoryUpperRight','sensoryUpperLeft','sensoryLowerRight','sensoryLowerLeft','sensoryLevel','sensoryMapNotes','bicepsR','bicepsL','brachioradialisR','brachioradialisL','tricepsR','tricepsL','patellarR','patellarL','achillesR','achillesL','plantarR','plantarL','ankleClonusR','ankleClonusL','reflexNotes','coordination','gait','balance','falls','tremor','rigidity','movementOther','neuroHistory','function','comments','action'];
+const symptoms=['Headache','Dizziness / Vertigo','Fainting / Near-fainting','Weakness','Numbness / Tingling','Speech / Language Difficulty','Visual Neurological Symptoms','Balance / Walking Difficulty','Falls','Memory / Cognitive Change','Tremor / Abnormal Movement','Seizure / Loss of Consciousness'];
+const symptomBox=$('symptomFields');
+symptoms.forEach((label,i)=>{const d=document.createElement('div');d.className='field';d.innerHTML='<label for=\"symptom'+i+'\">'+label+'</label><select id=\"symptom'+i+'\" data-label=\"'+label+'\"><option value=\"\">Select</option><option>Not present</option><option>Present</option><option>Unable to report / unknown</option></select>';symptomBox.appendChild(d);});
+function checkRedFlags(){
+  const vals=['redFace','redWeak','redSpeech','redConscious','redHeadache'].map(id=>$(id).value);
+  const yes=vals.includes('Yes'), unknown=vals.some(v=>v===''||v==='Unknown');
+  $('redAlert').classList.toggle('hidden',!yes);
+  $('unknownAlert').classList.toggle('hidden',yes||!unknown);
+  $('examForm').classList.toggle('hidden',yes);
+  $('symptomScreen').classList.toggle('hidden',yes);
+  if(yes){ $('formStatus').textContent='Urgent warning present: routine examination stopped. Activate emergency/referral pathway.'; }
+  return {yes,unknown};
+}
+document.querySelectorAll('.redflag').forEach(el=>el.addEventListener('change',checkRedFlags));
+function valueLabel(id){const el=$(id); return el ? (el.value.trim()||'Not recorded') : 'Not recorded';}
+function generateNote(){
+  const rf=checkRedFlags();
+  let note = 'JEEVSETU AI — NEUROLOGICAL EXAMINATION\n\n';
+  if(rf.yes){
+    note += 'URGENT WARNING SCREEN: At least one acute neurological warning sign marked YES. Routine examination was stopped. Immediate emergency assessment/referral required.\\n';
+    note += `Face droop: ${valueLabel('redFace')}; sudden weakness/numbness: ${valueLabel('redWeak')}; speech difficulty: ${valueLabel('redSpeech')}; reduced consciousness/seizure/confusion: ${valueLabel('redConscious')}; sudden severe headache/loss of balance or vision: ${valueLabel('redHeadache')}; onset/last known well: ${valueLabel('onset')}.\\n`;
+  } else {
+    note += 'IMMEDIATE WARNING SCREEN\\n';
+    note += `Facial droop: ${valueLabel('redFace')}; sudden weakness/numbness: ${valueLabel('redWeak')}; speech difficulty: ${valueLabel('redSpeech')}; consciousness/seizure/confusion: ${valueLabel('redConscious')}; sudden severe headache/balance/vision loss: ${valueLabel('redHeadache')}.\\n`;
+    if(rf.unknown) note += 'Caution: one or more warning-screen responses are unknown or incomplete; clarify promptly.\\n';
+    note += '\\nEXAMINATION FINDINGS\\n';
+    const groups = [
+      ['Mental status',['alertness','orientation','speech']],
+      ['Motor system',['faceSym','armPower','legPower','tone','wasting']],
+      ['Detailed sensory examination',['numbness','sensoryLocation','sensoryDetails','lightTouch','pinprick','temperature','vibration','proprioception','corticalSensory','sensoryUpperRight','sensoryUpperLeft','sensoryLowerRight','sensoryLowerLeft','sensoryLevel','sensoryMapNotes']],
+      ['Detailed reflex examination',['bicepsR','bicepsL','brachioradialisR','brachioradialisL','tricepsR','tricepsL','patellarR','patellarL','achillesR','achillesL','plantarR','plantarL','ankleClonusR','ankleClonusL','reflexNotes']],
+      ['Coordination, gait and balance',['coordination','gait','balance','falls']],
+      ['Tremor / abnormal movements',['tremor','rigidity','movementOther']]
+    ];
+    for(const [title,ids] of groups){ note += '\\n'+title+':\\n'; for(const id of ids){ const el=$(id); note += `${el.dataset.label||el.previousElementSibling?.textContent||id}: ${valueLabel(id)}\\n`; } }
+    note += `\\nNeurological symptoms / duration / progression: ${valueLabel('neuroHistory')}\\nEffect on daily activities: ${valueLabel('function')}\\nAdditional findings / limitations: ${valueLabel('comments')}\\nAction / referral: ${valueLabel('action')}\\n`;
+  }
+  note += '\\nClinical interpretation and diagnosis are to be completed by the responsible clinician. “Not examined” or missing entries must not be interpreted as normal.';
+  $('clinicalNote').textContent=note;
+  $('noteSection').classList.remove('hidden');
+  $('noteSection').scrollIntoView({behavior:'smooth',block:'start'});
+  $('formStatus').textContent='Clinical note generated.';
+}
+function collect(){const o={}; for(const id of fieldIds)o[id]=$(id)?.value||''; return o;}
+function saveDraft(){try{localStorage.setItem('jeevsetu_neurological_exam_draft',JSON.stringify({savedAt:new Date().toISOString(),fields:collect(),note:$('clinicalNote').textContent}));$('formStatus').textContent='Examination saved on this device.';}catch(e){$('formStatus').textContent='Could not save. Browser storage may be unavailable.';}}
+function loadDraft(){try{const d=JSON.parse(localStorage.getItem('jeevsetu_neurological_exam_draft')||'null');if(!d||!d.fields){$('formStatus').textContent='No saved neurological examination found on this device.';return;}for(const id of fieldIds)if($(id)&&d.fields[id]!==undefined)$(id).value=d.fields[id];checkRedFlags();if(d.note){$('clinicalNote').textContent=d.note;$('noteSection').classList.remove('hidden');}$('formStatus').textContent='Saved examination loaded. Verify before use.';}catch(e){$('formStatus').textContent='Could not load saved examination.';}}
+function resetExam(){if(!confirm('Clear neurological examination and symptom findings?'))return;for(const id of fieldIds){const el=$(id);if(el)el.value='';} $('noteSection').classList.add('hidden');$('clinicalNote').textContent='';checkRedFlags();$('formStatus').textContent='Examination fields cleared.';}
+function backToForm(){$('noteSection').classList.add('hidden');$('examForm').classList.remove('hidden');$('examForm').scrollIntoView({behavior:'smooth'});}
+async function copyNote(){try{await navigator.clipboard.writeText($('clinicalNote').textContent);$('formStatus').textContent='Clinical note copied.';}catch(e){$('formStatus').textContent='Copy not available in this browser; select and copy the note manually.';}}
+
+</script>
+</body>
+</html>

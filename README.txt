@@ -1,0 +1,1 @@
+JeevSetu Integrated Physical Examination with ENT, Eyes, Dental & Oral, and Skin & Dermatological Examination modules. Skin is Section 16. Patient details are entered only once at the beginning; the skin module does not expose separate patient details or clinical-note generation in the integrated package. Open index.html in a browser.

@@ -1,0 +1,1 @@
+JeevSetu Integrated Physical Examination with ENT and Eyes & Vision modules. Eyes module is embedded; no separate patient details or clinical-note generation is exposed. Existing integrated modules and sex-gated genital/breast sections are preserved. Open index.html in a browser.

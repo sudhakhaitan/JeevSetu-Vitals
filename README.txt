@@ -1,0 +1,1 @@
+JeevSetu Integrated Physical Examination with ENT, Eyes & Vision, and Dental & Oral Examination modules. Dental examination is embedded as Section 15. No separate patient details or clinical-note generation is exposed in the dental module. Open index.html in a browser.

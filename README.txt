@@ -1,0 +1,1 @@
+JeevSetu AI integrated physical examination package. Added the latest concise Endocrine/Metabolic examination as Section 9, preserving its diabetes-before-thyroid order. Endocrine remains a standalone embedded module and does not generate a consolidated clinical note.

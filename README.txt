@@ -1,1 +1,0 @@
-JeevSetu Integrated Physical Examination with ENT added. Preserves existing integrated modules and sex-gated genital/breast sections. ENT is embedded; standalone ENT clinical-note generation is hidden. Open index.html in a browser.

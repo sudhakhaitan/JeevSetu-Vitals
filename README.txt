@@ -1,1 +1,0 @@
-JeevSetu integrated Vitals, General Examination, Multiple-Site Lymph Node Examination, and CVS module. CVS print corrections: exact symptom responses, right/left peripheral pulse recording, only non-default peripheral findings in summary, and no automatic alert based solely on murmur/heart sounds. Test locally before clinical use.

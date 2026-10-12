@@ -1,1 +1,0 @@
-JeevSetu integrated physical examination package. Mental/Behavioural module removed. Updated consolidated-note generation to ask embedded modules to generate their own concise notes first, wait for completion, then collect only note/summary containers. Printing waits for note generation and excludes the examination forms/questions.

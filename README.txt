@@ -1,0 +1,1 @@
+JeevSetu Integrated Vitals, General Examination, Multiple-Site Lymph Node Examination, and CVS module. Use index.html in a browser. Generate Consolidated Clinical Note to include completed sections and CVS findings. Test locally before clinical use.

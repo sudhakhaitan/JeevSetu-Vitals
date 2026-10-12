@@ -1,2 +1,0 @@
-JeevSetu AI Integrated Physical Examination — with Mental / Behavioural Examination as the final section.
-Patient details are entered once at the top. Complete the modules in order. Section 18 is Mental / Behavioural Examination. Use Generate Final Clinical Note only after completing the modules. The consolidated note collects available module summaries/clinical notes and the mental/behavioural screen.

@@ -1,1 +1,0 @@
-JeevSetu integrated physical examination: Vitals, General Examination, Lymph Nodes, CVS and Respiratory. Shared patient identification is retained. Printing is intended to show only the consolidated clinician note.

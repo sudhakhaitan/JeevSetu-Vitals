@@ -1,0 +1,1 @@
+JeevSetu integrated build: Vitals, General Examination, Lymph Nodes, CVS, Respiratory, Abdominal, Neurological, and Musculoskeletal. Musculoskeletal examination follows Neurological. Generate Compact Clinical Note and Print / Save PDF controls are placed after Musculoskeletal. Existing sections retained from PRINTFIX2-1.

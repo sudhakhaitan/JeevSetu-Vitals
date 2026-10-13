@@ -1,2 +1,0 @@
-JeevSetu integrated physical examination: Vitals, General Examination, Lymph Nodes, CVS, Respiratory, and Abdominal/Gastrointestinal. Shared patient identification is retained. Abdominal findings and one combined abdominal map are appended to the consolidated clinician note; individual data-entry screens are hidden during printing.
-FIX: The abdominal module buttons now generate and print the same consolidated clinician note as the main examination, including respiratory and abdominal sections. Other examination fields and layouts are unchanged.

@@ -1,0 +1,349 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JeevSetu — Integrated Vitals & General Examination</title><style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#222}
+.wrap{max-width:900px;margin:20px auto;padding:16px}
+h1{font-size:24px;margin:0 0 4px}.sub{color:#666;margin-bottom:18px}
+.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 1px 5px #0001}
+h2{font-size:18px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+label{font-size:13px;font-weight:600;display:block}
+input,select{width:100%;padding:10px;border:1px solid #bbb;border-radius:7px;font-size:15px;margin-top:5px}
+button{padding:11px 16px;border:0;border-radius:7px;cursor:pointer;font-size:15px;margin-right:8px}
+.primary{background:#222;color:#fff}.secondary{background:#e8ebee}
+.result{background:#f7f8f9;padding:10px;border-radius:7px;font-weight:700}
+.note{font-size:12px;color:#666}
+.actions{margin:16px 0}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+@media print{
+ body{background:#fff}
+ .wrap{max-width:none;margin:0;padding:0}
+ .input-area{display:none!important}
+ .printable{display:block!important}
+ .no-print{display:none!important}
+}
+.printable{display:none}
+.print-page{font-family:Arial,sans-serif;font-size:10.5pt}
+.print-head{display:flex;justify-content:space-between;border-bottom:2px solid #222;padding-bottom:7px;margin-bottom:8px}
+.print-title{font-size:16pt;font-weight:700}
+.patient-line{margin:5px 0 8px}
+table{width:100%;border-collapse:collapse;margin:6px 0}
+th,td{border:1px solid #777;padding:5px 6px;text-align:left}
+th{font-weight:700;background:#f1f1f1}
+.small{font-size:9pt}
+.alertbox{border:1px solid #777;padding:6px;margin-top:7px}
+.footer{font-size:8.5pt;margin-top:7px;color:#444}
+
+
+body{font-family:Arial,sans-serif;margin:0;background:#f5f7fa;color:#172033}.wrap{max-width:900px;margin:auto;background:#fff;min-height:100vh;padding:18px;box-sizing:border-box}h1{text-align:center;font-size:24px;margin:4px 0 6px}.sub{text-align:center;color:#667085;margin-bottom:18px}.card{border:1px solid #d9dee8;border-radius:10px;padding:15px;margin:12px 0;background:#fff}.card h2{font-size:20px;margin:0 0 12px}.q{padding:12px 0;border-bottom:1px solid #eee}.q:last-child{border-bottom:0}label{display:block;margin:7px 0;font-weight:500}input,select,textarea{box-sizing:border-box;width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:6px;font-size:15px}textarea{min-height:65px}.inline{display:grid;grid-template-columns:1fr 1fr;gap:10px}.yn label{display:inline-block;margin-right:22px;font-weight:400}.yn input{width:auto}.small{font-size:13px;color:#667085}.actions{position:sticky;bottom:0;background:#fff;border-top:1px solid #ddd;padding:12px 0;display:flex;gap:10px;flex-wrap:wrap}button{padding:11px 16px;border:0;border-radius:7px;background:#1d4ed8;color:white;font-size:15px}button.secondary{background:#475467}button.danger{background:#b42318}.finding{border:1px solid #d9dee8;border-radius:8px;padding:10px;margin:8px 0}.note{white-space:pre-wrap;border:1px solid #bbb;padding:14px;background:#fafafa;font-family:Arial;line-height:1.4}.hide{display:none}@media print{body{background:#fff}.wrap{max-width:none;padding:5px}.no-print{display:none!important}.actions{display:none!important}}
+
+#clinicalNote{display:none}.note-title{font-size:19px;font-weight:bold;margin-bottom:8px}.clinical-content{white-space:pre-wrap;line-height:1.55;font-size:11pt;overflow-wrap:anywhere}.clinical-content .pulse-block{margin:5px 0 8px;padding:6px 8px;border:1px solid #bbb;border-radius:4px}.clinical-content .finding-block{margin:4px 0}.patient-line{border-bottom:1px solid #444;padding-bottom:8px;margin-bottom:12px}
+@media print{body{background:#fff!important}.wrap{display:none!important}#clinicalNote{display:block!important;margin:0;padding:0}.no-print{display:none!important}}
+
+/* Respiratory examination module */
+.resp-module .voiceRow{display:flex;gap:8px;margin-top:6px}
+.resp-module .voiceRow input{flex:1}
+.resp-module .voiceRow button{white-space:nowrap}
+.resp-module .chestMaps{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.resp-module .mapBox{border:1px solid #ccc;border-radius:10px;padding:10px;text-align:center}
+.resp-module .mapBox canvas{width:100%;max-width:360px;height:auto;display:block;margin:8px auto;border:1px solid #bbb;border-radius:8px;background:#fff;touch-action:none}
+.resp-module .hiddenField{display:none}
+.resp-module .muted{color:#667085;font-size:13px}
+.resp-module .item{border:1px solid #d9dee8;padding:10px;border-radius:7px;margin:7px 0}
+.resp-module .alert{display:none;background:#fff0f0;border:2px solid #b00020;padding:12px;color:#850018;border-radius:8px}
+@media(max-width:700px){.resp-module .chestMaps{grid-template-columns:1fr}}
+@media print{.resp-module{display:none!important}}
+
+.resp-clinical-note{white-space:normal;margin-top:18px;padding-top:12px;border-top:2px solid #777}.resp-clinical-note p{margin:5px 0}.resp-clinical-note .printMaps{display:grid;grid-template-columns:1fr 1fr;gap:12px}.resp-clinical-note .chestPrint{width:100%;max-width:240px;height:auto}@media(max-width:600px){.resp-clinical-note .printMaps{grid-template-columns:1fr}}@media print{.resp-clinical-note .printMaps{grid-template-columns:1fr 1fr}.resp-clinical-note .chestPrint{max-width:135px!important}}
+</style></head><body>
+<div class="wrap">
+<h1>JeevSetu — Integrated Physical Examination</h1><div class="sub">Vitals and General Examination • Enter patient details once</div>
+
+<div class="card"><h2>Patient identification</h2><div class="grid"><label>Patient ID *<input id="pid"></label><label>Examiner / person performing assessment *<input id="operator"></label></div></div>
+<div class="card">
+<h2>2. Blood pressure — both arms</h2>
+<div class="grid">
+<label>Right-arm systolic (mmHg)<input id="rs"></label>
+<label>Right-arm diastolic (mmHg)<input id="rd"></label>
+<label>Left-arm systolic (mmHg)<input id="ls"></label>
+<label>Left-arm diastolic (mmHg)<input id="ld"></label>
+<label>Cuff size
+<select id="cuff"><option>Small adult</option><option selected>Adult</option><option>Large adult</option><option>Other</option></select></label>
+<label>Device
+<select id="device"><option selected>Digital</option><option>Aneroid</option><option>Automated / other</option></select></label>
+<label>Position
+<select id="position"><option selected>Seated</option><option>Supine</option><option>Standing</option></select></label>
+<label>Measurement time<input id="mtime" type="datetime-local"></label>
+</div>
+</div>
+
+<div class="card">
+<h2>3. Orthostatic blood pressure</h2>
+<div class="grid">
+<label>Supine systolic<input id="os"></label>
+<label>Supine diastolic<input id="od"></label>
+<label>Standing — 1 minute systolic<input id="s1s"></label>
+<label>Standing — 1 minute diastolic<input id="s1d"></label>
+<label>Standing — 3 minutes systolic<input id="s3s"></label>
+<label>Standing — 3 minutes diastolic<input id="s3d"></label>
+<label>Pulse — supine<input id="op"></label>
+<label>Pulse — standing 3 minutes<input id="s3p"></label>
+</div>
+<div class="note">The app records orthostatic measurements and calculates changes from supine values.</div>
+</div>
+
+<div class="card">
+<h2>4. Ankle-Brachial Index</h2>
+<div class="grid">
+<label>Right ankle systolic pressure (mmHg)<input id="ra"></label>
+<label>Left ankle systolic pressure (mmHg)<input id="la"></label>
+<label>Highest brachial systolic used (automatic)<div class="result" id="brachial">—</div></label>
+<label>Right ABI (automatic)<div class="result" id="rabi">—</div></label>
+<label>Left ABI (automatic)<div class="result" id="labi">—</div></label>
+</div>
+<div class="note">ABI is calculated separately for each leg using the highest recorded arm systolic pressure.</div>
+</div>
+
+<div class="card">
+<h2>5. Other vital signs</h2>
+<div class="grid">
+<label>Pulse (beats/min)<input id="pulse"></label>
+<label>Respiratory rate (breaths/min)<input id="rr"></label>
+<label>SpO₂ (%)<input id="spo2"></label>
+<label>Temperature<input id="temp"></label>
+<label>Temperature unit<select id="unit"><option selected>°C</option><option>°F</option></select></label>
+<label>Pain score (0–10)<input id="pain" type="number" min="0" max="10"></label>
+</div>
+</div>
+
+<div class="card">
+<h2>6. Anthropometry</h2>
+<div class="grid">
+<label>Height (cm)<input id="height"></label>
+<label>Weight (kg)<input id="weight"></label>
+<label>Waist circumference (cm)<input id="waist"></label>
+<label>Hip circumference (cm)<input id="hip"></label>
+<label>BMI (automatic)<div class="result" id="bmi">—</div></label>
+<label>WHR — Waist-to-Hip Ratio (automatic)<div class="result" id="hwr">—</div></label>
+</div>
+</div>
+
+<div class="card">
+<h2>General Examination</h2>
+<div id="constitutional"></div>
+<p class="small">Positive findings can guide the relevant focused system pathway.</p>
+</div>
+
+<div class="card">
+<p class="small">For each finding, select <b>No abnormality detected</b>, <b>Abnormality detected</b>, or <b>Not assessed</b>.</p>
+<div id="generalExam"></div>
+<label>Other significant abnormalities<textarea id="otherAbnormal"></textarea></label>
+</div>
+
+
+<div class="card">
+<h2>Functional Assessment</h2>
+<p class="small">Particularly important for older adults. Select the clinically appropriate status for each item.</p>
+<div id="functional"></div>
+</div>
+
+
+
+<div class="card">
+<h2>Lymph Node Examination</h2>
+<p class="small">हाथ साफ रखें, रोगी की सहमति और गोपनीयता सुनिश्चित करें। प्रत्येक क्षेत्र को देखें और धीरे से टटोलें। यह रिकॉर्डिंग सहायता है, निदान नहीं; सामान्य सतही जाँच गहरे लिम्फ नोड्स, टीबी या कैंसर को खारिज नहीं करती।</p>
+<div class="grid">
+<label>Head and neck — सिर और गर्दन
+<select id="ln_head"><option value="">Not recorded</option><option>No abnormality detected</option><option>Node/lump felt</option><option>Uncertain</option><option>Not examined</option></select></label>
+<label>Supraclavicular — हंसली के ऊपर
+<select id="ln_supra"><option value="">Not recorded</option><option>No abnormality detected</option><option>Node/lump felt</option><option>Uncertain</option><option>Not examined</option></select></label>
+<label>Axillary — बगल
+<select id="ln_axilla"><option value="">Not recorded</option><option>No abnormality detected</option><option>Node/lump felt</option><option>Uncertain</option><option>Not examined</option></select></label>
+<label>Epitrochlear — कोहनी के अंदरूनी भाग
+<select id="ln_elbow"><option value="">Not recorded</option><option>No abnormality detected</option><option>Node/lump felt</option><option>Uncertain</option><option>Not examined</option></select></label>
+<label>Inguinal — जाँघ-धड़ का जोड़
+<select id="ln_groin"><option value="">Not recorded</option><option>No abnormality detected</option><option>Node/lump felt</option><option>Uncertain</option><option>Not examined</option></select></label>
+<label>Other visible/palpable lump — अन्य
+<select id="ln_other"><option value="">Not recorded</option><option>No abnormality detected</option><option>Node/lump felt</option><option>Uncertain</option><option>Not examined</option></select></label>
+</div>
+<div class="q"><h3 style="margin:8px 0">Details of each enlarged / palpable node site</h3>
+<p class="small">Add a separate record for every involved site or side (for example, axilla and inguinal). Mark the corresponding region above as “Node/lump felt”; you can then save that site even before size/location is measured. Add each site separately; all entries appear in the consolidated note.</p>
+<div class="grid">
+<label>Site / region<select id="ln_site"><option>Head / neck</option><option>Supraclavicular</option><option>Axillary</option><option>Epitrochlear</option><option>Inguinal</option><option>Other</option></select></label>
+<label>Side<select id="ln_side"><option>Right</option><option>Left</option><option>Bilateral</option><option>Midline</option><option>Not specified</option></select></label>
+<label>Exact location<input id="ln_exact" placeholder="e.g. posterior cervical chain"></label>
+<label>Approximate size<input id="ln_size" placeholder="e.g. 1.5 cm"></label>
+<label>Consistency<select id="ln_consistency"><option value="Not assessed">Not assessed</option><option>Soft</option><option>Firm</option><option>Hard</option></select></label>
+<label>Mobility<select id="ln_mobility"><option value="Not assessed">Not assessed</option><option>Mobile</option><option>Appears fixed</option></select></label>
+<label>Tenderness<select id="ln_tender"><option value="Not assessed">Not assessed</option><option>Tender</option><option>Non-tender</option></select></label>
+<label>Skin over node<select id="ln_skin"><option value="Not assessed">Not assessed</option><option>Normal</option><option>Red/warm</option><option>Discharging sinus</option></select></label>
+</div>
+<label>Remarks for this site<textarea id="ln_site_remarks" placeholder="Duration, growth, nearby infection, etc."></textarea></label>
+<button type="button" class="secondary no-print" onclick="addLymphSite()">Add this node site</button>
+<div id="lnSiteList"></div>
+</div>
+<label>Associated symptoms / overall remarks<textarea id="ln_remarks" placeholder="Fever, night sweats, weight loss, or reason examination incomplete"></textarea></label>
+</div>
+<div class="card">
+<h2>Body Map — Localised Findings</h2>
+<div class="inline"><label>Body region<select id="bodyRegion"><option>Head / neck</option><option>Chest</option><option>Abdomen</option><option>Upper limb</option><option>Lower limb</option><option>Musculoskeletal regions</option><option>Skin</option><option>Breast</option><option>Feet</option><option>Neurological distribution</option></select></label><label>Finding<select id="bodyFinding"><option>Pain</option><option>Tenderness</option><option>Swelling</option><option>Mass</option><option>Skin lesion</option><option>Joint abnormality</option><option>Neurological deficit</option><option>Sensory loss</option><option>Weakness</option><option>Oedema</option><option>Other localized finding</option></select></label></div>
+<div class="inline"><label>Laterality<select id="bodyLaterality"><option>Not applicable</option><option>Right</option><option>Left</option><option>Bilateral</option></select></label><label>Anatomical location<input id="bodyLocation"></label></div>
+<label>Clinical description<textarea id="bodyDescription"></textarea></label>
+<button type="button" class="secondary no-print" onclick="addFinding()">Add finding</button>
+<div id="findingList"></div>
+</div>
+<div class="card no-print" id="cvsSection"><h2>Cardiovascular Assessment (CVS)</h2><p class="small">Complete the cardiovascular symptom screen and examination below. Findings will be included in the consolidated clinical note.</p><div class="card"><h2>Cardiovascular Symptoms</h2><div id="cvs_sym"></div><div id="cvs_alert" class="alert"><b>IMMEDIATE CLINICIAN ALERT:</b> Potentially serious cardiovascular symptom reported. Clinical assessment should take priority. This is an alert, not a diagnosis.</div></div>
+<div class="card"><h2>Cardiovascular Examination</h2>
+<h3>Pulse</h3><div class="grid"><div><label>Rate (bpm)</label><input id="cvs_rate"></div><div><label>Rhythm</label><select id="cvs_rhythm"><option>Not assessed</option><option>Regular</option><option>Irregular</option><option>Uncertain</option></select></div><div><label>Volume</label><select id="cvs_volume"><option>Not assessed</option><option>Normal</option><option>Reduced</option><option>Bounding</option><option>Uncertain</option></select></div><div><label>Character</label><input id="cvs_character"></div><div><label>Symmetry</label><select id="cvs_symmetry"><option>Not assessed</option><option>Symmetrical</option><option>Asymmetrical</option><option>Uncertain</option></select></div><div><label>Radio-radial delay</label><select id="cvs_delay"><option>Not assessed</option><option>Absent</option><option>Present</option><option>Uncertain</option></select></div><div><label>Nurse-recorded pulse</label><input id="cvs_nursePulse"></div></div>
+<h3>Peripheral Pulses</h3><div id="cvs_pulses"></div>
+<h3>JVP</h3><div class="grid"><div><label>Assessment</label><select id="cvs_jass"><option>Not assessed</option><option>Assessable</option><option>Not assessable</option></select></div><div><label>Estimated JVP</label><input id="cvs_jest"></div><div><label>Level</label><select id="cvs_jlevel"><option>Not assessed</option><option>Normal</option><option>Elevated</option><option>Uncertain</option></select></div><div><label>Patient position</label><input id="cvs_jpos" placeholder="e.g. 45°"></div><div><label>Side used</label><select id="cvs_jside"><option>Not assessed</option><option>Right</option><option>Left</option><option>Both</option></select></div><div><label>Difficulty</label><input id="cvs_jdif"></div><div><label>Uncertainty</label><input id="cvs_junc"></div></div><p><b>First visit:</b> JVP assessment is mandatory. Follow-up: repeat when clinically indicated.</p>
+<h3>Precordial Examination</h3><div class="grid"><div><label>Visible pulsation</label><select id="cvs_vp"><option>Not assessed</option><option>No abnormality detected</option><option>Abnormality detected</option><option>Uncertain</option></select></div><div><label>Precordial bulge</label><select id="cvs_bulge"><option>Not assessed</option><option>No abnormality detected</option><option>Abnormality detected</option><option>Uncertain</option></select></div><div><label>Apex location</label><input id="cvs_apexloc"></div><div><label>Apex character</label><input id="cvs_apexchar"></div><div><label>Heave</label><select id="cvs_heave"><option>Not assessed</option><option>Absent</option><option>Present</option><option>Uncertain</option></select></div><div><label>Thrill</label><select id="cvs_thrill"><option>Not assessed</option><option>Absent</option><option>Present</option><option>Uncertain</option></select></div></div><label>Other abnormal pulsation</label><textarea id="cvs_otherp"></textarea>
+<h3>Auscultation</h3><div class="grid"><div><label>S1</label><select id="cvs_s1"><option>Normal</option><option>Abnormal</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>S2</label><select id="cvs_s2"><option>Normal</option><option>Abnormal</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Added sounds</label><input id="cvs_added"></div><div><label>Murmur</label><select id="cvs_murmur"><option>Not assessed</option><option>Absent</option><option>Present</option><option>Uncertain</option></select></div><div><label>Site</label><input id="cvs_msite"></div><div><label>Timing</label><input id="cvs_mtime"></div><div><label>Radiation</label><input id="cvs_mrad"></div><div><label>Character / grade</label><input id="cvs_mgrade"></div><div><label>Pericardial rub / other</label><input id="cvs_rub"></div></div><p><b>AI safety:</b> A murmur is recorded descriptively; the AI will not assign a specific valve diagnosis.</p>
+<h3>Peripheral Cardiovascular Findings</h3><div id="cvs_pf"></div><label>Additional findings</label><textarea id="cvs_additional"></textarea></div>
+</div>
+<div class="resp-module" id="respiratoryModule"><div class="card"><h2>Respiratory Examination</h2><p class="note">Patient details are taken from the shared patient panel. Complete the respiratory screen, history, examination and chest maps below.</p></div><div class="card"><h2>1. Universal Respiratory Screen</h2><div class="item"><b>खांसी</b><div>क्या आपको खांसी होती है?</div><select id="screenCough"><option>Select</option><option>No</option><option>Yes</option><option>Uncertain</option></select></div><div class="item"><b>सांस की परेशानी</b><div>क्या आपको सांस लेने में कोई परेशानी या सांस फूलने की शिकायत होती है?</div><select id="screenBreath"><option>Select</option><option>No</option><option>Yes</option><option>Uncertain</option></select></div><p class="muted">यदि दोनों उत्तर No हैं और कोई respiratory complaint पहले से documented नहीं है, तो negative respiratory screen रिकॉर्ड करें और आगे बढ़ें। यदि किसी एक का उत्तर Yes है, detailed pathway खुलेगा।</p><div id="negative" class="item hidden"><b>Negative respiratory screen:</b> No cough and no breathlessness reported; no respiratory complaint otherwise documented.</div><div id="detailTrigger" class="muted"></div></div>
+<div id="historyCard" class="card hidden"><h2>2. Detailed Respiratory History</h2><div id="history"></div><div class="item"><b>Section 8 Occupational Information — reuse</b><p class="muted">Existing Section 8 occupational information should be reused. Do not ask the patient to repeat it unnecessarily.</p><label>Imported / linked occupational dust-fume exposure</label><textarea id="occReuse" placeholder="Linked Section 8 information will appear here when integrated."></textarea></div><div id="respAlert" class="alert"><b>IMMEDIATE CLINICIAN ALERT:</b> Haemoptysis, severe acute breathlessness or respiratory distress reported. Clinical assessment takes priority. This is an alert, not a diagnosis.</div></div>
+<div class="card"><h2>3. Respiratory Examination</h2>
+<h3>19.7.1 General observation</h3><div class="grid"><div><label>Respiratory distress</label><select id="distress"><option>Absent</option><option>Present</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Breathing pattern</label><select id="pattern"><option>Normal</option><option>Abnormal</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Accessory muscle use</label><select id="accessory"><option>Absent</option><option>Present</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Cyanosis</label><select id="cyanosis"><option>Absent</option><option>Present</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Ability to speak</label><select id="speak"><option>Normal full sentences</option><option>Limited by breathlessness</option><option>Unable to speak normally</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Respiratory effort</label><select id="effort"><option>Normal</option><option>Increased</option><option>Reduced</option><option>Uncertain</option><option>Not assessed</option></select></div></div>
+<h3>19.7.2 Chest inspection</h3><div class="grid"><div><label>Shape</label><select id="shape"><option>Normal</option><option>Abnormal</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Symmetry</label><select id="chsym"><option>Symmetrical</option><option>Asymmetrical</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Expansion</label><select id="expansion"><option>Normal</option><option>Reduced</option><option>Asymmetrical</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Scars</label><select id="scars"><option>Absent</option><option>Present</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Deformity</label><select id="deformity"><option>Absent</option><option>Present</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Retraction</label><select id="retraction"><option>Absent</option><option>Present</option><option>Uncertain</option><option>Not assessed</option></select></div></div><label>Other abnormality</label><textarea id="inspectOther"></textarea>
+<h3>19.7.3 Trachea</h3><select id="trachea"><option>Midline</option><option>Deviated right</option><option>Deviated left</option><option>Unable to assess</option><option>Uncertain</option></select>
+<h3>19.7.4 Palpation</h3><div class="grid"><div><label>Chest expansion</label><select id="palExpansion"><option>Normal / symmetrical</option><option>Reduced</option><option>Asymmetrical</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Tactile / vocal fremitus</label><select id="fremitus"><option>Normal</option><option>Increased</option><option>Reduced</option><option>Asymmetrical</option><option>Not assessed</option><option>Uncertain</option></select></div></div><label>Palpation details</label><textarea id="palDetails"></textarea>
+<h3>19.7.5 Percussion</h3><div class="item"><p>Record by anatomical area.</p><div id="perc"></div></div>
+<h3>19.7.6 Auscultation</h3><div class="grid"><div><label>Breath sounds</label><select id="breathSounds"><option>Normal / vesicular</option><option>Reduced</option><option>Bronchial</option><option>Other</option><option>Not assessed</option><option>Uncertain</option></select></div><div><label>Added sounds — overall</label><select id="addedOverall"><option>None</option><option>Present</option><option>Uncertain</option><option>Not assessed</option></select></div></div><div id="addedSounds"></div>
+<h3>19.7.7 Digital chest map</h3><p class="muted">Use your finger, stylus or mouse to mark the site of an abnormal finding. Separate front and back views are provided. Use “Clear” to erase a view.</p><div class="chestMaps"><div class="mapBox"><b>Anterior — Front</b><canvas id="frontMap" width="360" height="480"></canvas><button type="button" onclick="respClearCanvas('frontMap')">Clear Front</button></div><div class="mapBox"><b>Posterior — Back</b><canvas id="backMap" width="360" height="480"></canvas><button type="button" onclick="respClearCanvas('backMap')">Clear Back</button></div></div><div class="item"><label>Lateral / additional localization</label><textarea id="mapLateral" placeholder="e.g. right lateral lower zone"></textarea></div><textarea id="mapAnterior" class="hiddenField"></textarea><textarea id="mapPosterior" class="hiddenField"></textarea></div>
+</div>
+<div class="actions no-print"><button class="primary" onclick="generateNote()">Generate Consolidated Clinical Note</button><button class="secondary" onclick="printNote()">Print / Save PDF</button><button class="secondary" onclick="saveAll()">Save locally</button><button class="secondary" onclick="loadAll()">Load saved data</button><button class="secondary" onclick="clearAll()">Clear form</button></div>
+<div class="note no-print">Generate the note after entering the required sections. Printing shows only the consolidated clinician note, not the entry forms.</div>
+</div>
+<div id="clinicalNote"><div class="note-title">JeevSetu — Consolidated Clinical Note</div><div class="patient-line"><b>Patient ID:</b> <span id="nPid"></span> &nbsp;&nbsp; <b>Examiner:</b> <span id="nOperator"></span> &nbsp;&nbsp; <b>Date:</b> <span id="nDate"></span></div><div id="noteBody" class="clinical-content"></div></div>
+<script>
+const $=id=>document.getElementById(id);
+function n(id){const e=$(id);if(!e)return null;const v=parseFloat(e.value);return Number.isFinite(v)?v:null}
+function fmt(v,d=1){return v==null?'—':v.toFixed(d)}
+function calc(){const rb=n('rs'),lb=n('ls');const b=(rb!=null&&lb!=null)?Math.max(rb,lb):(rb??lb);if($('brachial'))$('brachial').textContent=b==null?'—':b;const ra=n('ra'),la=n('la');if($('rabi'))$('rabi').textContent=(ra!=null&&b)?fmt(ra/b,2):'—';if($('labi'))$('labi').textContent=(la!=null&&b)?fmt(la/b,2):'—';const h=n('height'),w=n('weight');if($('bmi'))$('bmi').textContent=(h&&w)?fmt(w/((h/100)**2),1):'—';const wa=n('waist'),hi=n('hip');if($('hwr'))$('hwr').textContent=(wa&&hi)?fmt(wa/hi,2):'—'}
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',calc));
+const constitutional=[['Fever / chills','fever'],['Unintentional weight change','weight'],['Appetite','appetite'],['Weakness / fatigue','fatigue'],['Night sweats','sweats'],['Generalised body ache','ache'],['Functional capacity','capacity']];
+const general=['General appearance','Comfortable / uncomfortable','Acutely or chronically ill appearance','Consciousness','Distress','Nutritional status','Hydration','Hygiene','Mobility','Pallor','Jaundice','Cyanosis','Clubbing','Oedema','Dehydration','Visible thyroid enlargement'];
+const functional=['Standing ability','Gait','Walking speed','Need for support','Chair-to-standing ability','General muscle bulk','Obvious frailty','Functional limitation'];
+const cbox=$('constitutional');constitutional.forEach(([t,k])=>{let d=document.createElement('div');d.className='q';d.innerHTML=`<b>${t}</b><p>${({'fever':'क्या आपको हाल में बार-बार या बिना किसी स्पष्ट कारण के बुखार या ठंड लगने की शिकायत हुई है?','weight':'क्या हाल के दिनों या महीनों में आपका वजन बिना कोशिश के कम या ज्यादा हुआ है?','appetite':'आपकी भूख में हाल में कोई बदलाव हुआ है—भूख कम या ज्यादा हुई है?','fatigue':'क्या आपको सामान्य से ज्यादा कमजोरी या थकान महसूस होती है?','sweats':'क्या रात में आपको इतना पसीना आता है कि कपड़े या बिस्तर बदलने पड़े?','ache':'क्या आपको पूरे शरीर में या कई जगहों पर बिना किसी स्पष्ट कारण के दर्द या बदन दर्द रहता है?','capacity':'क्या पहले की तुलना में आपकी रोज़मर्रा के काम करने की क्षमता कम हुई है?'})[k]}</p><div class="yn"><label><input type="radio" name="${k}" value="Yes"> हाँ</label><label><input type="radio" name="${k}" value="No"> नहीं</label></div>${k==='weight'?'<label>यदि हाँ — कितना वजन और कितने समय में?<textarea id="weightDetail"></textarea></label>':''}`;cbox.appendChild(d)});
+function makeSelect(parent,items,prefix){items.forEach((v,i)=>{let l=document.createElement('label');l.innerHTML=`<b>${v}</b><select id="${prefix}${i}"><option>No abnormality detected</option><option>Abnormality detected</option><option>Not assessed</option></select>`;parent.appendChild(l)})}
+makeSelect($('generalExam'),general,'ge');makeSelect($('functional'),functional,'fn');let findings=[];
+function addFinding(){const f={region:$('bodyRegion').value,finding:$('bodyFinding').value,laterality:$('bodyLaterality').value,location:$('bodyLocation').value,description:$('bodyDescription').value};if(!f.location&&!f.description){alert('Please enter anatomical location or clinical description.');return}findings.push(f);renderFindings();$('bodyLocation').value='';$('bodyDescription').value=''}
+function renderFindings(){$('findingList').innerHTML=findings.map((f,i)=>`<div class="finding"><b>${f.finding}</b> — ${f.region}, ${f.laterality}${f.location?' — '+f.location:''}<br>${f.description||''} <button class="secondary no-print" type="button" onclick="findings.splice(${i},1);renderFindings()">Remove</button></div>`).join('')}
+let lymphSites=[];
+function addLymphSite(){
+ const site={region:$('ln_site').value,side:$('ln_side').value,location:$('ln_exact').value.trim(),size:$('ln_size').value.trim(),consistency:$('ln_consistency').value,mobility:$('ln_mobility').value,tenderness:$('ln_tender').value,skin:$('ln_skin').value,remarks:$('ln_site_remarks').value.trim()};
+ const statusMap={'Head / neck':'ln_head','Supraclavicular':'ln_supra','Axillary':'ln_axilla','Epitrochlear':'ln_elbow','Inguinal':'ln_groin','Other':'ln_other'};
+ const regionalStatus=$(statusMap[site.region])?.value||'';
+ // A palpable/enlarged region is enough to save a site record; size/location can be documented later.
+ if(!site.location&&!site.size&&regionalStatus!=='Node/lump felt'){
+   alert('For this site, either mark the corresponding region as “Node/lump felt” above, or enter the exact location or approximate size. You can add multiple sites one by one.');
+   return;
+ }
+ lymphSites.push({...site,regionalStatus});renderLymphSites();$('ln_exact').value='';$('ln_size').value='';$('ln_site_remarks').value='';
+}
+function renderLymphSites(){
+ $('lnSiteList').innerHTML=lymphSites.map((x,i)=>`<div class="finding"><b>${i+1}. ${x.region} — ${x.side}</b>${x.regionalStatus&&x.regionalStatus!=='Node/lump felt'?' — Status: '+x.regionalStatus:''}${x.location?' — '+x.location:''}<br>Size: ${x.size||'Not recorded'}; Consistency: ${x.consistency}; Mobility: ${x.mobility}; Tenderness: ${x.tenderness}; Skin: ${x.skin}${x.remarks?'<br>Remarks: '+x.remarks:''}<br><button type="button" class="secondary no-print" onclick="lymphSites.splice(${i},1);renderLymphSites()">Remove</button></div>`).join('');
+}
+function field(id,label,unit=''){let e=$(id);if(!e)return '';let value=(e.value||'').trim();return value?`${label}: ${value}${unit}`:''}
+function selected(name){const x=document.querySelector(`input[name="${name}"]:checked`);return x?x.value:''}
+function syncRegionalLymphSites(){
+ // Ensure every region marked as palpable/uncertain is represented in the detailed list,
+ // even if the examiner forgot to press “Add this node site” for that region.
+ const regions=[['Head / neck','ln_head'],['Supraclavicular','ln_supra'],['Axillary','ln_axilla'],['Epitrochlear','ln_elbow'],['Inguinal','ln_groin'],['Other','ln_other']];
+ regions.forEach(([region,id])=>{
+   const status=$(id).value;
+   if(!['Node/lump felt','Uncertain'].includes(status)) return;
+   const existing=lymphSites.some(x=>x.region===region);
+   if(!existing){
+     lymphSites.push({region,side:'Not specified',location:'',size:'',consistency:'Not assessed',mobility:'Not assessed',tenderness:'Not assessed',skin:'Not assessed',remarks:status==='Uncertain'?'Finding uncertain; requires clinician review':'Detailed characteristics not entered',regionalStatus:status,autoFromRegionalScreen:true});
+   }
+ });
+ renderLymphSites();
+}
+function generateNote(){syncRegionalLymphSites();calc();$('nPid').textContent=$('pid').value||'—';$('nOperator').textContent=$('operator').value||'—';$('nDate').textContent=new Date().toLocaleDateString();let out=[];
+out.push('VITALS & MEASUREMENTS');
+let pairs=[['rs','Right-arm BP','/ '+($('rd').value||'—')+' mmHg'],['ls','Left-arm BP','/ '+($('ld').value||'—')+' mmHg'],['os','Supine BP','/ '+($('od').value||'—')+' mmHg'],['s1s','Standing BP at 1 min','/ '+($('s1d').value||'—')+' mmHg'],['s3s','Standing BP at 3 min','/ '+($('s3d').value||'—')+' mmHg'],['pulse','Pulse','/min'],['rr','Respiratory rate','/min'],['spo2','SpO₂','%'],['temp','Temperature',' '+$('unit').value],['pain','Pain score','/10'],['height','Height',' cm'],['weight','Weight',' kg'],['waist','Waist circumference',' cm'],['hip','Hip circumference',' cm']];let lines=pairs.map(([id,l,u])=>field(id,l,u)).filter(Boolean);if($('bmi').textContent!=='—')lines.push('BMI: '+$('bmi').textContent);if($('hwr').textContent!=='—')lines.push('WHR (waist-to-hip ratio): '+$('hwr').textContent);if($('rabi').textContent!=='—')lines.push('Right ABI: '+$('rabi').textContent);if($('labi').textContent!=='—')lines.push('Left ABI: '+$('labi').textContent);if($('brachial').textContent!=='—')lines.push('Highest brachial systolic: '+$('brachial').textContent+' mmHg');if($('cuff').value)lines.push('BP method: '+$('cuff').value+' cuff, '+$('device').value+', '+$('position').value);if($('mtime').value)lines.push('Measurement time: '+$('mtime').value);out.push(lines.length?lines.join('\n'):'No vital measurements entered.');
+out.push('\nGENERAL / CONSTITUTIONAL SCREEN');let cs=constitutional.map(([t,k])=>selected(k)?`${t}: ${selected(k)}`:'').filter(Boolean);if($('weightDetail')&&$('weightDetail').value.trim())cs.push('Weight change details: '+$('weightDetail').value.trim());out.push(cs.length?cs.join('\n'):'No constitutional responses recorded.');
+out.push('\nGENERAL EXAMINATION');let gs=general.map((t,i)=>{let v=$('ge'+i).value;return v!=='No abnormality detected'?`${t}: ${v}`:''}).filter(Boolean);let other=$('otherAbnormal').value.trim();if(other)gs.push('Other significant abnormalities: '+other);out.push(gs.length?gs.join('\n'):'No abnormalities selected; default selections are not independently interpreted.');
+out.push('\nFUNCTIONAL ASSESSMENT');let fs=functional.map((t,i)=>{let v=$('fn'+i).value;return v!=='No abnormality detected'?`${t}: ${v}`:''}).filter(Boolean);out.push(fs.length?fs.join('\n'):'No functional abnormalities selected.');
+out.push('\nLYMPH NODE EXAMINATION');let lnLabels=[['ln_head','Head and neck'],['ln_supra','Supraclavicular'],['ln_axilla','Axillary'],['ln_elbow','Epitrochlear'],['ln_groin','Inguinal'],['ln_other','Other palpable/visible lumps']];let lnLines=lnLabels.map(([id,label])=>{let v=$(id).value;return v?label+': '+v:''}).filter(Boolean);if(lymphSites.length){lnLines.push('Palpable/enlarged node site details:');lymphSites.forEach((x,i)=>lnLines.push(`${i+1}. ${x.region} — ${x.side}${x.regionalStatus==='Node/lump felt'?'; Regional screen: Node/lump felt':''}${x.location?' — '+x.location:''}; Size: ${x.size||'Not recorded'}; Consistency: ${x.consistency}; Mobility: ${x.mobility}; Tenderness: ${x.tenderness}; Skin: ${x.skin}${x.remarks?'; Remarks: '+x.remarks:''}`))}let overall=$('ln_remarks').value.trim();if(overall)lnLines.push('Associated symptoms / overall remarks: '+overall);if(lnLines.length){out.push(lnLines.join('\n'));if(lymphSites.some(x=>x.consistency==='Hard'||x.mobility==='Appears fixed')||$('ln_supra').value==='Node/lump felt')out.push('Alert: Prompt medical assessment is indicated for clinician review.');else if(lnLabels.some(([id])=>['Node/lump felt','Uncertain','Not examined'].includes($(id).value))||lymphSites.length)out.push('Review: Clinical review recommended for palpable/uncertain findings or areas not examined.');out.push('Safety note: Normal accessible-node findings do not exclude deep-node disease, TB or malignancy.')}else out.push('No lymph-node examination findings recorded.');
+out.push('\nLYMPH-NODE LOCALISED FINDINGS');let localisedLines=findings.map((f,i)=>`${i+1}. ${f.finding} — Region: ${f.region}; Side: ${f.laterality}${f.location?' — Anatomical location: '+f.location:''}${f.description?' — Description: '+f.description:''}`);out.push(localisedLines.length?localisedLines.join('\n'):'No body-map localized findings recorded. Enter the lymph-node location/finding in “Body Map — Localised Findings” before generating the note.');out.push('\n'+(window.getCVSClinicalSummary?window.getCVSClinicalSummary():'CARDIOVASCULAR ASSESSMENT: Not recorded.'));$('noteBody').textContent=out.join('\n\n');$('clinicalNote').style.display='block';}
+function printNote(){if(!$('noteBody').textContent.trim())generateNote();window.print()}
+function saveAll(){let data={};document.querySelectorAll('input,select,textarea').forEach(e=>{if(e.type==='radio'){if(e.checked)data['radio:'+e.name]=e.value}else data[e.id]=e.value});data.findings=findings;data.lymphSites=lymphSites;localStorage.setItem('jeevsetu_integrated_vitals_general',JSON.stringify(data));alert('Integrated examination saved in this browser.');}
+function loadAll(){let d;try{d=JSON.parse(localStorage.getItem('jeevsetu_integrated_vitals_general')||'null')}catch(e){}if(!d){alert('No saved integrated examination found.');return}document.querySelectorAll('input,select,textarea').forEach(e=>{if(e.type==='radio')e.checked=d['radio:'+e.name]===e.value;else if(d[e.id]!==undefined)e.value=d[e.id]});findings=d.findings||[];lymphSites=d.lymphSites||[];renderFindings();renderLymphSites();for(let i=0;i<6;i++){const show=['Abnormality detected','Uncertain'].includes(document.getElementById('f'+i)?.value);if(document.getElementById('fd'+i))document.getElementById('fd'+i).style.display=show?'block':'none';if(document.getElementById('fs'+i))document.getElementById('fs'+i).style.display=show?'block':'none'}calc();alert('Saved integrated examination loaded.');}
+function clearAll(){if(!confirm('Clear all vitals and general examination entries?'))return;document.querySelectorAll('input,textarea').forEach(e=>{if(e.type==='radio')e.checked=false;else e.value=''});document.querySelectorAll('select').forEach(e=>e.selectedIndex=0);findings=[];lymphSites=[];renderFindings();renderLymphSites();$('clinicalNote').style.display='none';$('noteBody').textContent='';calc()}
+(function(){
+
+const S=[["Chest pain/discomfort","क्या आपको कभी सीने में दर्द, दबाव, भारीपन, जकड़न या किसी तरह की असहजता होती है?"],["Palpitations","क्या कभी आपका दिल अचानक बहुत तेज, जोर से या अनियमित धड़कता हुआ महसूस होता है?"],["Exertional breathlessness","चलने, सीढ़ियां चढ़ने या मेहनत करने पर क्या आपको सांस सामान्य से ज्यादा फूलती है?"],["Breathlessness at rest","क्या कभी बिना मेहनत किए, आराम की स्थिति में भी सांस फूलती है?"],["Orthopnoea","क्या लेटने पर सांस लेने में परेशानी होती है, जिसकी वजह से आपको बैठकर या ज्यादा तकिए लगाकर सोना पड़ता है?"],["Paroxysmal nocturnal dyspnoea","क्या कभी रात में सोते-सोते अचानक सांस फूलने या घुटन जैसी परेशानी से आपकी नींद खुलती है?"],["Pedal oedema","क्या आपके पैरों या टखनों में सूजन आती है, खासकर दिन के अंत में?"],["Syncope/presyncope","क्या कभी आपको चक्कर आकर ऐसा लगा कि आप बेहोश हो जाएंगे, या कभी बेहोशी हुई है?"],["Exercise tolerance","क्या पहले की तुलना में अब उतना चलने या सीढ़ियां चढ़ने पर ज्यादा थकान या सांस फूलने लगती है?"]];
+const sd=document.getElementById("cvs_sym"); S.forEach((x,i)=>sd.innerHTML+=`<div class=item><b>${x[0]}</b><div>${x[1]}</div><select id=s${i} onchange="sc(${i})"><option>No</option><option>Yes</option><option>Uncertain</option><option>Not assessed</option></select><textarea id=sd${i} placeholder="Details" style="display:none"></textarea></div>`);
+function updateAlert(){
+  // Trigger the immediate symptom alert only for explicitly reported red-flag symptoms.
+  // Murmur and heart-sound findings are documented in the note, not used as an automatic alert here.
+  const symptomAlert=[0,3,4,5,7].some(i=>document.getElementById("s"+i)?.value==="Yes");
+  document.getElementById("cvs_alert").style.display=symptomAlert?"block":"none";
+}
+function sc(i){
+  const val=document.getElementById("s"+i).value;
+  document.getElementById("sd"+i).style.display=val==="Yes"||val==="Uncertain"?"block":"none";
+  updateAlert();
+}
+document.getElementById("cvs_murmur").addEventListener("change",updateAlert);
+document.getElementById("cvs_s1").addEventListener("change",updateAlert);
+document.getElementById("cvs_s2").addEventListener("change",updateAlert);
+const P=["Brachial","Radial","Femoral","Popliteal","Posterior tibial","Dorsalis pedis"];let pd=document.getElementById("cvs_pulses");P.forEach((x,i)=>pd.innerHTML+=`<div class=item><b>${x}</b><div class=grid><div><label>Right</label><select id=p${i}r><option value="">Not entered</option><option>Normal</option><option>Reduced</option><option>Absent</option><option>Uncertain</option><option>Not assessed</option></select></div><div><label>Left</label><select id=p${i}l><option value="">Not entered</option><option>Normal</option><option>Reduced</option><option>Absent</option><option>Uncertain</option><option>Not assessed</option></select></div></div></div>`);
+const F=["Oedema","Colour","Temperature","Peripheral pulses","Capillary refill","Peripheral vascular changes"];let fd=document.getElementById("cvs_pf");F.forEach((x,i)=>fd.innerHTML+=`<div class=item><b>${x}</b><select id=f${i}><option>No abnormality detected</option><option>Abnormality detected</option><option>Not assessed</option><option>Uncertain</option></select><input id=fs${i} placeholder="Affected site / side (e.g. right ankle, both feet)" style="display:none"><input id=fd${i} placeholder="Details" style="display:none"></div>`);F.forEach((x,i)=>document.getElementById("f"+i).onchange=e=>{const show=e.target.value==="Abnormality detected"||e.target.value==="Uncertain";document.getElementById("fd"+i).style.display=show?"block":"none";document.getElementById("fs"+i).style.display=show?"block":"none"});
+const ids=["cvs_pid","cvs_name","cvs_age","cvs_sex","cvs_visit","cvs_rate","cvs_rhythm","cvs_volume","cvs_character","cvs_symmetry","cvs_delay","cvs_nursePulse","cvs_jass","cvs_jest","cvs_jlevel","cvs_jpos","cvs_jside","cvs_jdif","cvs_junc","cvs_vp","cvs_bulge","cvs_apexloc","cvs_apexchar","cvs_heave","cvs_thrill","cvs_otherp","cvs_s1","cvs_s2","cvs_added","cvs_murmur","cvs_msite","cvs_mtime","cvs_mrad","cvs_mgrade","cvs_rub","cvs_additional",...S.flatMap((_,i)=>["s"+i,"sd"+i]),...P.flatMap((_,i)=>["p"+i+"r","p"+i+"l"]),...F.flatMap((_,i)=>["f"+i,"fd"+i,"fs"+i])];
+function v(id){let e=document.getElementById(id);return e?e.value:""} function normHeartSound(id){const x=v(id);if(x==="No"||x==="No abnormality detected"||x==="Absent"||x==="Normal")return "Normal";return x} function normMurmur(){const x=v("cvs_murmur");if(x==="No"||x==="No abnormality detected"||x==="Absent")return "Absent";return x} function e(s){return String(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}
+window.getCVSClinicalSummary=function(){const val=id=>{const x=document.getElementById(id)||document.getElementById('cvs_'+id);return x?(x.value||'').trim():''};const lines=[];lines.push('CARDIOVASCULAR HISTORY & EXAMINATION');const symptomNames=['Chest pain/discomfort','Palpitations','Exertional breathlessness','Breathlessness at rest','Orthopnoea','Paroxysmal nocturnal dyspnoea','Pedal oedema','Syncope/presyncope','Exercise tolerance'];let symptoms=[];symptomNames.forEach((n,i)=>{let a=val('s'+i),d=val('sd'+i);if(a&&a!=='Not entered')symptoms.push(n+': '+a+(d?' — '+d:''))});lines.push('Symptoms: '+(symptoms.length?symptoms.join('; '):'No positive/uncertain symptoms recorded.'));lines.push('Pulse: '+['rate '+val('rate')+' bpm','rhythm '+val('rhythm'),'volume '+val('volume'),'character '+val('character'),'symmetry '+val('symmetry'),'radio-radial delay '+val('delay'),'nurse-recorded pulse '+val('nursePulse')].filter(x=>!x.endsWith(' ')).join('; '));let pulses=['Brachial','Radial','Femoral','Popliteal','Posterior tibial','Dorsalis pedis'].map((n,i)=>{let r=val('p'+i+'r'),l=val('p'+i+'l');let sides=[];if(r)sides.push('Right — '+r);if(l)sides.push('Left — '+l);return sides.length?n+' pulse: '+sides.join(' | '):''}).filter(Boolean);if(pulses.length)lines.push('PERIPHERAL PULSES (side-specific):\n'+pulses.map(x=>'  • '+x).join('\n'));lines.push('JVP: '+['assessment '+val('jass'),'estimated '+val('jest'),'level '+val('jlevel'),'position '+val('jpos'),'side '+val('jside'),'difficulty '+val('jdif'),'uncertainty '+val('junc')].filter(x=>!x.endsWith(' ')).join('; '));lines.push('Precordium: '+['visible pulsation '+val('vp'),'bulge '+val('bulge'),'apex '+val('apexloc')+' '+val('apexchar'),'heave '+val('heave'),'thrill '+val('thrill'),'other '+val('otherp')].filter(x=>!x.endsWith(' ')).join('; '));lines.push('Auscultation: '+['S1 '+normHeartSound('cvs_s1'),'S2 '+normHeartSound('cvs_s2'),'added sounds '+val('added'),'murmur '+normMurmur(),'site '+val('msite'),'timing '+val('mtime'),'radiation '+val('mrad'),'character/grade '+val('mgrade'),'rub/other '+val('rub')].filter(x=>!x.endsWith(' ')).join('; '));let fNames=['Oedema','Colour','Temperature','Peripheral pulses','Capillary refill','Peripheral vascular changes'];let fs=fNames.map((n,i)=>{let a=val('f'+i),d=val('fd'+i),site=val('fs'+i);return (a&&a!=='No abnormality detected')?n+': '+a+(site?' — Site/side: '+site:'')+(d?' — '+d:''):''}).filter(Boolean);lines.push('Peripheral cardiovascular findings: '+fs.join('; ')+(val('additional')?' ; Additional: '+val('additional'):''));return lines.join('\n')};
+})();
+calc();
+</script>
+<script>
+
+(function(){
+
+const H=[['Duration','कब से खांसी या सांस की परेशानी है?'],['Cough type','खांसी सूखी है या बलगम के साथ?'],['Sputum','क्या बलगम निकलता है?'],['Sputum colour/quantity','बलगम का रंग कैसा है और लगभग कितना निकलता है?'],['Blood in sputum','क्या बलगम में कभी खून आता है?'],['Wheezing','क्या सांस लेते समय सीटी जैसी आवाज आती है?'],['Chest tightness','क्या सीने में जकड़न या कसाव महसूस होता है?'],['Breathlessness at rest/exertion','सांस फूलना आराम में होता है, मेहनत पर होता है, या दोनों में?'],['Night symptoms','क्या रात में खांसी, सीटी या सांस फूलने की परेशानी होती है?'],['Exercise limitation','क्या सांस की वजह से चलने-फिरने या रोजमर्रा के काम में कमी आई है?'],['Recurrent respiratory infection','क्या बार-बार छाती का संक्रमण या सांस की बीमारी होती है?'],['Fever','क्या बुखार भी होता है?'],['Relevant TB exposure','क्या कभी TB के मरीज के निकट संपर्क में रहे हैं या TB का कोई महत्वपूर्ण exposure हुआ है?'],['Occupational dust/fume exposure','क्या काम के दौरान धूल, धुआं, गैस या fumes का संपर्क होता है?']];
+const hd=document.getElementById('history');H.forEach((x,i)=>{let opts=(i===0?'Select|Less than 1 week|1–4 weeks|1–3 months|3–6 months|More than 6 months':i===1?'Select|Dry|Productive|Both/variable':i===2?'Select|Yes|No':i===3?'Select|Clear|White|Yellow|Green|Blood-stained|Other':i===4?'Select|Yes|No':i===5?'Select|Yes|No':i===6?'Select|Yes|No':i===7?'Select|At rest|On exertion|Both|No breathlessness':i===8?'Select|Yes|No':i===9?'Select|No limitation|Mild|Moderate|Severe':i===10?'Select|Yes|No':i===11?'Select|Yes|No':i===12?'Select|Yes|No|Uncertain':'Select|Yes|No|Uncertain'); hd.innerHTML+=`<div class=item><b>${x[0]}</b><div>${x[1]}</div><select id=h${i}>${opts.split('|').map(o=>`<option>${o}</option>`).join('')}</select><div class="voiceRow"><input id=h${i}v placeholder="Additional details / voice answer"><button type="button" onclick="voice(${i})">🎙 Record / Voice</button></div></div>`});
+const areas=['Right upper zone','Left upper zone','Right middle zone','Left middle zone','Right lower zone','Left lower zone'];const pd=document.getElementById('perc');areas.forEach((x,i)=>pd.innerHTML+=`<div class=item><b>${x}</b><select id=pc${i}><option>Resonant</option><option>Dull</option><option>Hyper-resonant</option><option>Other</option><option>Not assessed</option></select><input id=pcd${i} placeholder="Details if other / abnormal"></div>`);
+const AS=[['Wheeze','Wheeze'],['Crackles','Crackles'],['Rhonchi','Rhonchi'],['Pleural rub','Pleural rub'],['Other','Other']];const ad=document.getElementById('addedSounds');AS.forEach((x,i)=>ad.innerHTML+=`<div class=item><b>${x[0]}</b><select id=as${i}><option>Absent</option><option>Present</option><option>Uncertain</option><option>Not assessed</option></select><input id=asd${i} placeholder="Site + right/left/bilateral + localized/diffuse"></div>`);
+function voice(i){const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SpeechRecognition){alert('Voice recording is not supported in this browser. Please use Chrome.');return}const r=new SpeechRecognition();r.lang='hi-IN';r.interimResults=false;r.maxAlternatives=1;r.onresult=e=>{document.getElementById('h'+i+'v').value=e.results[0][0].transcript;respUpdateAlert()};r.onerror=()=>alert('Voice input could not be recorded. Please check microphone permission.');r.start()}
+function respSetupCanvas(id,back){const c=document.getElementById(id),x=c.getContext('2d');function base(){x.clearRect(0,0,c.width,c.height);x.lineWidth=3;x.strokeStyle='#555';x.fillStyle='#fafafa';x.fillRect(0,0,c.width,c.height);x.beginPath();x.ellipse(180,65,48,55,0,0,Math.PI*2);x.stroke();x.beginPath();x.moveTo(132,115);x.lineTo(90,150);x.lineTo(72,255);x.lineTo(105,370);x.lineTo(145,430);x.lineTo(180,450);x.lineTo(215,430);x.lineTo(255,370);x.lineTo(288,255);x.lineTo(270,150);x.lineTo(228,115);x.stroke();x.beginPath();x.moveTo(132,115);x.lineTo(180,165);x.lineTo(228,115);x.stroke();x.beginPath();x.moveTo(90,150);x.lineTo(270,150);x.stroke();x.beginPath();x.moveTo(105,370);x.lineTo(255,370);x.stroke();x.font='16px sans-serif';x.fillStyle='#555';x.fillText(back?'BACK':'FRONT',155,475)}base();let drawing=false;function pos(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height}}c.addEventListener('pointerdown',e=>{drawing=true;c.setPointerCapture(e.pointerId);let p=pos(e);x.beginPath();x.moveTo(p.x,p.y)});c.addEventListener('pointermove',e=>{if(!drawing)return;let p=pos(e);x.lineTo(p.x,p.y);x.stroke()});c.addEventListener('pointerup',()=>drawing=false);c.addEventListener('pointercancel',()=>drawing=false)}function respClearCanvas(id){const c=document.getElementById(id);const ev=new Event('clear');c.dispatchEvent(ev);respSetupCanvas(id,id==='backMap')}
+function v(id){let z=document.getElementById(id);return z?z.value:''}function e(s){return String(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function respDetailedNeeded(){return v('screenCough')==='Yes'||v('screenBreath')==='Yes'}function urgent(){let vals=H.map((_,i)=>v('h'+i).toLowerCase());return vals[4]==='yes'||vals[4].includes('हाँ')||v('distress')==='Present'||v('speak')==='Unable to speak normally'||v('effort')==='Increased'}
+function respScreen(){const c=v('screenCough'),b=v('screenBreath');document.getElementById('historyCard').classList.toggle('hidden',!respDetailedNeeded());document.getElementById('negative').classList.toggle('hidden',!(c==='No'&&b==='No'));document.getElementById('detailTrigger').textContent=respDetailedNeeded()?'Detailed respiratory pathway activated.':'';respUpdateAlert()}
+['screenCough','screenBreath','distress','speak','effort'].forEach(id=>document.getElementById(id).addEventListener('change',respScreen));
+function respUpdateAlert(){document.getElementById('respAlert').style.display=urgent()?'block':'none'}H.forEach((_,i)=>document.getElementById('h'+i).addEventListener('input',respUpdateAlert));
+respSetupCanvas('frontMap',false);respSetupCanvas('backMap',true);
+const base=['pid','name','age','sex','visit','screenCough','screenBreath','occReuse','distress','pattern','accessory','cyanosis','speak','effort','shape','chsym','expansion','scars','deformity','retraction','inspectOther','trachea','palExpansion','fremitus','palDetails','breathSounds','addedOverall','mapAnterior','mapLateral','mapPosterior'];const all=[...base,...H.flatMap((_,i)=>['h'+i]),...areas.flatMap((_,i)=>['pc'+i,'pcd'+i]),...AS.flatMap((_,i)=>['as'+i,'asd'+i])];
+function respGenerateNote(){let o=`<h1>JeevSetu — Respiratory Clinical Note</h1><p><b>Patient:</b> ${e(v('name'))} | <b>ID:</b> ${e(v('pid'))} | <b>Age/Sex:</b> ${e(v('age'))}/${e(v('sex'))} | <b>Visit:</b> ${e(v('visit'))}</p><h2>Universal Respiratory Screen</h2><p>Cough: <b>${e(v('screenCough'))}</b>; Breathlessness: <b>${e(v('screenBreath'))}</b>.</p>`;if(v('screenCough')==='No'&&v('screenBreath')==='No')o+=`<p>Negative respiratory screen; no respiratory complaint otherwise documented.</p>`;if(respDetailedNeeded()){o+='<h2>Detailed Respiratory History</h2>';H.forEach((x,i)=>o+=`<p><b>${e(x[0])}:</b> ${e(v('h'+i))}</p>`);o+=`<p><b>Section 8 occupational information reused:</b> ${e(v('occReuse'))}</p>`}o+=`<h2>Respiratory Examination</h2><h3>19.7.1 General observation</h3><p>Respiratory distress: ${e(v('distress'))}; Breathing pattern: ${e(v('pattern'))}; Accessory muscle use: ${e(v('accessory'))}; Cyanosis: ${e(v('cyanosis'))}; Ability to speak: ${e(v('speak'))}; Respiratory effort: ${e(v('effort'))}.</p><h3>19.7.2 Chest inspection</h3><p>Shape: ${e(v('shape'))}; Symmetry: ${e(v('chsym'))}; Expansion: ${e(v('expansion'))}; Scars: ${e(v('scars'))}; Deformity: ${e(v('deformity'))}; Retraction: ${e(v('retraction'))}; Other: ${e(v('inspectOther'))}.</p><h3>19.7.3 Trachea</h3><p>${e(v('trachea'))}</p><h3>19.7.4 Palpation</h3><p>Chest expansion: ${e(v('palExpansion'))}; Tactile/vocal fremitus: ${e(v('fremitus'))}; Details: ${e(v('palDetails'))}</p><h3>19.7.5 Percussion</h3>`;areas.forEach((x,i)=>o+=`<p><b>${e(x)}:</b> ${e(v('pc'+i))}${v('pcd'+i)?' — '+e(v('pcd'+i)):''}</p>`);o+=`<h3>19.7.6 Auscultation</h3><p>Breath sounds: ${e(v('breathSounds'))}; Added sounds overall: ${e(v('addedOverall'))}</p>`;AS.forEach((x,i)=>o+=`<p><b>${e(x[0])}:</b> ${e(v('as'+i))}${v('asd'+i)?' — '+e(v('asd'+i)):''}</p>`);o+=`<h3>19.7.7 Digital Chest Map</h3><div class=\"printMaps\"><div><p><b>Anterior — Front</b></p><img class=\"chestPrint\" src=\"${document.getElementById('frontMap').toDataURL('image/png')}\"></div><div><p><b>Posterior — Back</b></p><img class=\"chestPrint\" src=\"${document.getElementById('backMap').toDataURL('image/png')}\"></div></div><p><b>Lateral / additional localization:</b> ${e(v('mapLateral'))}</p>`;if(urgent())o+=`<h2 style="color:#b00020">IMMEDIATE CLINICIAN ALERT</h2><p>Haemoptysis, severe acute breathlessness or respiratory distress may be present. Prompt clinical assessment required.</p>`;window.jeevRespNoteHTML=o;window.jeevRespNoteText=(function(){let d=document.createElement('div');d.innerHTML=o;return d.innerText||d.textContent||''})()}
+
+
+window.respClearCanvas=respClearCanvas;
+window.respScreen=respScreen;
+window.respUpdateAlert=respUpdateAlert;
+window.respGenerateNote=respGenerateNote;
+window.respSetupCanvas=respSetupCanvas;
+})();
+
+// Keep the integrated consolidated note as the only printable output.
+// Append respiratory HTML (not plain text) so the digital chest maps are retained.
+(function(){
+ const baseGenerateNote=window.generateNote;
+ window.generateNote=function(){
+   baseGenerateNote();
+   if(typeof window.respGenerateNote==='function'){
+     window.respGenerateNote();
+     const body=document.getElementById('noteBody');
+     const old=document.getElementById('respClinicalNote');
+     if(old) old.remove();
+     if(window.jeevRespNoteHTML){
+       const section=document.createElement('section');
+       section.id='respClinicalNote';
+       section.className='resp-clinical-note';
+       section.innerHTML=window.jeevRespNoteHTML;
+       body.appendChild(section);
+     }
+   }
+ };
+})();
+</script></body></html>

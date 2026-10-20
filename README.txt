@@ -1,0 +1,1 @@
+JeevSetu V2-5-127: unified final combined clinical note. Patient ID auto-fills into Vitals and is locked. Examiner is mandatory. Complete and save each physical examination module; then use the single “Generate Final Combined Note” command. Verify all entries before clinical use.
